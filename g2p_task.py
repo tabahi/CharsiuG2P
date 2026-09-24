@@ -32,11 +32,13 @@ def task_g2p_phonemize(paths_list,  device='cpu', redo=False,
     spelling never appears in paths_list; it is resolved internally and only
     shows up as the 'g2p_lang' field of the .gs.json this writes.
 
-    skip_unsupported  skip languages needing upstream word segmentation
-                      (zh/ja/th/...) rather than emitting garbage for them
+    skip_unsupported  skip languages that need word segmentation but have no
+                      segmenter (nan, tts) rather than emitting garbage for
+                      them. th/km/my/ja/zh/yue are segmented (see
+                      standard_g2p/word_segmentation.py) and are not skipped.
     """
     from standard_g2p.gold_g2p import (goldG2P, resolve_tag, N_TONES,
-                                       NEEDS_WORD_SEGMENTATION,
+                                       has_segmenter, require_segmenter,
                                        UnsupportedLanguageError)
 
     G = goldG2P(device=device, batch_size=batch_size)
@@ -54,10 +56,14 @@ def task_g2p_phonemize(paths_list,  device='cpu', redo=False,
         except UnsupportedLanguageError as ex:
             print('G2P: unsupported language %s -- %s' % (lang, str(ex)))
             continue
-        if skip_unsupported and g2p_tag in NEEDS_WORD_SEGMENTATION:
+        if skip_unsupported and not has_segmenter(g2p_tag):
             print('G2P: skipping unsupported language %s (tag %s) '
                     'that needs word segmentation' % (lang, g2p_tag))
             continue
+        # Import the segmenter package now: if it is missing, the run stops
+        # here with the package name, not once per clip in the `failed` count.
+        if has_segmenter(g2p_tag):
+            require_segmenter(g2p_tag)
         supported_langs.append(lang)
     unique_langs = supported_langs
 

@@ -9,7 +9,8 @@ language, and every index comes with the size of the space it belongs to.
 
 ```
 text ──► words ──► CharsiuG2P ──► raw IPA ──► normalize ──► segment ──► layers ──► gold inventory ──► group inventory
-          split     (ByT5)        per word    (artifacts)   (phonemes)  tone/stress   270 tokens        per-group softmax
+       split / word  (ByT5)       per word    (artifacts)   (phonemes)  tone/stress   270 tokens        per-group softmax
+       segmentation
                                                                          /length
 ```
 
@@ -64,10 +65,12 @@ GI.to_local(d['gold_ph'], 'pt-BR')
 | [examples/03_inventories.py](examples/03_inventories.py) | no | head sizes, the gold inventory, the per-group tables |
 | [examples/04_features.py](examples/04_features.py) | no | articulatory features for an auxiliary head |
 | [examples/05_phonemize_srt.py](examples/05_phonemize_srt.py) | yes | transcript JSON in, `.gs.json` out |
+| [examples/06_word_segmentation.py](examples/06_word_segmentation.py) | yes | th/km/my/ja/zh/yue: text → words → IPA with tone |
 
-Requirements: `torch`, `transformers`, `huggingface_hub` for inference. The tables (`lang_codes`, `group_inventory`,
-`phoneme_inventory_gold`, `phoneme_features`) need only the standard library, so a training data loader can import
-them without pulling in `transformers`.
+Requirements: `torch`, `transformers`, `huggingface_hub` for inference, plus a segmenter for each unspaced
+language you use (see the table under *Know before you trust the output*). The tables
+(`lang_codes`, `group_inventory`, `phoneme_inventory_gold`, `phoneme_features`) and `word_segmentation.split_words`
+need only the standard library, so a training data loader can import them without pulling in `transformers`.
 
 ---
 
@@ -214,14 +217,47 @@ other language, and nothing downstream could tell.
 - **The model reproduces its training dictionary, including casual variants.** For example, `dicts/por-bz.tsv` lists
   both `umɐ` and `ũɐ` for *uma*, and the model returns the casual form `ũɐ` with the /m/ dropped. The model also
   under-predicts rare phonemes, because it drifts toward frequent symbols.
-- **Eight languages need word segmentation upstream**: `zh`, `yue`, `nan`, `ja`, `th`, `tts`, `km`, `my`. This is a
-  *word* model, and in these scripts `split_words` hands it whole clauses. For `th`/`km`/`my`/`ja`, less than 1.5% of
-  dictionary entries are a single character, so segmentation is mandatory (PyICU, pythainlp, fugashi). For Mandarin,
-  per-character input gives the same phonemes as jieba-segmented input. For Cantonese it does not, and Min Nan's tone
-  sandhi cannot be produced from single characters. `g2p_task.task_g2p_phonemize` skips these languages by default.
-- **Excluded languages** (`lang_codes.EXCLUDED_ISO`): `my` (no usable segmenter, and its tone is written as vowel
-  diacritics so it never reaches the tone layer), `nan` (no segmenter, sandhi), and `tts` (its dictionary is a
-  romanization, not IPA). They keep their group but did not shape its token list.
+- **Eight languages need word segmentation**: `zh`, `yue`, `nan`, `ja`, `th`, `tts`, `km`, `my`. This is a *word*
+  model, and in these scripts `split_words` hands it whole clauses. `word_segmentation.segment(text, lang)` splits
+  them into words where a segmenter exists, and `phonemize_sentence` / `phonemize_srt` use it. Space-delimited
+  languages go through `split_words` exactly as before.
+
+  | lang | segmenter | install |
+  |---|---|---|
+  | `th` | pythainlp `newmm`, plus repairs for cuts inside a syllable and for `ๆ` | `pythainlp` |
+  | `km` | khmer-nltk, plus `ៗ` expansion | `khmer-nltk` |
+  | `my` | pyidaungsu | `pyidaungsu` |
+  | `ja` | fugashi with UniDic-lite. **The model gets UniDic's katakana reading, not the text**, so `words` is katakana | `fugashi unidic-lite` |
+  | `zh`, `zh-Hant` | longest match on the model's own `dicts/zho-{s,t}.tsv` | none |
+  | `yue` | pycantonese | `pycantonese` |
+
+  Each backend was chosen by running the model on real sentences, not by counting how many segmented words are
+  dictionary entries. That count favours cutting words into dictionary pieces, and for Thai, Khmer and Burmese those
+  pieces are read differently: loanwords turn into letter names, linking vowels are dropped, and Burmese loses the
+  consonant voicing across word boundaries. The measurements are in
+  [word_segmentation.py](standard_g2p/word_segmentation.py). Some highlights:
+  - **Thai** (439 FLEURS dev clips): the old split gave 4.1 "words" per clip, averaging 29 characters. At
+    `max_length=64` the model's IPA stopped partway through each one, so the rest of the clause got no labels at
+    all. Now there are 24.2 words per clip, and 93.2% of vowels carry a tone.
+  - **Japanese:** the reading fixes the particles `は` → `wa` and `へ` → `e` (from the text the model says `ha`,
+    `he`), and it fixes readings that depend on context (`昨日` → `kinoː`, `雨` → `ame`). UniDic-lite does read `日本`
+    as `nipːoɴ`.
+  - **Mandarin:** per-character input reads `音乐` with the `快乐` reading and loses the neutral tone of `们`. The
+    longest match does not have either problem.
+  - In zh, yue and th every word carries a tone. The vowels without one are the first half of a diphthong; the
+    tone goes on the second half.
+  - **Not segmented**: `nan` and `tts` (both in `EXCLUDED_ISO`). `has_segmenter(lang)` is False for them, and
+    `g2p_task.task_g2p_phonemize` skips them by default.
+  - `phonemize_srt` does not use Whisper's `words` directly for these scripts. Whisper's words there are tokenizer
+    pieces, so it joins them and segments the joined text. `words` in the output is the segmented list, and
+    `word_num` indexes it.
+- **Numerals are not verbalized.** `1979` goes to the model as one "word" in every language, and in Thai it comes back
+  with no tone.
+- **Excluded languages** (`lang_codes.EXCLUDED_ISO`): `my` (its tone is written as vowel diacritics, so it never
+  reaches the tone layer), `nan` (no segmenter, sandhi), and `tts` (its dictionary is a romanization, not IPA). They
+  keep their group but did not shape its token list. `my` is the only member of `burmese`, so that group's list holds
+  only the 4 special tokens and `to_local` turns every Burmese phoneme into `<unk>`. Burmese is segmented now, but
+  its labels are unusable until it is taken off the list and `create_phoneme_inventories.py` is rerun.
 - **Stress is transcribed in only 36 of the 100 languages.** A missing stress mark means "not annotated", not
   "unstressed", so mask the stress loss for the other languages.
 - **Pitch accent is not tone.** `hbs`, `slv`, `san` and `grc` use the same acute and grave marks for pitch accent, and
@@ -235,6 +271,8 @@ other language, and nothing downstream could tell.
 - `GI.to_local()` now returns a dict. The indices are under `['local_ph']`.
 - Labels for Brahmic, Thai, Khmer and Burmese scripts written before 2026-09-23 are corrupt and must be regenerated.
   `split_words` used to treat vowel signs and viramas as word separators.
+- Labels for th, km, my, ja, zh and yue written before 2026-09-24 were phonemized clause by clause (see above) and
+  must be regenerated. Burmese `၏ ၍ ၌ ၎` used to be dropped as punctuation.
 
 ---
 
@@ -244,6 +282,7 @@ other language, and nothing downstream could tell.
 standard_g2p/                   the module
   gold_g2p.py                   goldG2P model wrapper, IPA normalization/segmentation, layers, file I/O
   lang_codes.py                 BCP 47 <-> CharsiuG2P tag, tone/segmentation flags, groups (no deps)
+  word_segmentation.py          text -> words: split_words, and segmenters for unspaced scripts
   phoneme_inventory_gold.py     the 270-token gold inventory + BACKOFF          (generated)
   phoneme_features.py           20 articulatory features + 15 broad groups      (generated)
   group_inventory.py            gold indices -> a group model's indices (no deps)

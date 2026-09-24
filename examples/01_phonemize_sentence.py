@@ -45,8 +45,8 @@ for lang, text in [('en-US', 'hello world'),
                    ('ru', 'привет мир'),
                    ('hi', 'नमस्ते दुनिया'),
                    ('ko', '안녕하세요'),
-                   ('th', 'ภาษา'),        # tonal; one word, Thai needs segmenting
-                   ('zh', '狂妄')]:        # tonal; one word, Chinese needs segmenting
+                   ('th', 'ภาษา'),        # tonal; sentences are word-segmented, see 06
+                   ('zh', '狂妄')]:        # tonal; sentences are word-segmented, see 06
     d = G.phonemize_sentence(text, lang=lang)
     t = GI.to_local(d['gold_ph'], lang)
     print('%-6s %-14s group=%-16s local %d-way, gold %d-way'

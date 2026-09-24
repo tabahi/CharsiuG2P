@@ -26,9 +26,11 @@ from collections import Counter, OrderedDict
 try:                                  # imported as part of the package
     from . import lang_codes as _lc
     from . import phoneme_inventory_gold
+    from . import word_segmentation as _ws
 except ImportError:                   # imported with standard_g2p/ itself on sys.path
     import lang_codes as _lc          # (the scripts/ generators do this)
     import phoneme_inventory_gold
+    import word_segmentation as _ws
 
 
 # The original model is 'charsiu/g2p_multilingual_byT5_small_100' on the HF hub;
@@ -417,9 +419,10 @@ def normalize_tone(tone, keep_sandhi=False):
 # ---------------------------------------------------------------------------
 
 # Languages whose script has no spaces: the model is a WORD g2p, so text must
-# be word-segmented upstream (jieba, pythainlp, MeCab) or every "word" handed
-# to the model is a whole clause and the output is garbage. Defined over ISO
-# codes in lang_codes and expanded to tags here; see the README.
+# be word-segmented or every "word" handed to the model is a whole clause and
+# the output is garbage. `segment` does this where a backend exists
+# (`has_segmenter`); see word_segmentation.py. Defined over ISO codes in
+# lang_codes and expanded to tags here; see the README.
 #
 # Note this now also covers 'tts' (Isan, written in Thai script), which the
 # hand-written version of this set missed.
@@ -538,42 +541,10 @@ LENGTH_SHORT, LENGTH_HALF, LENGTH_LONG = 0, 1, 2
 N_LENGTHS = 3
 
 
-# Characters that join a word besides letters and digits: apostrophes and the
-# internal hyphen.
-_WORD_EXTRA = frozenset("'’-")
-
-# Combining marks are word characters. This is not a detail: Python's `\w`
-# follows str.isalnum(), which is False for every category Mn/Mc mark, so a
-# regex built on `\w` treats Brahmic vowel signs and viramas as SEPARATORS.
-# The previous pattern here, r"[^\w'’̀-ͯ-]+", whitelisted only the
-# Latin/Greek/Cyrillic combining block, so Tamil புஷ்ஷின் came apart into
-# ['ப','ஷ','ஷ','ன'] -- four bare consonants with their vowels deleted, not one
-# word. Sixteen FLEURS languages were affected (every Brahmic script plus Thai,
-# Khmer, Lao and Burmese), at up to 11x the true token count.
-#
-# Expressing "any mark" as a character class needs 310 ranges, so this tests the
-# Unicode category directly. It costs roughly 3x the regex (11us vs 4us per
-# sentence), which is nothing next to the model call it feeds.
-
-
-def _is_word_char(ch):
-    return (ch.isalnum() or ch in _WORD_EXTRA
-            or unicodedata.category(ch) in ('Mn', 'Mc', 'Me'))
-
-
-def split_words(sentence):
-    """Whitespace/punctuation word split. See NEEDS_WORD_SEGMENTATION for the
-    languages this is not sufficient for."""
-    out, cur = [], []
-    for ch in sentence.strip().lower():
-        if _is_word_char(ch):
-            cur.append(ch)
-        elif cur:
-            out.append(''.join(cur))
-            cur = []
-    if cur:
-        out.append(''.join(cur))
-    return out
+# Text -> words lives in word_segmentation (stdlib only, like lang_codes).
+# Re-exported so `from standard_g2p.gold_g2p import split_words` keeps working.
+split_words, segment = _ws.split_words, _ws.segment
+has_segmenter, require_segmenter = _ws.has_segmenter, _ws.require_segmenter
 
 
 # ---------------------------------------------------------------------------
@@ -843,8 +814,10 @@ class goldG2P:
                 **self.scope(), **self._phonemize_words_tag(words, tag)}
 
     def phonemize_sentence(self, text, lang=None):
-        """Free text -> the same layered dict as `phonemize_words`."""
-        return self.phonemize_words(split_words(text), lang=lang)
+        """Free text -> the same layered dict as `phonemize_words`. The text
+        is split with `segment`, so unspaced scripts (th, km, my, ja, zh, yue)
+        are word-segmented; see word_segmentation.py."""
+        return self.phonemize_words(segment(text, self._tag(lang)), lang=lang)
 
     # -- file level --------------------------------------------------------
 
@@ -921,14 +894,24 @@ class goldG2P:
                **self.scope(),
                'segments': []}
 
+        unspaced = _lc.needs_word_segmentation(tag)
         for seg in srt.get('segments', []):
             # Prefer the word list, which segments better than raw text
             # (e.g. across punctuation Whisper already resolved).
-            if seg.get('words'):
+            if seg.get('words') and not unspaced:
                 raw_words = [w.get('word', '').strip() for w in seg['words']]
                 words = [p for w in raw_words for p in split_words(w)]
+            elif seg.get('words'):
+                # Whisper's "words" in an unspaced script are tokenizer pieces
+                # cut wherever the BPE vocabulary cuts. They can be part of a
+                # word or run across two, so rebuild the text and segment that.
+                # The raw pieces carry their own leading spaces, so joining them
+                # unstripped keeps the phrase breaks. (Not yet checked against
+                # real Whisper output in these scripts: the FLEURS srts have no
+                # `words`.)
+                words = segment(''.join(w.get('word', '') for w in seg['words']), tag)
             else:
-                words = split_words(seg.get('text', ''))
+                words = segment(seg.get('text', ''), tag)
 
             d = self._phonemize_words_tag(words, tag)
 

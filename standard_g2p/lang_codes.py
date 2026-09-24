@@ -564,8 +564,8 @@ ISO_TO_GROUP = {iso: g for g, members in PROCESSING_GROUP_MEMBERS.items()
 # into use by being removed from here once its blocker is fixed, without the
 # grouping changing. See the README.
 EXCLUDED_ISO = {
-    'mya': 'no usable segmenter (ICU splits inside syllables) and tone is '
-           'written as diacritics, so the tone layer stays empty',
+    'mya': 'tone is written as diacritics, so the tone layer stays empty '
+           '(it is word-segmented now, with pyidaungsu)',
     'nan': 'no maintained segmenter, and 70% of its entries are two-character '
            'words carrying tone sandhi that per-character input cannot produce',
     'tts': 'the dictionary is a romanisation, not IPA, so the model returns '
