@@ -338,14 +338,6 @@ other language, and nothing downstream could tell.
   `kur` uses them for stress. `tone_diacritics=True` would misread all of these as tone.
 - **Homographs** (English *read*, *lead*) get a single pronunciation, because the model sees no context.
 
-### Upgrading older `.gs.json` files
-
-- Header keys were renamed to match the in-memory output: `n_tokens` → `n_gold_ph`, `n_groups` → `n_gold_phg`,
-  `n_stress` → `n_stresses`.
-- Labels for Brahmic, Thai, Khmer and Burmese scripts written before 2026-09-23 are corrupt and must be regenerated.
-  `split_words` used to treat vowel signs and viramas as word separators.
-- Labels for th, km, my, ja, zh and yue written before 2026-09-24 were phonemized clause by clause (see above) and
-  must be regenerated. Burmese `၏ ၍ ၌ ၎` used to be dropped as punctuation.
 
 ---
 
