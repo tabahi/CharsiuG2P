@@ -349,41 +349,11 @@ other language, and nothing downstream could tell.
 
 ---
 
-## Repository layout
-
-```
-standard_g2p/                   the module
-  gold_g2p.py                   goldG2P model wrapper, IPA normalization/segmentation, layers, file I/O
-  lang_codes.py                 BCP 47 <-> CharsiuG2P tag, tone/segmentation flags, language groups (no deps)
-  word_segmentation.py          text -> words: split_words, and segmenters for unspaced scripts
-  phoneme_inventory_gold.py     the 270-token gold inventory + BACKOFF          (generated)
-  phoneme_features.py           20 articulatory features + 15 phoneme groups    (generated)
-  lang_group_inventory.py       gold indices -> local indices per language group, the final output (no deps)
-  mappings/
-    lang_group_inventories.json per-language-group token lists, loaded at run time (generated)
-    phoneme_counts.md           mapping health, backoff/unmapped report, language group lists
-    lang_stats.md               the measurements behind lang_codes.py's groupings
-    *.json                      the raw counts behind the two reports
-scripts/                        generators for everything marked (generated)
-examples/                       runnable examples
-g2p_task.py                     batch-phonemize a paths_list of transcripts to .gs.json
-
-dicts/  data/  sources/  notebooks/  multilingual_results/      inherited from CharsiuG2P
-charsiug2p_original_src/        CharsiuG2P's original training/evaluation code
-```
 
 ### Regenerating the tables
 
 Everything marked *(generated)* comes from a script. Hand edits are lost at the next regeneration.
 
-```bash
-python scripts/layers.py                   # 1. enumerate every segment in data/train/  -> tmp/inventory_build/
-python scripts/build_inventory.py          # 2. -> standard_g2p/phoneme_inventory_gold.py
-python scripts/build_features.py           # 3. -> standard_g2p/phoneme_features.py (needs panphon)
-python scripts/measure_lang_groups.py      # -> mappings/lang_stats.{json,md} (needs scipy)
-python scripts/create_phoneme_inventories.py [--paths <fleurs paths_list> --metadata-dir <dir>]
-                                           # -> mappings/lang_group_inventories.json + counts + phoneme_counts.md
-```
 
 Rebuilding the gold inventory changes its fingerprint. Rerun `create_phoneme_inventories.py` afterwards, or
 `lang_group_inventory` will refuse the stale table. The shipped table was built from both sources. Without `--paths`
