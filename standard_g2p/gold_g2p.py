@@ -654,6 +654,31 @@ class goldG2P:
             out['n_gold_phg'] = self._feat.N_GROUPS
         return out
 
+    def lang_flags(self, tag):
+        """What a reader needs to know about the language itself, so that a
+        .gs.json can be interpreted without consulting lang_codes:
+
+            tonal                    lexical tone, as written in the training
+                                     dictionary (lang_codes.TONAL_ISO)
+            tone_layer               the tone reaches `tone`. False for a
+                                     non-tonal language, and for Burmese, whose
+                                     tone is a vowel diacritic (unless
+                                     `tone_diacritics` is set): `tone` is then
+                                     all 0 by construction and should be masked,
+                                     not learned as "no tone"
+            needs_word_segmentation  the script does not put spaces between
+                                     words (lang_codes.NEEDS_WORD_SEGMENTATION_ISO)
+            word_segmenter           the segmenter that produced `words`, with
+                                     package versions, or None. None together
+                                     with needs_word_segmentation means the
+                                     text was NOT segmented (nan, tts) and the
+                                     "words" are whole clauses
+        """
+        return {'tonal': _lc.is_tonal(tag),
+                'tone_layer': _lc.is_tonal(tag, diacritic_tone=self.tone_diacritics),
+                'needs_word_segmentation': _lc.needs_word_segmentation(tag),
+                'word_segmenter': _ws.segmenter_name(tag)}
+
     def _cache_put(self, key, value):
         self.cache[key] = value
         if self.cache_size and len(self.cache) > self.cache_size:
@@ -795,6 +820,8 @@ class goldG2P:
         Returns a dict. Scope (see `scope`):
             lang      the BCP 47 code used (the instance default if not given)
             g2p_lang  the CharsiuG2P tag it resolved to
+            tonal, tone_layer, needs_word_segmentation, word_segmenter
+                      (see `lang_flags`)
             n_tones, n_stresses, n_lengths, n_gold_ph, n_gold_phg
         One entry per phoneme, all the same length:
             phonemes  standardized IPA segment, as produced by CharsiuG2P
@@ -812,7 +839,8 @@ class goldG2P:
         """
         tag = self._tag(lang)
         return {'lang': lang or self.default_lang, 'g2p_lang': tag,
-                **self.scope(), **self._phonemize_words_tag(words, tag)}
+                **self.lang_flags(tag), **self.scope(),
+                **self._phonemize_words_tag(words, tag)}
 
     def phonemize_sentence(self, text, lang=None):
         """Free text -> the same layered dict as `phonemize_words`. The text
@@ -864,6 +892,7 @@ class goldG2P:
         several gold units.
 
             {"audio_path", "lang", "g2p_lang",
+             "tonal", "tone_layer", "needs_word_segmentation", "word_segmenter",
              "n_tones", "n_stresses", "n_lengths", "n_gold_ph", "n_gold_phg",
              "segments": [{"start","end","text","words",
                            "phonemes","tone","stress","length","word_num",
@@ -892,6 +921,7 @@ class goldG2P:
         out = {'audio_path': audio_path or srt.get('audio_path', ''),
                'lang': lang or srt.get('lang') or srt.get('lang_iso') or srt.get('language') or '',
                'g2p_lang': tag,
+               **self.lang_flags(tag),
                **self.scope(),
                'segments': []}
 

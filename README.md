@@ -25,25 +25,38 @@ flowchart LR
 | **3. language group** | The gold tokens re-indexed into the smaller list of the language's **language group**. This is the **final output**: downstream tasks are expected to use these local tokens. | `local_ph` | per language group (`n_local_ph`) | `lang_group_inventory.py` |
 
 Downstream tasks are expected to use the **local tokens of the language group** (`local_ph`), not gold indices and
-not raw IPA. Every language belongs to exactly one language group (`lang_codes.lang_group(lang)`). Languages are
-grouped by writing system, word segmentation and tone:
+not raw IPA. Every language belongs to exactly one language group (`lang_codes.lang_group(lang)`). A language group
+is defined by the script the language is written in (§5 below has the rule):
 
 | lang_group | tokens | languages (BCP 47) |
 |---|---:|---|
-| `latin` | 213 | af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz vi vi-c vi-s |
-| `cyrillic` | 128 | ady ba be bg hbs hbs-Cyrl kk mk ru sr tt uk |
-| `other_alphabetic` | 107 | am el grc hy hy-west ka ko |
-| `abjad` | 91 | ar fa ku sd syc ug ur |
-| `brahmic` | 98 | hi or sa ta |
+| `latin` | 208 | af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz |
+| `vietnamese` | 45 | vi vi-c vi-s |
+| `cyrillic` | 127 | ady ba be bg hbs hbs-Cyrl kk mk ru sr tt uk |
+| `other_alphabetic` | 104 | am el grc hy hy-west ka ko |
+| `abjad` | 90 | ar fa ku sd syc ug ur |
+| `brahmic` | 96 | hi or sa ta |
 | `cjk` | 48 | yue zh zh-Hant nan\* |
-| `thai_khmer` | 47 | km th tts\* |
+| `thai_khmer` | 38 | th tts\* |
 | `japanese` | 28 | ja |
-| `burmese` | 4 | my\* |
 
 `tokens` includes the 4 special tokens `<blank>`, `SIL`, `noise`, `<unk>`, which are the same in every language
 group (see *Special tokens* below). \* excluded for now (`lang_codes.EXCLUDED_ISO`, see *Excluded languages*
-below). Excluded languages did not shape their language group's token list, so `burmese` has only the special
-tokens. `hbs` is in `cyrillic` although `hbs` itself defaults to Latin script (see `lang_codes.py`).
+below): an excluded language did not shape its language group's token list. `hbs` is in `cyrillic` although `hbs`
+itself defaults to Latin script (see `lang_codes.py`).
+
+Khmer (`km`) and Burmese (`my`) are excluded for now and left out of the tables in this README. They still route to
+a language group, `thai_khmer` and `burmese`, but their labels are not usable: about 21% of Khmer's phonemes fold to
+`<unk>` in Thai's list, and `burmese` holds only the special tokens, so all of Burmese does.
+
+The same table in code:
+
+```python
+from standard_g2p import lang_group_inventory as LGI
+LGI.list_all_lang_groups        # ['latin', 'vietnamese', 'cyrillic', ...]
+LGI.member_langs['latin']       # ['af', 'ang', ..., 'uz'], excluded languages included
+LGI.lang_group_of('pt-BR')      # 'latin'
+```
 
 Why the gold stage exists if downstream tasks use the local tokens: `.gs.json` files **store gold indices**, and
 `to_local()` converts them to local indices **when they are read**. So the language group lists can be regenerated
@@ -71,6 +84,8 @@ Stages 1 and 2, from `phonemize_sentence`:
 
 ```python
 {'lang': 'pt-BR', 'g2p_lang': 'por-bz',
+ 'tonal': False, 'tone_layer': False,                                # language flags, see
+ 'needs_word_segmentation': False, 'word_segmenter': None,           # "Tone and word segmentation"
  'n_tones': 22, 'n_stresses': 3, 'n_lengths': 3, 'n_gold_ph': 270, 'n_gold_phg': 15,   # scope
  'words':    ['uma', 'parceria'],
  'ipa':      ['ũɐ', 'paʁseɾiɐ'],                                     # raw model output, for audit
@@ -90,12 +105,12 @@ Stage 3, from `to_local`. These are the final output, the local tokens of the `l
 
 ```python
 {'lang': 'pt-BR', 'lang_group': 'latin',
- 'local_ph': [177, 38, 23, 4, 37, 5, 7, 18, 6, 38],   # < n_local_ph
- 'n_local_ph': 213, 'n_gold_ph': 270,
+ 'local_ph': [173, 38, 23, 4, 37, 5, 7, 18, 6, 38],   # < n_local_ph
+ 'n_local_ph': 208, 'n_gold_ph': 270,
  'unk': 3, 'n_folded': 0, 'gold_fingerprint': '9438371ed6dd'}
 ```
 
-The same `ũ` is 204 in gold and 177 in `latin`. `LGI.decode(t['local_ph'], 'pt-BR')` turns the local indices back
+The same `ũ` is 204 in gold and 173 in `latin`. `LGI.decode(t['local_ph'], 'pt-BR')` turns the local indices back
 into `['ũ', 'ɐ', 'p', …]`. A gold token that is not on the language group's list becomes its `<unk>`, and `n_folded`
 counts how many did.
 
@@ -111,10 +126,10 @@ counts how many did.
 | [examples/03_inventories.py](examples/03_inventories.py) | no | label-space sizes, the gold inventory, the language group tables |
 | [examples/04_features.py](examples/04_features.py) | no | articulatory features, an optional auxiliary target |
 | [examples/05_phonemize_srt.py](examples/05_phonemize_srt.py) | yes | transcript JSON in, `.gs.json` out |
-| [examples/06_word_segmentation.py](examples/06_word_segmentation.py) | yes | th/km/my/ja/zh/yue: text → words → IPA with tone |
+| [examples/06_word_segmentation.py](examples/06_word_segmentation.py) | yes | th/ja/zh/yue: text → words → IPA with tone |
 
 Requirements: `torch`, `transformers`, `huggingface_hub` for inference, plus a segmenter for each unspaced
-language you use (see the table under *Know before you trust the output*). The tables
+language you use (see the table under *Tone and word segmentation*). The tables
 (`lang_codes`, `lang_group_inventory`, `phoneme_inventory_gold`, `phoneme_features`) and `word_segmentation.split_words`
 need only the standard library, so a training data loader can import them without pulling in `transformers`.
 
@@ -201,13 +216,49 @@ vowel) and special tokens, so no loss is taken there.
 
 ### 5. Language groups: the final label sets
 
-Each language belongs to one language group, defined by writing system, word segmentation and tone. Language groups
-do not follow language family. Grouping by family was measured and rejected, because phoneme inventories do not
-recover families (see [standard_g2p/mappings/lang_stats.md](standard_g2p/mappings/lang_stats.md) §4).
+**What makes a language group.** The criterion is the **script**: the dominant script of the language's
+dictionary entries, as measured by `scripts/measure_lang_groups.py` (table in
+[lang_stats.md](standard_g2p/mappings/lang_stats.md) §3). That gives 17 scripts. Scripts that need no special text
+processing and have only one or two languages each are merged by kind of script. Scripts that do need their own
+processing (word segmentation, a reading step) keep a language group of their own. One exception to script:
+Vietnamese (below).
+
+| lang_group | scripts | why these belong together |
+|---|---|---|
+| `latin` | Latin | one script, by far the largest (56 codes); no tonal language |
+| `vietnamese` | Latin | the one tonal language written in Latin script (see below) |
+| `cyrillic` | Cyrillic | one script |
+| `other_alphabetic` | Greek, Armenian, Georgian, Hangul, Ethiopic | small alphabets and abugidas, space-delimited, nothing special |
+| `abjad` | Arabic, Syriac | consonant scripts whose spelling leaves most vowels out |
+| `brahmic` | Devanagari, Oriya, Tamil | Indic abugidas |
+| `cjk` | Han | no spaces, needs word segmentation |
+| `thai_khmer` | Thai | no spaces between words, needs word segmentation |
+| `japanese` | kanji + kana | no spaces, segmented and read by UniDic |
+
+`hbs` is the one language written in two scripts (the model has a tag for each). It is placed in `cyrillic`; see the
+note under `LANG_GROUP_MEMBERS` in `lang_codes.py`.
+
+**Tone and language groups.** The tonal languages are in three language groups, and none of them is in `latin`:
+
+- `vietnamese`: **Vietnamese** (`vi`, `vi-c`, `vi-s`). By script it would be in `latin`, but it would then be the
+  only language there whose `tone` layer is filled, so it has a language group of its own. Its phonemes were not the
+  reason: it added only 3 tokens to `latin`'s list (`ɤ̆ ŋ͡m k͡p`).
+- `cjk`: Mandarin, Cantonese and Min Nan, all tonal.
+- `thai_khmer`: Thai.
+
+The tone layer itself is shared by all languages (22 values, 0 = no tone). Read the `tonal` / `tone_layer` flags of
+each file rather than inferring tone from the language group.
+
+Language groups do not follow language family either. Grouping by family was measured and rejected, because phoneme
+inventories do not recover families (see [lang_stats.md](standard_g2p/mappings/lang_stats.md) §4).
 
 Each language group's token list is a **subset** of the 270 gold tokens. For every member language, and for each of
 two sources (the model's actual FLEURS output and the training dictionaries), the most frequent gold phonemes are
-kept until 99.9% of that language's tokens are covered. The language group's list is the union of these. Every
+kept until 99.9% of that language's tokens are covered. The language group's list is the union of these. From the
+FLEURS output, words with a digit and words not in the transcript's own script (Latin-script names in a Mandarin or
+Thai transcript) are not counted: the model reads them with sounds the language does not have, which added 7 tokens
+to `cjk` and 6 to `thai_khmer`. Their labels are unchanged, so those sounds fold to `<unk>`
+([phoneme_counts.md](standard_g2p/mappings/phoneme_counts.md) §1 lists how much per language). Every
 language therefore keeps ≥ 99.9% of its tokens, and a phoneme that one small language needs is not voted out by a
 large one. The resulting sizes are in the table under *The three stages*.
 
@@ -244,7 +295,7 @@ label keeps its length, but the junk is marked as junk rather than mapped onto a
 - **Gold:** a segment with neither an inventory entry nor a `BACKOFF` rule becomes `<unk>` and is listed in
   `gold_unmapped`. `goldG2P.print_stats()` tallies these across a run.
 - **Language group:** a gold token that is not on the language group's list becomes its `<unk>`, counted in
-  `n_folded`. For an excluded language this can be every token (see `burmese` above).
+  `n_folded`. For an excluded language this can be most of its tokens.
 
 ### Scope: every index carries its range
 
@@ -258,7 +309,7 @@ label keeps its length, but the junk is marked as junk rather than mapped onto a
 | `local_ph` (from `to_local`) | `lang_group_inventory.tokens(lang_group)` | `n_local_ph` (per language group) |
 
 The same scope keys appear in `phonemize_words` / `phonemize_sentence` output and in the header of every `.gs.json`
-written by `phonemize_srt`.
+written by `phonemize_srt`, next to the language flags described under *Tone and word segmentation*.
 
 ---
 
@@ -283,6 +334,41 @@ other language, and nothing downstream could tell.
 
 ---
 
+## Tone and word segmentation
+
+Every output says what kind of language it holds. `phonemize_words` / `phonemize_sentence` return these keys, and
+`phonemize_srt` writes them into the `.gs.json` header:
+
+| key | meaning |
+|---|---|
+| `tonal` | The language has lexical tone, as written in its training dictionary (`lang_codes.TONAL_ISO`). |
+| `tone_layer` | Its tone reaches the `tone` layer. When False, `tone` is all 0 **by construction**: mask it, do not learn it as "no tone". |
+| `needs_word_segmentation` | The script does not put spaces between words (`lang_codes.NEEDS_WORD_SEGMENTATION_ISO`). |
+| `word_segmenter` | The segmenter that produced `words`, with package versions, or `null`. `null` together with `needs_word_segmentation` means the text was **not** segmented and the "words" are whole clauses. |
+
+Every language that is tonal or needs segmentation. For every other language all four are False / `null`.
+
+| language | BCP 47 | lang_group | tonal | tone_layer | needs segmentation | segmenter (`pip install`) |
+|---|---|---|:-:|:-:|:-:|---|
+| Vietnamese | `vi` `vi-c` `vi-s` | `vietnamese` | ✓ | ✓ | | |
+| Mandarin | `zh` `zh-Hant` | `cjk` | ✓ | ✓ | ✓ | longest match on the model's own `dicts/zho-{s,t}.tsv` (none) |
+| Cantonese | `yue` | `cjk` | ✓ | ✓ | ✓ | `pycantonese` |
+| Min Nan \* | `nan` | `cjk` | ✓ | ✓ | ✓ | none available: not segmented |
+| Thai | `th` | `thai_khmer` | ✓ | ✓ | ✓ | `pythainlp` (`newmm`, plus repairs for cuts inside a syllable and for `ๆ`) |
+| Isan \* | `tts` | `thai_khmer` | | | ✓ | none: not segmented |
+| Japanese | `ja` | `japanese` | | | ✓ | `fugashi` + `unidic-lite`. **The model gets UniDic's katakana reading, not the text**, so `words` is katakana |
+
+\* excluded for now (see *Excluded languages* below). Khmer and Burmese are excluded too and not listed; both have
+a segmenter (`khmer-nltk`, `pyidaungsu`).
+
+- **Isan** (`tts`) is tonal as a language, but its dictionary is a romanization with no tone marks, so the output
+  has none: `tonal` is False.
+- A segmenter is picked per language in `word_segmentation.py`, where the measurements behind each choice are.
+  `word_segmentation.has_segmenter(lang)` says whether one exists. `g2p_task.task_g2p_phonemize` skips a language
+  that needs one and has none.
+
+---
+
 ## Know before you trust the output
 
 - **G2P gives dictionary pronunciations, not what was said.** Reduction, coarticulation and dialect make real speech
@@ -290,24 +376,14 @@ other language, and nothing downstream could tell.
 - **The model reproduces its training dictionary, including casual variants.** For example, `dicts/por-bz.tsv` lists
   both `umɐ` and `ũɐ` for *uma*, and the model returns the casual form `ũɐ` with the /m/ dropped. The model also
   under-predicts rare phonemes, because it drifts toward frequent symbols.
-- **Eight languages need word segmentation**: `zh`, `yue`, `nan`, `ja`, `th`, `tts`, `km`, `my`. This is a *word*
+- **Some languages need word segmentation** (see the table under *Tone and word segmentation*). This is a *word*
   model, and in these scripts `split_words` hands it whole clauses. `word_segmentation.segment(text, lang)` splits
   them into words where a segmenter exists, and `phonemize_sentence` / `phonemize_srt` use it. Space-delimited
   languages go through `split_words` exactly as before.
 
-  | lang | segmenter | install |
-  |---|---|---|
-  | `th` | pythainlp `newmm`, plus repairs for cuts inside a syllable and for `ๆ` | `pythainlp` |
-  | `km` | khmer-nltk, plus `ៗ` expansion | `khmer-nltk` |
-  | `my` | pyidaungsu | `pyidaungsu` |
-  | `ja` | fugashi with UniDic-lite. **The model gets UniDic's katakana reading, not the text**, so `words` is katakana | `fugashi unidic-lite` |
-  | `zh`, `zh-Hant` | longest match on the model's own `dicts/zho-{s,t}.tsv` | none |
-  | `yue` | pycantonese | `pycantonese` |
-
   Each backend was chosen by running the model on real sentences, not by counting how many segmented words are
-  dictionary entries. That count favours cutting words into dictionary pieces, and for Thai, Khmer and Burmese those
-  pieces are read differently: loanwords turn into letter names, linking vowels are dropped, and Burmese loses the
-  consonant voicing across word boundaries. The measurements are in
+  dictionary entries. That count favours cutting words into dictionary pieces, and for Thai those pieces are read
+  differently: loanwords turn into letter names and linking vowels are dropped. The measurements are in
   [word_segmentation.py](standard_g2p/word_segmentation.py). Some highlights:
   - **Thai** (439 FLEURS dev clips): the old split gave 4.1 "words" per clip, averaging 29 characters. At
     `max_length=64` the model's IPA stopped partway through each one, so the rest of the clause got no labels at
@@ -326,11 +402,10 @@ other language, and nothing downstream could tell.
     `word_num` indexes it.
 - **Numerals are not verbalized.** `1979` goes to the model as one "word" in every language, and in Thai it comes back
   with no tone.
-- **Excluded languages** (`lang_codes.EXCLUDED_ISO`): `my` (its tone is written as vowel diacritics, so it never
-  reaches the tone layer), `nan` (no segmenter, sandhi), and `tts` (its dictionary is a romanization, not IPA). They
-  keep their language group but did not shape its token list. `my` is the only member of `burmese`, so that language group's list holds
-  only the 4 special tokens and `to_local` turns every Burmese phoneme into `<unk>`. Burmese is segmented now, but
-  its labels are unusable until it is taken off the list and `create_phoneme_inventories.py` is rerun.
+- **Excluded languages** (`lang_codes.EXCLUDED_ISO`): `nan` (no segmenter, sandhi) and `tts` (its dictionary is a
+  romanization, not IPA), and Khmer and Burmese, left out for now to focus on the major languages. They keep their
+  language group but did not shape its token list, so their phonemes can fold to `<unk>`. To bring a language back,
+  remove it from `EXCLUDED_ISO` and rerun `create_phoneme_inventories.py`.
 - **Stress is transcribed for only about a third of the languages.** 34 of the 100 dictionaries (`dicts/`) carry
   stress marks, 33 of them on at least 1% of entries. A missing stress mark means "not annotated", not
   "unstressed", so mask the stress loss for the other languages.

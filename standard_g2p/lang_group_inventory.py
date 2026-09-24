@@ -13,10 +13,12 @@ without rewriting any .gs.json.
 
     from standard_g2p import lang_group_inventory as LGI
 
+    LGI.list_all_lang_groups                      # ['latin', 'vietnamese', ..., 'burmese']
+    LGI.member_langs['latin']                     # ['af', 'ang', ..., 'uz']
     LGI.lang_group_of('pt-BR')                    # 'latin'
     t = LGI.to_local(seg['gold_ph'], 'pt-BR')     # dict: indices + their scope
     t['local_ph']                                 # indices into the language group's token list
-    t['n_local_ph']                               # its token count (213)
+    t['n_local_ph']                               # its token count (208)
     LGI.decode(t['local_ph'], 'pt-BR')            # ['p', 'a', 'ʁ', ...]
 
 `lang` is a single BCP 47 code, as everywhere else. Other spellings lang_codes
@@ -85,10 +87,44 @@ def canonical_lang(lang):
     return code
 
 
+# `list_all_lang_groups` and `member_langs` are module attributes, not
+# functions, but they are built on first access (PEP 562 module __getattr__):
+# a plain constant would read the table at import time, and importing this
+# module must not raise StaleInventoryError before it is used. Each access
+# returns a fresh copy, so editing the result cannot corrupt the table.
+
+def _lang_groups():
+    """Language group names, in table order."""
+    return list(load()['lang_groups'])
+
+
+def _member_langs():
+    """Language group -> the sorted BCP 47 codes routed to it. Includes the
+    excluded languages (lang_codes.EXCLUDED_ISO), exactly as `lang_group_of`
+    routes them; `inventory(g)['excluded_langs']` names those."""
+    out = {g: [] for g in load()['lang_groups']}
+    for code, g in load()['lang_to_lang_group'].items():
+        out[g].append(code)
+    return {g: sorted(codes) for g, codes in out.items()}
+
+
+_LAZY = {'list_all_lang_groups': _lang_groups, 'member_langs': _member_langs}
+
+
+def __getattr__(name):
+    if name in _LAZY:
+        return _LAZY[name]()
+    raise AttributeError(f'module {__name__!r} has no attribute {name!r}')
+
+
+def __dir__():
+    return sorted(list(globals()) + list(_LAZY))
+
+
 def lang_group_of(lang):
     """BCP 47 code -> language group name.
 
-    Excluded languages (lang_codes.EXCLUDED_ISO: 'my', 'nan', 'tts') still get
+    Excluded languages (lang_codes.EXCLUDED_ISO: 'km', 'my', 'nan', 'tts') still get
     their language group, but did not shape its list, so their coverage is not
     guaranteed -- 'burmese' has no usable language and holds only the specials.
     """

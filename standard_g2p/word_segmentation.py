@@ -426,6 +426,28 @@ def has_segmenter(lang):
     return iso not in _lc.NEEDS_WORD_SEGMENTATION_ISO or iso in _BACKENDS
 
 
+def segmenter_name(lang):
+    """Which segmenter `segment` uses for `lang`, with package versions, or
+    None for a space-delimited language (and for one with no backend, which
+    falls back to split_words). Written into every output, because the words
+    and so the labels of these languages depend on the segmenter's own
+    dictionary and change with its version."""
+    iso = _lc.normalize_iso(lang)
+    if iso not in _lc.NEEDS_WORD_SEGMENTATION_ISO or iso not in _BACKENDS:
+        return None
+    packages, _ = _BACKENDS[iso]
+    if packages is None:                              # Mandarin
+        return 'longest match on dicts/%s.tsv' % _to_tag(lang)
+    from importlib import metadata
+    out = []
+    for p in packages.split():
+        try:
+            out.append('%s %s' % (p, metadata.version(p)))
+        except metadata.PackageNotFoundError:
+            out.append('%s (not installed)' % p)
+    return ', '.join(out)
+
+
 def require_segmenter(lang):
     """Import `lang`'s segmenter now, so a missing package fails once, before
     a run, not once per clip. No-op for a space-delimited language."""

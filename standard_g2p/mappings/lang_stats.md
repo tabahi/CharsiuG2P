@@ -218,19 +218,21 @@ of one language (`en`, `en-GB`) are listed separately.
 
 | lang_group | codes | usable | languages |
 |---|---:|---:|---|
-| `latin` | 59 | 59 | af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz vi vi-c vi-s |
+| `latin` | 56 | 56 | af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz |
+| `vietnamese` | 3 | 3 | vi vi-c vi-s |
 | `cyrillic` | 12 | 12 | ady ba be bg hbs hbs-Cyrl kk mk ru sr tt uk |
 | `other_alphabetic` | 7 | 7 | am el grc hy hy-west ka ko |
 | `abjad` | 7 | 7 | ar fa ku sd syc ug ur |
 | `brahmic` | 4 | 4 | hi or sa ta |
 | `cjk` | 4 | 3 | nan yue zh zh-Hant |
-| `thai_khmer` | 3 | 2 | km th tts |
+| `thai_khmer` | 3 | 1 | km th tts |
 | `japanese` | 1 | 1 | ja |
 | `burmese` | 1 | 0 | my |
 
 Excluded for now, orthogonally to the grouping:
 
-- `my`: no usable segmenter (ICU splits inside syllables) and tone is written as diacritics, so the tone layer stays empty
+- `km`: left out for now to focus on the major languages (it is word-segmented, with khmer-nltk)
+- `my`: left out for now to focus on the major languages; also, its tone is written as diacritics, so the tone layer stays empty (it is word-segmented, with pyidaungsu)
 - `nan`: no maintained segmenter, and 70% of its entries are two-character words carrying tone sandhi that per-character input cannot produce
 - `tts`: the dictionary is a romanisation, not IPA, so the model returns romanisation at inference; segmentation will not fix it
 

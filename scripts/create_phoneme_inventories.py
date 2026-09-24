@@ -56,6 +56,7 @@ import os
 import sys
 import json
 import argparse
+import unicodedata
 import collections
 from multiprocessing import Pool
 
@@ -205,6 +206,54 @@ def gs_path_of(clip, metadata_dir):
     return srt.replace('.srt.json', GS_EXT).replace('.srt', GS_EXT)
 
 
+# Words in a FLEURS transcript that are not the language's own. They are
+# phonemized with the language's tag all the same, and the model then reads
+# them with sounds the language does not have: in the zh dev clips, Latin-script
+# names (moldova, gordon, johndroe) gave `b d v ɡ ɫ ɹ ɾ`; in th, names, `super-g`
+# and digits (1, 2008) gave `z ɕ ɡ ɣ ʂ ʐ`. At 0.17% and 0.26% of those
+# languages' phoneme tokens that is above the 1 - COVERAGE cut, so counted as-is
+# they would add 7 tokens to cjk and 6 to thai_khmer that neither language
+# uses. So they are not counted:
+#
+# - a word with a digit, in every language: numerals are not verbalized, so the
+#   model's IPA for them is not the language's;
+# - a word with no letter in the file's dominant script (Latin names in a Han
+#   or Thai transcript, or a bare '-').
+#
+# The dominant script is taken from the file, not from the language group:
+# FLEURS writes Serbian (`sr`) and Serbo-Croatian (`hbs`) in Latin script
+# although their language group is `cyrillic`, and a language-group rule
+# discarded 91% and 100% of their phonemes. In a Latin-script transcript a
+# foreign Latin-script name cannot be told apart and is counted.
+#
+# The labels are unchanged: a sound that only such words produce is not on the
+# list and folds to <unk> when the .gs.json is read.
+
+def char_script(ch):
+    """First word of the Unicode name: 'LATIN', 'CJK', 'THAI', 'KATAKANA'..."""
+    return unicodedata.name(ch, '?').replace('-', ' ').split(' ')[0]
+
+
+def dominant_script(words):
+    """The script most of `words` are written in. Each word votes once, with
+    the script of most of its letters: counting letters instead would let one
+    Latin-script name outweigh several one-character Han words."""
+    votes = collections.Counter()
+    for w in words:
+        c = collections.Counter(char_script(ch) for ch in w if ch.isalpha())
+        if c:
+            votes[c.most_common(1)[0][0]] += 1
+    return votes.most_common(1)[0][0] if votes else None
+
+
+def is_foreign_word(word, script):
+    """True for a word whose phonemes should not shape a token list, given
+    the dominant `script` of the file it comes from."""
+    if any(ch.isdigit() for ch in word):
+        return True
+    return not any(ch.isalpha() and char_script(ch) == script for ch in word)
+
+
 def count_fleurs_locale(args):
     """Every .gs.json of one FLEURS locale.
 
@@ -213,6 +262,13 @@ def count_fleurs_locale(args):
     the outcome split and as a consistency check: if re-mapping them does not
     reproduce `gold_ph`, the file was written against a different inventory
     and is reported as stale rather than silently mixed in.
+
+    Phonemes of a foreign word (`is_foreign_word`) are left out of every
+    count and tallied under `foreign_words` / `foreign_phonemes` instead.
+    `gold_ph` is not aligned with words, so the re-mapped phonemes of the
+    other words are counted rather than `gold_ph` itself. Where the
+    consistency check passes these are the same tokens; a stale segment is
+    counted in the current inventory and reported.
     """
     locale, paths = args
     per_tag = {}
@@ -227,28 +283,42 @@ def count_fleurs_locale(args):
         tag = d.get('g2p_lang') or ''
         r = per_tag.setdefault(tag, {'c': new_counts(), 'files': 0, 'sil': 0,
                                      'stale_segments': 0, 'file_langs': set(),
-                                     'n_tokens': set()})
+                                     'n_tokens': set(), 'foreign_words': 0,
+                                     'foreign_phonemes': 0})
+        script = dominant_script(w for seg in d.get('segments', [])
+                                 for w in seg.get('words', []))
         r['files'] += 1
         r['file_langs'].add(d.get('lang', ''))
         # 'n_tokens' is the pre-rename spelling of 'n_gold_ph'.
         r['n_tokens'].add(d.get('n_gold_ph', d.get('n_tokens')))
         c = r['c']
         for seg in d.get('segments', []):
-            expect = []
-            for ph in seg.get('phonemes', []):
+            words = seg.get('words', [])
+            foreign = [is_foreign_word(w, script) for w in words]
+            r['foreign_words'] += sum(foreign)
+            expect, kept = [], []
+            for ph, wn in zip(seg.get('phonemes', []), seg.get('word_num', [])):
                 if ph == PI.SIL:
                     r['sil'] += 1
                     expect.append(PI.SIL)
                     continue
-                expect.extend(add_segment(c, ph))
+                if wn < len(foreign) and foreign[wn]:
+                    r['foreign_phonemes'] += 1
+                    expect.extend(PI.map_phoneme(ph))
+                    continue
+                toks = add_segment(c, ph)
+                expect.extend(toks)
+                kept.extend(toks)
             got = [PI.TOKENS[i] for i in seg.get('gold_ph', [])]
             if got != expect:
                 r['stale_segments'] += 1
-            c['gold'].update(t for t in got if t != PI.SIL)
+            c['gold'].update(t for t in kept if t != PI.SIL)
     out = {}
     for tag, r in per_tag.items():
         out[tag] = finish(r['c'], files=r['files'], sil=r['sil'],
                           stale_segments=r['stale_segments'],
+                          foreign_words=r['foreign_words'],
+                          foreign_phonemes=r['foreign_phonemes'],
                           file_langs=sorted(r['file_langs']),
                           n_tokens=sorted(x for x in r['n_tokens'] if x is not None))
     return locale, out, missing
@@ -532,6 +602,21 @@ def write_report(langs, notes, lang_groups, inv, coverage, path):
       f'({", ".join(f"{c}: {n}" for c, n in stale.items()) or "none"}). A '
       f'mismatch means the file was written against a different inventory.')
     A('')
+    foreign = {c: m['fleurs'] for c, m in fl.items()
+               if m['fleurs'].get('foreign_phonemes')}
+    if foreign:
+        A('Not counted from `fleurs`: words with a digit, and words with no letter '
+          'in the script the file is mostly written in, such as Latin-script '
+          'names in a Mandarin or Thai transcript (`is_foreign_word`). The model '
+          'reads them with sounds the language does not have.')
+        A('')
+        A('| lang | words | phonemes | share of its phonemes |')
+        A('|---|---:|---:|---:|')
+        for c, f in sorted(foreign.items()):
+            n = f['foreign_phonemes']
+            A(f'| {c} | {f["foreign_words"]:,} | {n:,} | '
+              f'{pct(n, n + f["segments"])} |')
+        A('')
 
     A('## 2. Mapping health per language')
     A('')

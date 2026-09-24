@@ -6,18 +6,7 @@ Everything is counted in the gold inventory's index space (`phoneme_inventory_go
 
 ## 1. Sources
 
-`fleurs`: 16,718 files, 58 languages, from `paths_cache/paths_list_fleurs_dev_1h.json`.
-
-Locales with no `.gs.json` (g2p_task skips languages that need word segmentation; their language groups rely on `dict` alone):
-
-| locale | clips without .gs.json |
-|---|---:|
-| `cmn_hans_cn` | 318 |
-| `ja_jp` | 266 |
-| `km_kh` | 251 |
-| `my_mm` | 234 |
-| `th_th` | 309 |
-| `yue_hant_hk` | 316 |
+`fleurs`: 18,412 files, 64 languages, from `paths_list_fleurs_dev_1h.json`.
 
 **Phonemized with the wrong regional variant.** These files were written from a paths_list that predates the BCP 47 switch: the clip `lang` held a bare ISO code, which g2p_task gives priority over the srt's own tag, so the regional variant was lost. They are counted under the variant actually used. Rebuild the paths_list with `fluers.make_paths_list` and rerun g2p for these locales.
 
@@ -28,6 +17,75 @@ Locales with no `.gs.json` (g2p_task skips languages that need word segmentation
 
 Consistency: re-mapping each file's `phonemes` reproduces its `gold_ph` in every segment except 0 (none). A mismatch means the file was written against a different inventory.
 
+Not counted from `fleurs`: words with a digit, and words with no letter in the script the file is mostly written in, such as Latin-script names in a Mandarin or Thai transcript (`is_foreign_word`). The model reads them with sounds the language does not have.
+
+| lang | words | phonemes | share of its phonemes |
+|---|---:|---:|---:|
+| af | 64 | 513 | 2.56% |
+| am | 65 | 403 | 1.64% |
+| ar | 67 | 374 | 1.04% |
+| az | 91 | 446 | 1.33% |
+| be | 84 | 352 | 1.21% |
+| bg | 174 | 634 | 1.52% |
+| bs | 103 | 882 | 2.77% |
+| ca | 95 | 441 | 1.32% |
+| cs | 87 | 389 | 1.32% |
+| cy | 66 | 241 | 0.97% |
+| da | 98 | 340 | 1.09% |
+| de | 71 | 317 | 0.94% |
+| el | 146 | 685 | 2.18% |
+| en | 105 | 725 | 2.04% |
+| es | 64 | 321 | 0.88% |
+| et | 89 | 611 | 1.91% |
+| fa | 61 | 214 | 0.82% |
+| fi | 66 | 220 | 0.65% |
+| fr | 74 | 330 | 1.32% |
+| ga | 67 | 216 | 0.97% |
+| gl | 112 | 415 | 0.98% |
+| hbs | 105 | 351 | 0.95% |
+| hi | 55 | 278 | 1.25% |
+| hu | 65 | 404 | 1.25% |
+| hy | 105 | 533 | 1.39% |
+| id | 80 | 356 | 1.07% |
+| is | 11 | 64 | 1.71% |
+| it | 75 | 340 | 1.14% |
+| ja | 193 | 853 | 3.12% |
+| ka | 135 | 490 | 1.27% |
+| kk | 77 | 352 | 1.34% |
+| km | 247 | 1,301 | 3.50% |
+| ko | 121 | 694 | 2.92% |
+| ku | 101 | 619 | 1.86% |
+| lb | 111 | 343 | 0.97% |
+| lt | 102 | 398 | 1.10% |
+| mi | 60 | 185 | 1.00% |
+| mk | 104 | 470 | 1.33% |
+| ms | 89 | 302 | 0.84% |
+| mt | 57 | 404 | 1.29% |
+| my | 148 | 655 | 2.27% |
+| nb | 64 | 228 | 1.40% |
+| nl | 50 | 221 | 1.22% |
+| or | 136 | 476 | 1.27% |
+| pl | 66 | 353 | 1.05% |
+| pt | 89 | 410 | 1.32% |
+| ro | 96 | 403 | 0.94% |
+| ru | 114 | 568 | 1.53% |
+| sd | 138 | 923 | 2.84% |
+| sk | 77 | 571 | 1.68% |
+| sl | 88 | 283 | 0.81% |
+| sr | 80 | 684 | 2.41% |
+| sv | 100 | 638 | 1.94% |
+| sw | 51 | 308 | 1.41% |
+| ta | 91 | 421 | 1.12% |
+| th | 221 | 840 | 2.48% |
+| tl | 45 | 208 | 0.72% |
+| tr | 77 | 570 | 1.77% |
+| uk | 96 | 419 | 1.20% |
+| ur | 76 | 573 | 2.06% |
+| uz | 82 | 393 | 1.12% |
+| vi | 96 | 268 | 1.00% |
+| yue | 120 | 524 | 1.66% |
+| zh | 192 | 1,029 | 3.23% |
+
 ## 2. Mapping health per language
 
 How each raw segment reached the inventory, on the primary source (`fleurs` where it exists, else `dict`). `unmapped` is what `.gs.json` lists under `gold_unmapped`; `backoff` is the larger and quieter loss. Flagged (**bold**) at backoff >= 1% or unmapped >= 0.01%.
@@ -35,102 +93,102 @@ How each raw segment reached the inventory, on the primary source (`fleurs` wher
 | lang | lang_group | src | segments | direct | backoff | noise | unmapped | top backoff |
 |---|---|---|---:|---:|---:|---:|---:|---|
 | **ady** | cyrillic | dict | 29,528 | 93.04% | 6.96% | 0.000% | 0.000% | `ʁʷ`>`ʁ` 1.51%, `χʷ`>`χ` 0.78%, `qʷ`>`q` 0.76% |
-| af | latin | fleurs | 20,070 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **am** | other_alphabetic | fleurs | 24,520 | 98.32% | 1.66% | 0.012% | 0.008% | `` k` ``>`k` 1.33%, `` t͡ʃ` ``>`t ʃ` 0.32% |
+| af | latin | fleurs | 19,557 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **am** | other_alphabetic | fleurs | 24,117 | 98.32% | 1.68% | 0.000% | 0.000% | `` k` ``>`k` 1.36%, `` t͡ʃ` ``>`t ʃ` 0.32% |
 | **ang** | latin | dict | 57,635 | 96.14% | 3.86% | 0.000% | 0.000% | `æ͜ɑ`>`æ ɑ` 1.70%, `e͜o`>`e o` 1.50%, `i͜y`>`i y` 0.64% |
-| ar | abjad | fleurs | 35,940 | 99.35% | 0.65% | 0.006% | 0.000% | `dˤ`>`d` 0.45%, `ðˤ`>`ð` 0.19% |
+| ar | abjad | fleurs | 35,566 | 99.35% | 0.65% | 0.000% | 0.000% | `dˤ`>`d` 0.46%, `ðˤ`>`ð` 0.20% |
 | arg | latin | dict | 30,155 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| az | latin | fleurs | 33,540 | 99.99% | 0.00% | 0.009% | 0.000% |  |
+| az | latin | fleurs | 33,094 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | ba | cyrillic | dict | 198,116 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **be** | cyrillic | fleurs | 29,104 | 92.74% | 7.26% | 0.000% | 0.000% | `t̻͡s`>`t͡s` 2.70%, `ʈ͡ʂ`>`ʈ ʂ` 1.32%, `j͡a`>`j a` 1.10% |
-| bg | cyrillic | fleurs | 41,630 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| bs | latin | fleurs | 31,820 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| ca | latin | fleurs | 33,442 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| cs | latin | fleurs | 29,563 | 99.26% | 0.74% | 0.000% | 0.000% | `r̝̥`>`r` 0.74% |
-| **cy** | latin | fleurs | 24,946 | 94.29% | 5.71% | 0.000% | 0.000% | `ɨ̯`>`ɨ` 3.73%, `ɨ̞`>`ɨ` 1.96%, `b̥`>`b` 0.02% |
+| **be** | cyrillic | fleurs | 28,752 | 92.66% | 7.34% | 0.000% | 0.000% | `t̻͡s`>`t͡s` 2.73%, `ʈ͡ʂ`>`ʈ ʂ` 1.33%, `j͡a`>`j a` 1.11% |
+| bg | cyrillic | fleurs | 40,996 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| bs | latin | fleurs | 30,938 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| ca | latin | fleurs | 33,001 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| cs | latin | fleurs | 29,174 | 99.25% | 0.75% | 0.000% | 0.000% | `r̝̥`>`r` 0.75% |
+| **cy** | latin | fleurs | 24,705 | 94.37% | 5.63% | 0.000% | 0.000% | `ɨ̯`>`ɨ` 3.72%, `ɨ̞`>`ɨ` 1.89%, `b̥`>`b` 0.02% |
 | cy-sw | latin | dict | 61,615 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **da** | latin | fleurs | 31,085 | 69.02% | 30.98% | 0.000% | 0.003% | `d̥`>`d` 7.65%, `ɡ̥`>`ɡ` 3.44%, `b̥`>`b` 2.47% |
-| de | latin | fleurs | 33,572 | 99.98% | 0.02% | 0.000% | 0.000% | `ʏ̯`>`ʏ` 0.01%, `ũ̯`>`u` 0.01%, `æ͡ɪ`>`æ ɪ` 0.01% |
+| **da** | latin | fleurs | 30,745 | 69.21% | 30.79% | 0.000% | 0.003% | `d̥`>`d` 7.64%, `ɡ̥`>`ɡ` 3.43%, `b̥`>`b` 2.50% |
+| de | latin | fleurs | 33,255 | 99.98% | 0.02% | 0.000% | 0.000% | `ʏ̯`>`ʏ` 0.01%, `ũ̯`>`u` 0.01%, `æ͡ɪ`>`æ ɪ` 0.01% |
 | egy | latin | dict | 16,264 | 99.64% | 0.36% | 0.006% | 0.000% | `cʼ`>`c` 0.36% |
-| el | other_alphabetic | fleurs | 31,395 | 99.99% | 0.01% | 0.000% | 0.000% | `ĩ̯`>`i` 0.01% |
-| en | latin | fleurs | 35,538 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| el | other_alphabetic | fleurs | 30,710 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| en | latin | fleurs | 34,813 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | en-GB | latin | dict | 496,632 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | enm | latin | dict | 42,604 | 99.99% | 0.01% | 0.000% | 0.000% | `ə̩`>`ə` 0.00%, `ɣ̞`>`ɣ` 0.00% |
 | eo | latin | dict | 185,780 | 100.00% | 0.00% | 0.000% | 0.000% | `ŭ`>`u` 0.00% |
-| es | latin | fleurs | 36,462 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| es | latin | fleurs | 36,141 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | es-419 | latin | dict | 786,016 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | es-MX | latin | dict | 6,106,880 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| et | latin | fleurs | 31,907 | 99.03% | 0.97% | 0.000% | 0.000% | `s^`>`s` 0.41%, `t^`>`t` 0.26%, `æ͡i`>`æ i` 0.23% |
+| et | latin | fleurs | 31,296 | 99.03% | 0.97% | 0.000% | 0.000% | `s^`>`s` 0.42%, `t^`>`t` 0.25%, `æ͡i`>`æ i` 0.23% |
 | **eu** | latin | dict | 241,721 | 98.14% | 1.86% | 0.000% | 0.000% | `t͡s̻`>`t͡s` 1.54%, `t͡s̺`>`t͡s` 0.32% |
-| **fa** | abjad | fleurs | 26,009 | 98.85% | 1.15% | 0.000% | 0.000% | `ɢ`>`ɡ` 1.15%, `ŝ`>`s` 0.00% |
-| fi | latin | fleurs | 33,771 | 99.99% | 0.00% | 0.012% | 0.000% |  |
-| fr | latin | fleurs | 25,087 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **fa** | abjad | fleurs | 25,795 | 98.84% | 1.16% | 0.000% | 0.000% | `ɢ`>`ɡ` 1.16% |
+| fi | latin | fleurs | 33,551 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| fr | latin | fleurs | 24,757 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | **fr-CA** | latin | dict | 1,930,377 | 96.56% | 3.44% | 0.000% | 0.000% | `ũ̯`>`u` 2.66%, `ĩ̯`>`i` 0.77%, `œ̃˞`>`œ` 0.01% |
-| **ga** | latin | fleurs | 22,196 | 74.77% | 25.23% | 0.000% | 0.000% | `ɾˠ`>`ɾ` 5.46%, `sˠ`>`s` 3.69%, `n̪ˠ`>`n` 3.10% |
-| **gl** | latin | fleurs | 42,149 | 99.98% | 0.01% | 0.000% | 0.017% | `ð̝`>`ð` 0.01% |
+| **ga** | latin | fleurs | 21,980 | 74.72% | 25.28% | 0.000% | 0.000% | `ɾˠ`>`ɾ` 5.43%, `sˠ`>`s` 3.72%, `n̪ˠ`>`n` 3.13% |
+| **gl** | latin | fleurs | 41,734 | 99.98% | 0.01% | 0.000% | 0.017% | `ð̝`>`ð` 0.01% |
 | grc | other_alphabetic | dict | 676,968 | 99.26% | 0.74% | 0.000% | 0.000% | `ɛ̌`>`ɛ` 0.30%, `ý`>`y` 0.17%, `ɔ̌`>`ɔ` 0.12% |
-| hbs | cyrillic | fleurs | 36,829 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| hbs | cyrillic | fleurs | 36,478 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | hbs-Cyrl | cyrillic | dict | 179,336 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **hi** | brahmic | fleurs | 22,173 | 98.62% | 1.38% | 0.000% | 0.000% | `ä̃`>`ã` 0.88%, `jᵊ`>`j` 0.24%, `ɾᵊ`>`ɾ` 0.10% |
-| hu | latin | fleurs | 32,196 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| hy | other_alphabetic | fleurs | 38,260 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **hi** | brahmic | fleurs | 21,895 | 98.61% | 1.39% | 0.000% | 0.000% | `ä̃`>`ã` 0.89%, `jᵊ`>`j` 0.25%, `ɾᵊ`>`ɾ` 0.10% |
+| hu | latin | fleurs | 31,792 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| hy | other_alphabetic | fleurs | 37,727 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | hy-west | other_alphabetic | dict | 99,624 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | ia | latin | dict | 37,727 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| id | latin | fleurs | 33,132 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| id | latin | fleurs | 32,776 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | io | latin | dict | 47,763 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| is | latin | fleurs | 3,741 | 99.97% | 0.03% | 0.000% | 0.000% | `mˀ`>`m` 0.03% |
-| it | latin | fleurs | 29,763 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| ja | japanese | dict | 2,123,096 | 99.55% | 0.44% | 0.014% | 0.000% | `ɰᵝ`>`ɰ` 0.41%, `ɯ̟ᵝ`>`ɯ` 0.01%, `ɨᵝ`>`ɨ` 0.00% |
-| ka | other_alphabetic | fleurs | 38,593 | 99.98% | 0.00% | 0.016% | 0.000% |  |
-| kk | cyrillic | fleurs | 26,235 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| km | thai_khmer | dict | 21,518 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **ko** | other_alphabetic | fleurs | 23,736 | 91.99% | 8.01% | 0.000% | 0.000% | `ʌ̹`>`ʌ` 5.81%, `t͈`>`t` 0.68%, `s͈`>`s` 0.47% |
-| **ku** | abjad | fleurs | 33,342 | 98.40% | 1.60% | 0.000% | 0.000% | `ş`>`s` 1.49%, `ḧ`>`h` 0.10%, `ẍ`>`x` 0.01% |
+| is | latin | fleurs | 3,677 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| it | latin | fleurs | 29,423 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **ja** | japanese | fleurs | 26,471 | 98.38% | 1.62% | 0.000% | 0.000% | `ɰᵝ`>`ɰ` 1.62% |
+| ka | other_alphabetic | fleurs | 38,103 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| kk | cyrillic | fleurs | 25,883 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| km | thai_khmer | fleurs | 35,908 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **ko** | other_alphabetic | fleurs | 23,042 | 92.05% | 7.95% | 0.000% | 0.000% | `ʌ̹`>`ʌ` 5.81%, `t͈`>`t` 0.67%, `s͈`>`s` 0.44% |
+| **ku** | abjad | fleurs | 32,723 | 98.37% | 1.63% | 0.000% | 0.000% | `ş`>`s` 1.52%, `ḧ`>`h` 0.10%, `ẍ`>`x` 0.01% |
 | la | latin | dict | 267,620 | 99.83% | 0.17% | 0.000% | 0.000% | `kᶣ`>`k` 0.16%, `ɡᶣ`>`ɡ` 0.02%, `ỹ`>`y` 0.00% |
 | la-eccl | latin | dict | 261,510 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **lb** | latin | fleurs | 35,334 | 95.48% | 4.52% | 0.000% | 0.000% | `ɜ͡ɪ`>`ɜ ɪ` 1.61%, `ə͡ʊ`>`ə ʊ` 0.73%, `u͡ə`>`u ə` 0.61% |
-| **lt** | latin | fleurs | 36,083 | 99.71% | 0.27% | 0.000% | 0.014% | `ä̌`>`ǎ` 0.11%, `ɪ̂`>`ɪ` 0.06%, `s̪ʲ`>`sʲ` 0.03% |
-| mi | latin | fleurs | 18,472 | 99.98% | 0.00% | 0.016% | 0.000% |  |
-| mk | cyrillic | fleurs | 35,358 | 99.99% | 0.01% | 0.000% | 0.000% | `ɫ̩`>`ɫ` 0.01% |
-| ms | latin | fleurs | 35,996 | 99.94% | 0.01% | 0.047% | 0.008% | `dˤ`>`d` 0.01% |
-| **mt** | latin | fleurs | 31,197 | 98.05% | 1.95% | 0.000% | 0.000% | `i͡u`>`i u` 1.32%, `e͡u`>`e u` 0.34%, `i͡e`>`i e` 0.28% |
-| **my** | burmese | dict | 28,846 | 92.74% | 7.26% | 0.000% | 0.000% | `a̰`>`a` 2.92%, `ɪ̀`>`ɪ` 1.35%, `ḭ`>`i` 0.76% |
+| **lb** | latin | fleurs | 34,991 | 95.45% | 4.55% | 0.000% | 0.000% | `ɜ͡ɪ`>`ɜ ɪ` 1.62%, `ə͡ʊ`>`ə ʊ` 0.73%, `u͡ə`>`u ə` 0.61% |
+| lt | latin | fleurs | 35,685 | 99.85% | 0.15% | 0.000% | 0.000% | `ä̌`>`ǎ` 0.08%, `ä̂`>`â` 0.03%, `hʲ`>`h` 0.01% |
+| mi | latin | fleurs | 18,287 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| mk | cyrillic | fleurs | 34,888 | 99.99% | 0.01% | 0.000% | 0.000% | `ɫ̩`>`ɫ` 0.01% |
+| ms | latin | fleurs | 35,694 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **mt** | latin | fleurs | 30,793 | 98.03% | 1.97% | 0.000% | 0.000% | `i͡u`>`i u` 1.33%, `e͡u`>`e u` 0.34%, `i͡e`>`i e` 0.28% |
+| **my** | burmese | fleurs | 28,204 | 90.59% | 9.41% | 0.000% | 0.000% | `a̰`>`a` 2.23%, `ɪ̀`>`ɪ` 1.75%, `ḭ`>`i` 1.02% |
 | nan | cjk | dict | 251,699 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| nb | latin | fleurs | 16,228 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| nl | latin | fleurs | 18,170 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| or | brahmic | fleurs | 37,401 | 99.98% | 0.00% | 0.019% | 0.000% |  |
+| nb | latin | fleurs | 16,000 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| nl | latin | fleurs | 17,949 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| or | brahmic | fleurs | 36,925 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | pap | latin | dict | 56,912 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| pl | latin | fleurs | 33,750 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| pt | latin | fleurs | 31,127 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| pl | latin | fleurs | 33,397 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| pt | latin | fleurs | 30,717 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | pt-BR | latin | dict | 74,997 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| **ro** | latin | fleurs | 42,678 | 98.15% | 1.84% | 0.000% | 0.007% | `ĕ`>`e` 0.74%, `ŏ`>`o` 0.52%, `ʃ̩`>`ʃ` 0.22% |
-| ru | cyrillic | fleurs | 37,166 | 99.99% | 0.00% | 0.000% | 0.008% |  |
+| **ro** | latin | fleurs | 42,275 | 98.15% | 1.85% | 0.000% | 0.000% | `ĕ`>`e` 0.75%, `ŏ`>`o` 0.53%, `ʃ̩`>`ʃ` 0.22% |
+| ru | cyrillic | fleurs | 36,598 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | **sa** | brahmic | dict | 41,503 | 95.83% | 4.17% | 0.000% | 0.000% | `ɐ́`>`ɐ` 3.24%, `ɑ́`>`ɑ` 0.65%, `ŕ̩`>`r` 0.14% |
-| sd | abjad | fleurs | 32,479 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| sd | abjad | fleurs | 31,556 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | se | latin | dict | 22,003 | 100.00% | 0.00% | 0.000% | 0.000% | `j̥`>`j` 0.00% |
-| sk | latin | fleurs | 33,970 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| sl | latin | fleurs | 35,143 | 99.72% | 0.28% | 0.000% | 0.000% | `ə̀`>`ə` 0.14%, `ə́`>`ə` 0.14% |
+| sk | latin | fleurs | 33,399 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| sl | latin | fleurs | 34,860 | 99.74% | 0.26% | 0.000% | 0.000% | `ə̀`>`ə` 0.14%, `ə́`>`ə` 0.12% |
 | sq | latin | dict | 438,258 | 99.14% | 0.86% | 0.000% | 0.000% | `l͡l`>`l l` 0.45%, `ɔ͡ɪ`>`ɔ ɪ` 0.29%, `y͡ɛ`>`y ɛ` 0.12% |
-| sr | cyrillic | fleurs | 28,346 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| sv | latin | fleurs | 32,850 | 99.92% | 0.08% | 0.000% | 0.000% | `ĩ̯`>`i` 0.02%, `ɠ`>`ɡ` 0.02%, `e͜o`>`e o` 0.01% |
-| **sw** | latin | fleurs | 21,786 | 92.40% | 7.53% | 0.046% | 0.028% | `ɗ`>`d` 1.88%, `ɓ`>`b` 1.75%, `ʄ`>`ɟ` 1.14% |
+| sr | cyrillic | fleurs | 27,662 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| sv | latin | fleurs | 32,212 | 99.92% | 0.08% | 0.000% | 0.000% | `ĩ̯`>`i` 0.02%, `ɠ`>`ɡ` 0.02%, `e͜o`>`e o` 0.01% |
+| **sw** | latin | fleurs | 21,478 | 92.36% | 7.64% | 0.000% | 0.000% | `ɗ`>`d` 1.90%, `ɓ`>`b` 1.77%, `ʄ`>`ɟ` 1.15% |
 | syc | abjad | dict | 41,593 | 99.97% | 0.03% | 0.000% | 0.000% | `ɛ̆`>`ɛ` 0.02%, `p˭`>`p` 0.00% |
-| **ta** | brahmic | fleurs | 37,460 | 95.77% | 4.23% | 0.000% | 0.000% | `ɾ̪`>`ɾ` 4.22%, `t̪ˠ`>`t` 0.01%, `d̪ˠ`>`d` 0.01% |
-| th | thai_khmer | dict | 89,295 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| **ta** | brahmic | fleurs | 37,039 | 95.75% | 4.25% | 0.000% | 0.000% | `ɾ̪`>`ɾ` 4.25% |
+| th | thai_khmer | fleurs | 33,010 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | tk | latin | dict | 122,234 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| tl | latin | fleurs | 29,032 | 99.99% | 0.01% | 0.000% | 0.000% | `æ͜ɑ`>`æ ɑ` 0.01% |
-| tr | latin | fleurs | 32,157 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| tl | latin | fleurs | 28,824 | 99.99% | 0.01% | 0.000% | 0.000% | `æ͜ɑ`>`æ ɑ` 0.01% |
+| tr | latin | fleurs | 31,587 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | tt | cyrillic | dict | 528,628 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | tts | thai_khmer | dict | 10,274 | 99.99% | 0.00% | 0.010% | 0.000% |  |
 | ug | abjad | dict | 35,242 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| uk | cyrillic | fleurs | 34,875 | 99.87% | 0.13% | 0.000% | 0.000% | `ɦʲ`>`ɦ` 0.13% |
-| ur | abjad | fleurs | 27,856 | 99.99% | 0.00% | 0.000% | 0.007% |  |
-| uz | latin | fleurs | 35,147 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| vi | latin | fleurs | 26,850 | 99.99% | 0.00% | 0.011% | 0.004% |  |
-| vi-c | latin | dict | 502,576 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| vi-s | latin | dict | 472,923 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| yue | cjk | dict | 377,482 | 100.00% | 0.00% | 0.000% | 0.000% |  |
-| zh | cjk | dict | 253,814 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| uk | cyrillic | fleurs | 34,456 | 99.87% | 0.13% | 0.000% | 0.000% | `ɦʲ`>`ɦ` 0.13% |
+| ur | abjad | fleurs | 27,283 | 99.99% | 0.00% | 0.000% | 0.007% |  |
+| uz | latin | fleurs | 34,754 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| vi | vietnamese | fleurs | 26,582 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| vi-c | vietnamese | dict | 502,576 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| vi-s | vietnamese | dict | 472,923 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| yue | cjk | fleurs | 31,084 | 100.00% | 0.00% | 0.000% | 0.000% |  |
+| zh | cjk | fleurs | 30,861 | 100.00% | 0.00% | 0.000% | 0.000% |  |
 | zh-Hant | cjk | dict | 267,604 | 100.00% | 0.00% | 0.001% | 0.000% |  |
 
 ## 3. Inventory candidates
@@ -139,46 +197,46 @@ Raw segments the gold inventory does not hold, ranked by their largest share of 
 
 | segment | now maps to | max share | in | total | languages |
 |---|---|---:|---|---:|---|
-| `d̥` | `d` | 7.65% | da | 2,378 | da |
-| `ʌ̹` | `ʌ` | 5.81% | ko | 1,378 | ko |
-| `ɾˠ` | `ɾ` | 5.46% | ga | 1,211 | ga |
-| `ɾ̪` | `ɾ` | 4.22% | ta | 1,579 | ta |
-| `ɨ̯` | `ɨ` | 3.73% | cy | 930 | cy |
-| `sˠ` | `s` | 3.69% | ga | 818 | ga |
-| `ɡ̥` | `ɡ` | 3.44% | da | 1,070 | da |
+| `d̥` | `d` | 7.64% | da | 2,348 | da |
+| `ʌ̹` | `ʌ` | 5.81% | ko | 1,339 | ko |
+| `ɾˠ` | `ɾ` | 5.43% | ga | 1,194 | ga |
+| `ɾ̪` | `ɾ` | 4.25% | ta | 1,573 | ta |
+| `sˠ` | `s` | 3.72% | ga | 818 | ga |
+| `ɨ̯` | `ɨ` | 3.72% | cy | 919 | cy |
+| `ɡ̥` | `ɡ` | 3.43% | da | 1,055 | da |
 | `ɐ́` | `ɐ` | 3.24% | sa | 1,346 | sa |
-| `n̪ˠ` | `n` | 3.10% | ga | 688 | ga |
-| `t̪ˠ` | `t` | 2.99% | ga | 666 | ga ta |
-| `t̻͡s` | `t͡s` | 2.70% | be | 787 | be |
+| `n̪ˠ` | `n` | 3.13% | ga | 688 | ga |
+| `t̪ˠ` | `t` | 2.96% | ga | 651 | ga |
+| `t̻͡s` | `t͡s` | 2.73% | be | 785 | be |
+| `nˠ` | `n` | 2.66% | ga | 585 | ga |
 | `ũ̯` | `u` | 2.66% | fr-CA | 51,302 | de fr-CA sv |
-| `nˠ` | `n` | 2.64% | ga | 586 | ga |
-| `b̥` | `b` | 2.47% | da | 774 | cy da |
-| `tˢ` | `t` | 2.44% | da | 757 | da |
-| `eˀ` | `e` | 2.10% | da | 653 | da |
-| `ɨ̞` | `ɨ` | 1.96% | cy | 489 | cy |
-| `ɗ` | `d` | 1.88% | sw | 411 | sv sw |
-| `ɓ` | `b` | 1.75% | sw | 383 | sv sw |
+| `b̥` | `b` | 2.50% | da | 774 | cy da |
+| `tˢ` | `t` | 2.36% | da | 727 | da |
+| `eˀ` | `e` | 1.95% | da | 601 | da |
+| `ɗ` | `d` | 1.90% | sw | 411 | sv sw |
+| `ɨ̞` | `ɨ` | 1.89% | cy | 466 | cy |
+| `ɓ` | `b` | 1.77% | sw | 383 | sv sw |
 | `æ͜ɑ` | `æ ɑ` | 1.70% | ang | 979 | ang tl |
-| `ɜ͡ɪ` | `ɜ ɪ` | 1.61% | lb | 568 | lb |
+| `ɜ͡ɪ` | `ɜ ɪ` | 1.62% | lb | 568 | lb |
+| `ɰᵝ` | `ɰ` | 1.62% | ja | 429 | ja |
 | `t͡s̻` | `t͡s` | 1.54% | eu | 3,715 | eu |
-| `d̪ˠ` | `d` | 1.52% | ga | 339 | ga ta |
+| `d̪ˠ` | `d` | 1.53% | ga | 337 | ga |
+| `ş` | `s` | 1.52% | ku | 498 | ku |
 | `ʁʷ` | `ʁ` | 1.51% | ady | 445 | ady |
 | `e͜o` | `e o` | 1.50% | ang | 868 | ang sv |
-| `ş` | `s` | 1.49% | ku | 498 | ku |
-| `mˠ` | `m` | 1.37% | ga | 305 | ga |
-| `` k` `` | `k` | 1.33% | am | 327 | am |
-| `ɔˀ` | `ɔ` | 1.32% | da | 411 | da |
-| `i͡u` | `i u` | 1.32% | mt | 411 | mt |
-| `ʈ͡ʂ` | `ʈ ʂ` | 1.32% | be | 383 | be |
-| `nˀ` | `n` | 1.27% | da | 395 | da |
-| `lˠ` | `l` | 1.24% | ga | 276 | ga |
-| `iˀ` | `i` | 1.23% | da | 383 | da |
-| `ɢ` | `ɡ` | 1.15% | fa | 298 | fa |
-| `ʄ` | `ɟ` | 1.14% | sw | 248 | sw |
-| `j͡a` | `j a` | 1.10% | be | 320 | be |
-| `ɐ̯ˀ` | `ɐ` | 0.98% | da | 305 | da |
-| `ɭʲ` | `ɭ` | 0.97% | be | 281 | be |
-| `l̪ˠ` | `l` | 0.94% | ga | 208 | ga |
+| `mˠ` | `m` | 1.37% | ga | 301 | ga |
+| `` k` `` | `k` | 1.36% | am | 327 | am |
+| `ɔˀ` | `ɔ` | 1.34% | da | 411 | da |
+| `i͡u` | `i u` | 1.33% | mt | 411 | mt |
+| `ʈ͡ʂ` | `ʈ ʂ` | 1.33% | be | 383 | be |
+| `nˀ` | `n` | 1.28% | da | 395 | da |
+| `lˠ` | `l` | 1.25% | ga | 275 | ga |
+| `iˀ` | `i` | 1.19% | da | 365 | da |
+| `ɢ` | `ɡ` | 1.16% | fa | 298 | fa |
+| `ʄ` | `ɟ` | 1.15% | sw | 248 | sw |
+| `j͡a` | `j a` | 1.11% | be | 320 | be |
+| `ɐ̯ˀ` | `ɐ` | 0.99% | da | 305 | da |
+| `ɭʲ` | `ɭ` | 0.98% | be | 281 | be |
 
 ## 4. Unmapped segments (`gold_unmapped`)
 
@@ -186,13 +244,9 @@ Every segment that reached `<unk>`, both sources, all languages.
 
 | segment | fleurs | dict | languages |
 |---|---:|---:|---|
-| `9` | 12 | 0 | am ro sw vi |
 | `u̝` | 5 | 0 | gl |
-| `ɪ̌` | 5 | 0 | lt |
 | `ǀ` | 0 | 4 | mk |
 | `i̝` | 2 | 1 | gl |
-| `ɡʼ` | 3 | 0 | ms |
-| `ɨʲ` | 3 | 0 | ru |
 | `ا` | 0 | 3 | fa |
 | `mʰ` | 2 | 0 | ur |
 | `ل` | 0 | 2 | fa |
@@ -213,233 +267,279 @@ Per language and source, the most frequent gold phonemes up to 99.9% of its toke
 
 | lang_group | langs | tokens | worst | dict only | excluded |
 |---|---:|---:|---|---:|---|
-| `latin` | 59 | 213 | 99.94% lt:dict | 31 | - |
-| `cyrillic` | 12 | 128 | 99.95% sr:dict | 17 | - |
-| `other_alphabetic` | 7 | 107 | 99.92% grc:dict | 15 | - |
-| `abjad` | 7 | 91 | 99.96% fa:fleurs | 8 | - |
-| `brahmic` | 4 | 98 | 99.96% sa:dict | 12 | - |
-| `cjk` | 3 | 48 | 100.00% yue:dict | 44 | nan |
-| `thai_khmer` | 2 | 47 | 99.98% km:dict | 43 | tts |
-| `japanese` | 1 | 28 | 99.94% ja:dict | 24 | - |
+| `latin` | 56 | 208 | 99.94% lt:dict | 32 | - |
+| `vietnamese` | 3 | 45 | 99.94% vi:fleurs | 3 | - |
+| `cyrillic` | 12 | 127 | 99.95% sr:dict | 18 | - |
+| `other_alphabetic` | 7 | 104 | 99.92% grc:dict | 17 | - |
+| `abjad` | 7 | 90 | 99.95% sd:fleurs | 10 | - |
+| `brahmic` | 4 | 96 | 99.96% sa:dict | 15 | - |
+| `cjk` | 3 | 48 | 100.00% yue:dict | 2 | nan |
+| `thai_khmer` | 1 | 38 | 100.00% th:dict | 0 | km tts |
+| `japanese` | 1 | 28 | 99.94% ja:dict | 0 | - |
 | `burmese` | 0 | 4 | - | 0 | my |
 
 ### `latin`
 
-Latin script, space-delimited, no tone. The default path. Languages: af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz vi vi-c vi-s.
+Latin script, space-delimited, no tone. The default path. Languages: af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz.
 
 `fleurs` share is of the language group's pooled FLEURS output; `langs` is how many member languages emit the phoneme there. `selected by` names every language:source whose coverage needed it.
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | 8.109% | 37 | af:dict af:fleurs arg:dict az:dict az:fleurs bs:dict +83 |
-| 5 | 5 | `s` | 4.935% | 37 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +86 |
-| 6 | 6 | `i` | 5.678% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +88 |
-| 7 | 7 | `e` | 4.741% | 34 | af:fleurs ang:dict arg:dict az:dict az:fleurs bs:dict +80 |
-| 8 | 8 | `n` | 5.974% | 37 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +90 |
-| 9 | 9 | `t` | 5.759% | 37 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +88 |
-| 10 | 10 | `l` | 3.921% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +86 |
-| 11 | 11 | `k` | 3.545% | 37 | af:dict af:fleurs ang:dict arg:dict bs:dict bs:fleurs +88 |
-| 12 | 12 | `o` | 3.423% | 34 | ang:dict arg:dict az:dict az:fleurs bs:dict bs:fleurs +81 |
-| 13 | 13 | `r` | 2.824% | 29 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +68 |
-| 14 | 14 | `m` | 3.135% | 37 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +90 |
-| 15 | 15 | `d` | 3.380% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +86 |
-| 16 | 16 | `u` | 2.868% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +87 |
-| 17 | 17 | `ɪ` | 2.103% | 20 | af:dict af:fleurs bs:dict bs:fleurs cs:dict cs:fleurs +37 |
-| 18 | 18 | `ɾ` | 1.664% | 18 | arg:dict az:dict az:fleurs bs:dict bs:fleurs ca:dict +31 |
-| 19 | 19 | `f` | 1.122% | 37 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +87 |
-| 20 | 20 | `j` | 1.927% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +87 |
-| 21 | 21 | `ə` | 3.251% | 21 | af:dict af:fleurs bs:dict bs:fleurs ca:dict ca:fleurs +41 |
-| 22 | 22 | `b` | 1.531% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +87 |
-| 23 | 23 | `p` | 2.132% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +89 |
-| 24 | 24 | `ɛ` | 2.970% | 31 | af:dict af:fleurs arg:dict bs:dict bs:fleurs ca:dict +62 |
-| 25 | 25 | `w` | 0.648% | 28 | af:dict af:fleurs ang:dict arg:dict ca:dict ca:fleurs +59 |
-| 26 | 26 | `ɑ` | 1.277% | 18 | af:dict af:fleurs ang:dict bs:dict bs:fleurs da:dict +32 |
-| 27 | 27 | `v` | 1.400% | 31 | af:dict af:fleurs az:dict az:fleurs bs:dict bs:fleurs +67 |
-| 28 | 28 | `ɡ` | 1.144% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +81 |
-| 29 | 29 | `z` | 1.048% | 34 | af:dict az:dict az:fleurs bs:dict bs:fleurs ca:dict +63 |
-| 30 | 30 | `ʔ` | 0.493% | 10 | de:dict de:fleurs egy:dict ms:dict ms:fleurs sv:fleurs +5 |
-| 31 | 31 | `ɔ` | 1.510% | 25 | af:dict af:fleurs arg:dict ca:dict ca:fleurs cy-sw:dict +53 |
-| 32 | 32 | `ŋ` | 0.844% | 29 | af:dict af:fleurs bs:dict bs:fleurs ca:dict ca:fleurs +59 |
-| 33 | 33 | `ʊ` | 0.689% | 16 | af:dict af:fleurs bs:dict bs:fleurs cy-sw:dict cy:dict +32 |
-| 34 | 34 | `ʃ` | 1.009% | 34 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +70 |
-| 35 | 35 | `ɯ` | 0.328% | 5 | az:dict az:fleurs tk:dict tr:dict tr:fleurs vi-c:dict +3 |
-| 36 | 36 | `h` | 0.963% | 33 | af:dict af:fleurs ang:dict az:dict az:fleurs bs:dict +64 |
-| 37 | 37 | `ʁ` | 0.383% | 7 | da:dict da:fleurs de:dict de:fleurs fr-CA:dict fr:dict +10 |
-| 38 | 38 | `ɐ` | 1.257% | 8 | af:dict af:fleurs da:dict da:fleurs de:dict de:fleurs +12 |
-| 39 | 39 | `x` | 0.448% | 22 | af:dict af:fleurs ang:dict az:dict az:fleurs bs:dict +38 |
-| 40 | 40 | `ð` | 0.442% | 11 | arg:dict cy-sw:dict cy:dict cy:fleurs da:dict da:fleurs +15 |
-| 41 | 41 | `æ` | 1.474% | 16 | af:dict af:fleurs ang:dict az:dict az:fleurs bs:dict +25 |
-| 42 | 42 | `β` | 0.113% | 4 | arg:dict egy:dict es-MX:dict es:dict es:fleurs eu:dict +6 |
-| 43 | 43 | `ɫ` | 0.481% | 6 | az:dict az:fleurs en:dict en:fleurs lt:dict lt:fleurs +8 |
-| 44 | 44 | `q` | 0.069% | 2 | tk:dict uz:dict uz:fleurs |
-| 45 | 45 | `ʒ` | 0.257% | 23 | az:dict az:fleurs bs:dict bs:fleurs ca:dict ca:fleurs +37 |
-| 46 | 46 | `ʂ` | 0.075% | 3 | nb:dict nb:fleurs pl:dict pl:fleurs sv:dict sv:fleurs +2 |
-| 47 | 47 | `ɣ` | 0.111% | 11 | arg:dict az:dict az:fleurs enm:dict es-MX:dict es:dict +18 |
-| 48 | 48 | `y` | 0.725% | 18 | af:dict af:fleurs ang:dict az:dict az:fleurs da:dict +32 |
-| 49 | 49 | `ɨ` | 0.525% | 5 | cy:dict cy:fleurs ga:dict pl:dict pl:fleurs pt:dict +4 |
+| 4 | 4 | `a` | 8.201% | 35 | af:dict af:fleurs arg:dict az:dict az:fleurs bs:dict +78 |
+| 5 | 5 | `s` | 4.990% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +82 |
+| 6 | 6 | `i` | 5.652% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +84 |
+| 7 | 7 | `e` | 4.733% | 32 | af:fleurs ang:dict arg:dict az:dict az:fleurs bs:dict +76 |
+| 8 | 8 | `n` | 6.030% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +86 |
+| 9 | 9 | `t` | 5.693% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +84 |
+| 10 | 10 | `l` | 4.016% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +82 |
+| 11 | 11 | `k` | 3.469% | 36 | af:dict af:fleurs ang:dict arg:dict bs:dict bs:fleurs +84 |
+| 12 | 12 | `o` | 3.443% | 33 | ang:dict arg:dict az:dict az:fleurs bs:dict bs:fleurs +77 |
+| 13 | 13 | `r` | 2.874% | 27 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +67 |
+| 14 | 14 | `m` | 3.153% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +86 |
+| 15 | 15 | `d` | 3.390% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +82 |
+| 16 | 16 | `u` | 2.896% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +83 |
+| 17 | 17 | `ɪ` | 2.147% | 20 | af:dict af:fleurs bs:dict bs:fleurs cs:dict cs:fleurs +37 |
+| 18 | 18 | `ɾ` | 1.690% | 15 | arg:dict az:dict az:fleurs bs:dict bs:fleurs ca:dict +31 |
+| 19 | 19 | `f` | 1.138% | 36 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +83 |
+| 20 | 20 | `j` | 1.882% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +83 |
+| 21 | 21 | `ə` | 3.202% | 20 | af:dict af:fleurs bs:dict bs:fleurs ca:dict ca:fleurs +37 |
+| 22 | 22 | `b` | 1.538% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +83 |
+| 23 | 23 | `p` | 2.192% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +85 |
+| 24 | 24 | `ɛ` | 2.915% | 29 | af:dict af:fleurs arg:dict bs:dict bs:fleurs ca:dict +58 |
+| 25 | 25 | `w` | 0.576% | 27 | af:dict af:fleurs ang:dict arg:dict ca:dict ca:fleurs +55 |
+| 26 | 26 | `ɑ` | 1.318% | 17 | af:dict af:fleurs ang:dict bs:dict bs:fleurs da:dict +31 |
+| 27 | 27 | `v` | 1.388% | 30 | af:dict af:fleurs az:dict az:fleurs bs:dict bs:fleurs +65 |
+| 28 | 28 | `ɡ` | 1.178% | 35 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +81 |
+| 29 | 29 | `z` | 1.020% | 33 | af:dict az:dict az:fleurs bs:dict bs:fleurs ca:dict +61 |
+| 30 | 30 | `ʔ` | 0.423% | 8 | de:dict de:fleurs egy:dict ms:dict ms:fleurs sv:fleurs +3 |
+| 31 | 31 | `ɔ` | 1.488% | 23 | af:dict af:fleurs arg:dict ca:dict ca:fleurs cy-sw:dict +49 |
+| 32 | 32 | `ŋ` | 0.762% | 28 | af:dict af:fleurs bs:dict bs:fleurs ca:dict ca:fleurs +55 |
+| 33 | 33 | `ʊ` | 0.705% | 16 | af:dict af:fleurs bs:dict bs:fleurs cy-sw:dict cy:dict +32 |
+| 34 | 34 | `ʃ` | 1.033% | 32 | af:dict af:fleurs ang:dict arg:dict az:dict az:fleurs +69 |
+| 35 | 35 | `ɯ` | 0.249% | 2 | az:dict az:fleurs tk:dict tr:dict tr:fleurs |
+| 36 | 36 | `h` | 0.956% | 32 | af:dict af:fleurs ang:dict az:dict az:fleurs bs:dict +60 |
+| 37 | 37 | `ʁ` | 0.396% | 7 | da:dict da:fleurs de:dict de:fleurs fr-CA:dict fr:dict +10 |
+| 38 | 38 | `ɐ` | 1.301% | 8 | af:dict af:fleurs da:dict da:fleurs de:dict de:fleurs +12 |
+| 39 | 39 | `x` | 0.433% | 21 | af:dict af:fleurs ang:dict az:dict az:fleurs bs:dict +34 |
+| 40 | 40 | `ð` | 0.458% | 9 | arg:dict cy-sw:dict cy:dict cy:fleurs da:dict da:fleurs +15 |
+| 41 | 41 | `æ` | 1.525% | 16 | af:dict af:fleurs ang:dict az:dict az:fleurs bs:dict +24 |
+| 42 | 42 | `β` | 0.116% | 4 | arg:dict egy:dict es-MX:dict es:dict es:fleurs eu:dict +6 |
+| 43 | 43 | `ɫ` | 0.493% | 6 | az:dict az:fleurs en:dict en:fleurs lt:dict pt:dict +7 |
+| 44 | 44 | `q` | 0.071% | 2 | tk:dict uz:dict uz:fleurs |
+| 45 | 45 | `ʒ` | 0.265% | 23 | az:dict az:fleurs bs:dict bs:fleurs ca:dict ca:fleurs +37 |
+| 46 | 46 | `ʂ` | 0.078% | 3 | nb:dict nb:fleurs pl:dict pl:fleurs sv:dict sv:fleurs |
+| 47 | 47 | `ɣ` | 0.104% | 9 | arg:dict az:dict enm:dict es-MX:dict es:dict es:fleurs +13 |
+| 48 | 48 | `y` | 0.745% | 18 | af:dict af:fleurs ang:dict az:dict az:fleurs da:dict +30 |
+| 49 | 49 | `ɨ` | 0.538% | 5 | cy:dict cy:fleurs ga:dict pl:dict pl:fleurs pt:dict +4 |
 | 50 | 50 | `ʕ` | 0.000% | 0 | egy:dict |
 | 51 | 51 | `ħ` | 0.000% | 0 | egy:dict gl:dict |
-| 52 | 52 | `ɕ` | 0.089% | 7 | da:dict da:fleurs lb:dict lb:fleurs lt:fleurs pl:dict +3 |
-| 53 | 53 | `ɳ` | 0.059% | 3 | lb:dict lb:fleurs nb:dict nb:fleurs sv:dict sv:fleurs |
-| 54 | 54 | `ɲ` | 0.369% | 32 | arg:dict bs:dict bs:fleurs ca:dict ca:fleurs cs:dict +45 |
-| 55 | 55 | `ɵ` | 0.059% | 2 | et:dict et:fleurs sv:dict sv:fleurs |
-| 56 | 56 | `t͡s` | 0.269% | 13 | az:dict az:fleurs bs:dict bs:fleurs cs:dict cs:fleurs +24 |
-| 57 | 57 | `ʏ` | 0.050% | 6 | de:dict de:fleurs fr-CA:dict is:dict is:fleurs la:dict +7 |
-| 58 | 58 | `ø` | 0.191% | 16 | af:dict af:fleurs da:dict da:fleurs de:dict de:fleurs +22 |
-| 59 | 59 | `œ` | 0.123% | 17 | af:dict af:fleurs az:dict az:fleurs da:dict da:fleurs +17 |
-| 60 | 60 | `ʉ` | 0.048% | 2 | nb:dict nb:fleurs sv:dict sv:fleurs |
-| 61 | 63 | `tʲ` | 0.203% | 6 | cs:fleurs ga:dict ga:fleurs lt:dict lt:fleurs ro:fleurs +2 |
-| 62 | 64 | `lʲ` | 0.125% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
-| 63 | 65 | `sʲ` | 0.083% | 2 | ga:dict lt:dict lt:fleurs ro:dict ro:fleurs |
-| 64 | 66 | `nʲ` | 0.122% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs ro:fleurs |
-| 65 | 68 | `ɑ̃` | 0.085% | 5 | af:dict af:fleurs fr-CA:dict fr:dict fr:fleurs lb:dict +2 |
-| 66 | 69 | `ʎ` | 0.104% | 9 | arg:dict bs:dict bs:fleurs ca:dict ca:fleurs es-419:dict +17 |
-| 67 | 70 | `ɒ` | 0.310% | 3 | da:dict da:fleurs en-GB:dict hu:dict hu:fleurs sv:fleurs |
-| 68 | 71 | `ʈ` | 0.017% | 2 | nb:dict nb:fleurs sv:dict sv:fleurs vi-c:dict vi-s:dict |
-| 69 | 72 | `ɹ` | 0.225% | 2 | da:dict en-GB:dict en:dict en:fleurs mt:dict mt:fleurs +1 |
-| 70 | 73 | `rʲ` | 0.060% | 4 | ga:dict lt:dict lt:fleurs pl:dict pl:fleurs ro:dict +1 |
-| 71 | 74 | `t͡ʃ` | 0.299% | 18 | ang:dict arg:dict az:dict az:fleurs bs:dict bs:fleurs +39 |
-| 72 | 76 | `tʰ` | 0.053% | 4 | arg:dict is:dict is:fleurs se:dict sv:fleurs vi-c:dict +3 |
-| 73 | 77 | `ɐ̯` | 0.090% | 3 | da:dict da:fleurs de:dict de:fleurs sv:fleurs |
-| 74 | 78 | `t͡ɕ` | 0.052% | 3 | bs:dict bs:fleurs pl:dict pl:fleurs sq:dict sv:fleurs |
-| 75 | 79 | `θ` | 0.115% | 12 | ang:dict arg:dict cy-sw:dict cy:dict cy:fleurs en-GB:dict +12 |
+| 52 | 52 | `ɕ` | 0.088% | 4 | da:dict da:fleurs lb:dict lb:fleurs pl:dict pl:fleurs +1 |
+| 53 | 53 | `ɳ` | 0.061% | 3 | lb:dict lb:fleurs nb:dict nb:fleurs sv:dict sv:fleurs |
+| 54 | 54 | `ɲ` | 0.350% | 29 | arg:dict bs:dict bs:fleurs ca:dict ca:fleurs cs:dict +40 |
+| 55 | 55 | `ɵ` | 0.061% | 2 | et:dict et:fleurs sv:dict sv:fleurs |
+| 56 | 56 | `t͡s` | 0.276% | 12 | az:dict az:fleurs bs:dict bs:fleurs cs:dict cs:fleurs +24 |
+| 57 | 57 | `ʏ` | 0.052% | 6 | de:dict de:fleurs fr-CA:dict is:dict is:fleurs la:dict +7 |
+| 58 | 58 | `ø` | 0.198% | 14 | af:dict af:fleurs da:dict da:fleurs de:dict de:fleurs +22 |
+| 59 | 59 | `œ` | 0.127% | 16 | af:dict af:fleurs az:dict az:fleurs da:dict da:fleurs +17 |
+| 60 | 60 | `ʉ` | 0.050% | 2 | nb:dict nb:fleurs sv:dict sv:fleurs |
+| 61 | 63 | `tʲ` | 0.207% | 4 | ga:dict ga:fleurs lt:dict lt:fleurs sk:dict sk:fleurs |
+| 62 | 64 | `lʲ` | 0.130% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
+| 63 | 65 | `sʲ` | 0.085% | 2 | ga:dict lt:dict lt:fleurs ro:dict ro:fleurs |
+| 64 | 66 | `nʲ` | 0.127% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs ro:fleurs |
+| 65 | 68 | `ɑ̃` | 0.087% | 5 | af:dict af:fleurs fr-CA:dict fr:dict fr:fleurs lb:dict +2 |
+| 66 | 69 | `ʎ` | 0.107% | 9 | arg:dict bs:dict bs:fleurs ca:dict ca:fleurs es-419:dict +17 |
+| 67 | 70 | `ɒ` | 0.322% | 3 | da:dict da:fleurs en-GB:dict hu:dict hu:fleurs sv:fleurs |
+| 68 | 71 | `ʈ` | 0.017% | 2 | nb:dict nb:fleurs sv:dict sv:fleurs |
+| 69 | 72 | `ɹ` | 0.228% | 2 | da:dict en-GB:dict en:dict en:fleurs mt:dict mt:fleurs +1 |
+| 70 | 73 | `rʲ` | 0.062% | 4 | ga:dict lt:dict lt:fleurs pl:dict pl:fleurs ro:dict +1 |
+| 71 | 74 | `t͡ʃ` | 0.307% | 18 | ang:dict arg:dict az:dict az:fleurs bs:dict bs:fleurs +38 |
+| 72 | 76 | `tʰ` | 0.006% | 2 | arg:dict is:dict is:fleurs se:dict sv:fleurs |
+| 73 | 77 | `ɐ̯` | 0.094% | 3 | da:dict da:fleurs de:dict de:fleurs sv:fleurs |
+| 74 | 78 | `t͡ɕ` | 0.054% | 3 | bs:dict bs:fleurs pl:dict pl:fleurs sq:dict sv:fleurs |
+| 75 | 79 | `θ` | 0.118% | 12 | ang:dict arg:dict cy-sw:dict cy:dict cy:fleurs en-GB:dict +12 |
 | 76 | 80 | `ɔ̯` | 0.000% | 1 | fr-CA:dict |
-| 77 | 81 | `t̪` | 0.007% | 2 | ga:dict la-eccl:dict la:dict lt:dict lt:fleurs |
-| 78 | 82 | `c` | 0.172% | 12 | af:dict az:dict az:fleurs cs:dict cs:fleurs egy:dict +14 |
-| 79 | 83 | `ɭ` | 0.005% | 4 | da:dict nb:dict nb:fleurs sv:dict sv:fleurs |
-| 80 | 84 | `mʲ` | 0.073% | 5 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
-| 81 | 85 | `ɔ̃` | 0.071% | 5 | fr:dict fr:fleurs pl:dict pl:fleurs sv:fleurs |
-| 82 | 86 | `ç` | 0.076% | 7 | az:dict az:fleurs de:dict de:fleurs egy:dict ga:dict +7 |
-| 83 | 87 | `õ` | 0.024% | 4 | fr-CA:dict ga:dict la:dict pt-BR:dict pt:dict pt:fleurs |
-| 84 | 88 | `ɤ̆` | 0.057% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
-| 85 | 89 | `ʐ` | 0.033% | 2 | pl:dict pl:fleurs vi-c:dict vi-s:dict |
-| 86 | 90 | `vʲ` | 0.049% | 4 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
-| 87 | 91 | `d͡ʒ` | 0.151% | 17 | az:dict az:fleurs ca:dict ca:fleurs egy:dict eo:dict +20 |
-| 88 | 92 | `kʰ` | 0.044% | 4 | da:dict da:fleurs is:dict is:fleurs la:dict se:dict +1 |
-| 89 | 93 | `ʀ` | 0.154% | 3 | de:dict de:fleurs egy:dict lb:dict lb:fleurs |
-| 90 | 94 | `ă` | 0.055% | 2 | ro:fleurs vi-c:dict vi-s:dict vi:dict vi:fleurs |
-| 91 | 95 | `dʲ` | 0.087% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs sk:dict sk:fleurs |
-| 92 | 96 | `ɤ` | 0.034% | 2 | ga:dict vi-c:dict vi-s:dict vi:dict vi:fleurs |
-| 93 | 97 | `ŋ͡m` | 0.054% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
-| 94 | 98 | `ɖ` | 0.007% | 2 | nb:dict nb:fleurs sv:dict sv:fleurs |
-| 95 | 99 | `ʑ` | 0.007% | 2 | lb:dict lb:fleurs pl:dict pl:fleurs |
-| 96 | 100 | `pʲ` | 0.047% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
-| 97 | 101 | `ʌ` | 0.053% | 2 | da:dict da:fleurs egy:dict en-GB:dict ga:dict ga:fleurs +1 |
-| 98 | 102 | `ʋ` | 0.320% | 8 | da:dict da:fleurs lt:dict lt:fleurs nb:dict nb:fleurs +8 |
-| 99 | 104 | `ɝ` | 0.070% | 1 | en:dict en:fleurs |
-| 100 | 105 | `pʰ` | 0.036% | 2 | da:dict da:fleurs is:dict is:fleurs la:dict |
-| 101 | 106 | `kʲ` | 0.081% | 4 | lt:dict lt:fleurs pl:dict pl:fleurs ro:dict ro:fleurs |
-| 102 | 107 | `s̠` | 0.000% | 0 | la:dict |
-| 103 | 109 | `d̪` | 0.003% | 1 | gl:dict la-eccl:dict la:dict lt:dict lt:fleurs |
-| 104 | 110 | `d͡ʑ` | 0.022% | 3 | bs:dict bs:fleurs pl:dict pl:fleurs sk:dict sk:fleurs +1 |
-| 105 | 111 | `o̞` | 0.000% | 0 | gl:dict |
-| 106 | 112 | `bʲ` | 0.033% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
-| 107 | 113 | `ɟ` | 0.133% | 7 | az:dict az:fleurs cs:dict cs:fleurs eu:dict ga:dict +8 |
-| 108 | 114 | `ẽ` | 0.044% | 3 | af:dict af:fleurs fr-CA:dict la:dict pt-BR:dict pt:dict +2 |
-| 109 | 115 | `ɸ` | 0.001% | 1 | sw:fleurs |
-| 110 | 116 | `d͡z` | 0.017% | 5 | ca:dict fr-CA:dict it:dict it:fleurs la-eccl:dict pl:dict +1 |
-| 111 | 117 | `ɦ` | 0.068% | 7 | cs:dict cs:fleurs hu:dict hu:fleurs nl:dict nl:fleurs |
-| 112 | 118 | `ʝ` | 0.005% | 2 | es-MX:dict es:dict es:fleurs |
-| 113 | 119 | `ɥ` | 0.009% | 2 | fr-CA:dict fr:dict fr:fleurs |
-| 114 | 120 | `i̯` | 0.065% | 3 | cy-sw:dict cy:dict cy:fleurs de:fleurs enm:dict io:dict +2 |
-| 115 | 121 | `ɛ̃` | 0.032% | 5 | fr:dict fr:fleurs la:dict pl:dict pl:fleurs sv:fleurs |
-| 116 | 122 | `zʲ` | 0.005% | 2 | lt:dict lt:fleurs ro:fleurs |
-| 117 | 123 | `k͡p` | 0.009% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
-| 118 | 125 | `o̝` | 0.151% | 1 | gl:dict gl:fleurs |
-| 119 | 126 | `n̪` | 0.004% | 1 | ga:dict la-eccl:dict la:dict lt:dict lt:fleurs |
-| 120 | 127 | `ɛ̝` | 0.001% | 1 | da:dict da:fleurs |
-| 121 | 129 | `ɡʲ` | 0.033% | 4 | lt:dict lt:fleurs pl:dict pl:fleurs ro:dict ro:fleurs |
-| 122 | 130 | `ǎ` | 0.004% | 1 | lt:dict lt:fleurs |
-| 123 | 132 | `t͡ʂ` | 0.029% | 1 | pl:dict pl:fleurs |
-| 124 | 133 | `æ̃` | 0.000% | 0 | fr-CA:dict |
-| 125 | 135 | `u̯` | 0.054% | 5 | cs:dict cs:fleurs cy-sw:dict cy:dict cy:fleurs enm:dict +6 |
-| 126 | 137 | `ã` | 0.000% | 0 | fr-CA:dict la:dict pt-BR:dict |
-| 127 | 138 | `fʲ` | 0.029% | 4 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
-| 128 | 140 | `a͡ɪ` | 0.044% | 4 | arg:dict az:dict az:fleurs eu:dict ia:dict id:dict +5 |
-| 129 | 142 | `r̥` | 0.015% | 3 | cy-sw:dict cy:dict cy:fleurs is:dict is:fleurs sv:fleurs |
-| 130 | 145 | `s̺` | 0.000% | 0 | eu:dict gl:dict |
-| 131 | 146 | `ɫ̪` | 0.000% | 0 | la:dict |
-| 132 | 147 | `l̪` | 0.000% | 0 | la-eccl:dict la:dict |
-| 133 | 148 | `χ` | 0.038% | 4 | cy-sw:dict cy:dict cy:fleurs egy:dict id:dict pt-BR:dict +2 |
-| 134 | 151 | `s̻` | 0.000% | 0 | eu:dict |
-| 135 | 152 | `î` | 0.000% | 1 | lt:dict |
-| 136 | 154 | `ɽ` | 0.004% | 2 | de:dict de:fleurs |
-| 137 | 156 | `á` | 0.107% | 1 | sl:dict sl:fleurs |
-| 138 | 157 | `é` | 0.076% | 1 | sl:dict sl:fleurs |
-| 139 | 158 | `ó` | 0.071% | 1 | sl:dict sl:fleurs |
-| 140 | 159 | `ĭ` | 0.006% | 2 | de:dict de:fleurs sv:fleurs |
-| 141 | 160 | `ʃʲ` | 0.038% | 2 | lt:dict lt:fleurs ro:dict ro:fleurs |
-| 142 | 161 | `â` | 0.001% | 1 | lt:dict lt:fleurs |
-| 143 | 162 | `s̪` | 0.013% | 1 | lt:dict lt:fleurs |
-| 144 | 163 | `í` | 0.075% | 1 | sl:dict sl:fleurs |
-| 145 | 164 | `tʼ` | 0.000% | 0 | egy:dict |
-| 146 | 165 | `r̩` | 0.016% | 5 | cs:dict cs:fleurs sk:dict sk:fleurs |
-| 147 | 166 | `xʲ` | 0.001% | 2 | pl:dict |
-| 148 | 167 | `ĩ` | 0.020% | 1 | la:dict pt-BR:dict pt:dict pt:fleurs |
-| 149 | 168 | `ɜ` | 0.051% | 2 | en-GB:dict lb:dict lb:fleurs |
-| 150 | 169 | `o͡ʊ` | 0.006% | 2 | sk:dict sk:fleurs |
-| 151 | 171 | `l̥` | 0.004% | 2 | da:dict da:fleurs is:dict is:fleurs se:dict |
-| 152 | 172 | `ô` | 0.004% | 1 | lt:dict lt:fleurs |
-| 153 | 173 | `ɐ̃` | 0.082% | 1 | pt-BR:dict pt:dict pt:fleurs |
-| 154 | 174 | `kʼ` | 0.000% | 1 | egy:dict |
-| 155 | 175 | `a̯` | 0.000% | 0 | ga:dict se:dict |
-| 156 | 178 | `ʊ̃` | 0.000% | 0 | la:dict |
-| 157 | 179 | `l̠` | 0.000% | 0 | la:dict |
-| 158 | 181 | `a͡ʊ` | 0.012% | 2 | arg:dict eu:dict ia:dict id:dict id:fleurs mi:dict +1 |
-| 159 | 182 | `cʰ` | 0.001% | 2 | is:dict is:fleurs |
-| 160 | 183 | `à` | 0.063% | 1 | sl:dict sl:fleurs |
-| 161 | 185 | `ɪ̯` | 0.047% | 4 | da:dict de:dict de:fleurs lt:dict lt:fleurs tl:dict +1 |
-| 162 | 186 | `e̯` | 0.000% | 0 | gl:dict la:dict se:dict |
-| 163 | 187 | `y̯` | 0.010% | 1 | nl:dict nl:fleurs |
-| 164 | 188 | `n̥` | 0.003% | 3 | cy-sw:dict cy:dict cy:fleurs is:dict is:fleurs |
-| 165 | 189 | `l̩` | 0.008% | 5 | cs:dict cs:fleurs da:dict da:fleurs ro:fleurs sk:dict +1 |
-| 166 | 190 | `ɬ` | 0.020% | 2 | cy-sw:dict cy:dict cy:fleurs sw:dict sw:fleurs |
-| 167 | 192 | `ʋʲ` | 0.034% | 1 | lt:dict lt:fleurs |
-| 168 | 194 | `ɾʲ` | 0.076% | 2 | ga:dict ga:fleurs lt:dict lt:fleurs |
-| 169 | 196 | `t̪ʰ` | 0.000% | 0 | la:dict |
-| 170 | 197 | `e͡ɪ` | 0.000% | 1 | arg:dict eu:dict pap:dict sq:dict |
-| 171 | 198 | `ŋ̩` | 0.004% | 2 | da:dict da:fleurs |
-| 172 | 199 | `ɰ` | 0.024% | 1 | tl:dict tl:fleurs |
-| 173 | 200 | `a̝` | 0.141% | 1 | da:dict gl:dict gl:fleurs |
-| 174 | 201 | `ɻ` | 0.000% | 1 | pt-BR:dict |
-| 175 | 202 | `d͡ʐ` | 0.001% | 1 | pl:fleurs |
-| 176 | 203 | `ʍ` | 0.001% | 1 | enm:dict sw:dict sw:fleurs |
-| 177 | 204 | `ũ` | 0.022% | 1 | pt-BR:dict pt:dict pt:fleurs |
-| 178 | 206 | `m̩` | 0.004% | 3 | cs:fleurs da:dict da:fleurs |
-| 179 | 207 | `r̝` | 0.015% | 1 | cs:dict cs:fleurs |
-| 180 | 208 | `w̃` | 0.032% | 1 | pt-BR:dict pt:dict pt:fleurs |
-| 181 | 212 | `o͡ɪ` | 0.002% | 2 | eu:dict lb:dict lb:fleurs mi:dict mi:fleurs |
-| 182 | 213 | `n̩` | 0.021% | 5 | da:dict da:fleurs de:fleurs nb:dict nb:fleurs |
-| 183 | 214 | `ì` | 0.055% | 1 | sl:dict sl:fleurs |
-| 184 | 215 | `ʊ̯` | 0.012% | 4 | da:dict de:fleurs gl:dict lt:dict lt:fleurs tl:dict +1 |
-| 185 | 217 | `ʒʲ` | 0.019% | 2 | lt:dict lt:fleurs |
-| 186 | 218 | `n̠ʲ` | 0.020% | 1 | ga:dict ga:fleurs la-eccl:dict |
-| 187 | 219 | `ɱ` | 0.007% | 3 | gl:dict gl:fleurs hu:dict hu:fleurs sw:dict sw:fleurs |
-| 188 | 220 | `qʼ` | 0.000% | 0 | egy:dict |
-| 189 | 221 | `t͡ʃʼ` | 0.000% | 0 | egy:dict |
-| 190 | 222 | `è` | 0.027% | 1 | sl:dict sl:fleurs |
-| 191 | 223 | `ŋ̥` | 0.002% | 2 | cy-sw:dict cy:dict cy:fleurs is:fleurs |
-| 192 | 224 | `m̥` | 0.000% | 1 | cy-sw:dict cy:dict is:dict |
-| 193 | 225 | `ɛ̂` | 0.002% | 1 | lt:fleurs |
-| 194 | 229 | `ú` | 0.013% | 1 | sl:dict sl:fleurs |
-| 195 | 230 | `kʷ` | 0.000% | 0 | la:dict |
-| 196 | 231 | `ò` | 0.006% | 1 | sl:dict sl:fleurs |
-| 197 | 233 | `ù` | 0.008% | 1 | sl:dict sl:fleurs |
-| 198 | 234 | `o̯` | 0.009% | 1 | gl:dict gl:fleurs se:dict |
-| 199 | 235 | `l̠ʲ` | 0.012% | 1 | ga:dict ga:fleurs la-eccl:dict |
-| 200 | 237 | `e̝` | 0.093% | 1 | da:dict gl:dict gl:fleurs |
-| 201 | 238 | `j̃` | 0.031% | 1 | pt-BR:dict pt:dict pt:fleurs |
-| 202 | 239 | `ɛ́` | 0.017% | 2 | sl:dict sl:fleurs |
-| 203 | 240 | `ɔ́` | 0.009% | 1 | sl:dict sl:fleurs |
-| 204 | 241 | `ɔ̀` | 0.004% | 1 | sl:dict sl:fleurs |
-| 205 | 243 | `e͡ʊ` | 0.000% | 0 | arg:dict eu:dict ia:dict |
-| 206 | 245 | `ɛ̀` | 0.006% | 1 | sl:dict sl:fleurs |
-| 207 | 247 | `œ̃` | 0.008% | 1 | fr:fleurs |
-| 208 | 249 | `ɑ̯` | 0.000% | 0 | se:dict |
-| 209 | 259 | `ɘ` | 0.000% | 0 | da:dict |
-| 210 | 265 | `ŋʲ` | 0.002% | 1 | lt:fleurs |
-| 211 | 266 | `ð̞` | 0.000% | 0 | gl:dict |
-| 212 | 267 | `β̞` | 0.000% | 0 | gl:dict |
+| 77 | 81 | `t̪` | 0.006% | 2 | ga:dict la-eccl:dict la:dict lt:dict lt:fleurs |
+| 78 | 82 | `c` | 0.110% | 11 | af:dict az:dict az:fleurs cs:dict cs:fleurs egy:dict +10 |
+| 79 | 83 | `ɭ` | 0.005% | 3 | da:dict nb:dict nb:fleurs sv:dict sv:fleurs |
+| 80 | 84 | `mʲ` | 0.075% | 5 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
+| 81 | 85 | `ɔ̃` | 0.074% | 5 | fr:dict fr:fleurs pl:dict pl:fleurs sv:fleurs |
+| 82 | 86 | `ç` | 0.079% | 7 | az:dict az:fleurs de:dict de:fleurs egy:dict ga:dict +7 |
+| 83 | 87 | `õ` | 0.025% | 4 | fr-CA:dict ga:dict la:dict pt-BR:dict pt:dict pt:fleurs |
+| 84 | 89 | `ʐ` | 0.034% | 2 | pl:dict pl:fleurs |
+| 85 | 90 | `vʲ` | 0.051% | 4 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
+| 86 | 91 | `d͡ʒ` | 0.154% | 17 | az:dict az:fleurs ca:dict ca:fleurs egy:dict eo:dict +20 |
+| 87 | 92 | `kʰ` | 0.045% | 3 | da:dict da:fleurs is:dict is:fleurs la:dict se:dict +1 |
+| 88 | 93 | `ʀ` | 0.159% | 3 | de:dict de:fleurs egy:dict lb:dict lb:fleurs |
+| 89 | 94 | `ă` | 0.005% | 1 | ro:fleurs |
+| 90 | 95 | `dʲ` | 0.090% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs sk:dict sk:fleurs |
+| 91 | 96 | `ɤ` | 0.000% | 1 | ga:dict |
+| 92 | 98 | `ɖ` | 0.007% | 2 | nb:dict nb:fleurs sv:dict sv:fleurs |
+| 93 | 99 | `ʑ` | 0.008% | 2 | lb:dict lb:fleurs pl:dict pl:fleurs |
+| 94 | 100 | `pʲ` | 0.049% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
+| 95 | 101 | `ʌ` | 0.054% | 2 | da:dict da:fleurs egy:dict en-GB:dict ga:dict ga:fleurs +1 |
+| 96 | 102 | `ʋ` | 0.331% | 8 | da:dict da:fleurs lt:dict lt:fleurs nb:dict nb:fleurs +8 |
+| 97 | 104 | `ɝ` | 0.072% | 1 | en:dict en:fleurs |
+| 98 | 105 | `pʰ` | 0.038% | 2 | da:dict da:fleurs is:dict is:fleurs la:dict |
+| 99 | 106 | `kʲ` | 0.082% | 4 | lt:dict lt:fleurs pl:dict pl:fleurs ro:dict ro:fleurs |
+| 100 | 107 | `s̠` | 0.000% | 0 | la:dict |
+| 101 | 109 | `d̪` | 0.003% | 1 | gl:dict la-eccl:dict la:dict lt:dict lt:fleurs |
+| 102 | 110 | `d͡ʑ` | 0.022% | 3 | bs:dict bs:fleurs pl:dict pl:fleurs sk:dict sk:fleurs +1 |
+| 103 | 111 | `o̞` | 0.000% | 0 | gl:dict |
+| 104 | 112 | `bʲ` | 0.034% | 3 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
+| 105 | 113 | `ɟ` | 0.134% | 6 | az:dict az:fleurs cs:dict cs:fleurs eu:dict ga:dict +8 |
+| 106 | 114 | `ẽ` | 0.045% | 3 | af:dict af:fleurs fr-CA:dict la:dict pt-BR:dict pt:dict +2 |
+| 107 | 115 | `ɸ` | 0.001% | 1 | sw:fleurs |
+| 108 | 116 | `d͡z` | 0.016% | 5 | ca:dict fr-CA:dict it:dict it:fleurs la-eccl:dict pl:dict +1 |
+| 109 | 117 | `ɦ` | 0.070% | 7 | cs:dict cs:fleurs hu:dict hu:fleurs nl:dict nl:fleurs |
+| 110 | 118 | `ʝ` | 0.005% | 2 | es-MX:dict es:dict es:fleurs |
+| 111 | 119 | `ɥ` | 0.010% | 2 | fr-CA:dict fr:dict fr:fleurs |
+| 112 | 120 | `i̯` | 0.067% | 3 | cy-sw:dict cy:dict cy:fleurs de:fleurs enm:dict io:dict +2 |
+| 113 | 121 | `ɛ̃` | 0.032% | 4 | fr:dict fr:fleurs la:dict pl:dict pl:fleurs sv:fleurs |
+| 114 | 122 | `zʲ` | 0.006% | 2 | lt:dict lt:fleurs ro:fleurs |
+| 115 | 125 | `o̝` | 0.152% | 1 | gl:dict gl:fleurs |
+| 116 | 126 | `n̪` | 0.005% | 1 | ga:dict la-eccl:dict la:dict lt:dict lt:fleurs |
+| 117 | 127 | `ɛ̝` | 0.001% | 1 | da:dict da:fleurs |
+| 118 | 129 | `ɡʲ` | 0.033% | 4 | lt:dict lt:fleurs pl:dict pl:fleurs ro:dict ro:fleurs |
+| 119 | 130 | `ǎ` | 0.003% | 1 | lt:dict lt:fleurs |
+| 120 | 132 | `t͡ʂ` | 0.030% | 1 | pl:dict pl:fleurs |
+| 121 | 133 | `æ̃` | 0.000% | 0 | fr-CA:dict |
+| 122 | 135 | `u̯` | 0.055% | 5 | cs:dict cs:fleurs cy-sw:dict cy:dict cy:fleurs enm:dict +6 |
+| 123 | 137 | `ã` | 0.000% | 0 | fr-CA:dict la:dict pt-BR:dict |
+| 124 | 138 | `fʲ` | 0.030% | 4 | ga:dict ga:fleurs lt:dict lt:fleurs pl:dict pl:fleurs |
+| 125 | 140 | `a͡ɪ` | 0.045% | 3 | arg:dict az:dict az:fleurs eu:dict ia:dict id:dict +5 |
+| 126 | 142 | `r̥` | 0.015% | 3 | cy-sw:dict cy:dict cy:fleurs is:dict is:fleurs sv:fleurs |
+| 127 | 145 | `s̺` | 0.000% | 0 | eu:dict gl:dict |
+| 128 | 146 | `ɫ̪` | 0.000% | 0 | la:dict |
+| 129 | 147 | `l̪` | 0.000% | 0 | la-eccl:dict la:dict |
+| 130 | 148 | `χ` | 0.040% | 4 | cy-sw:dict cy:dict cy:fleurs egy:dict id:dict pt-BR:dict +2 |
+| 131 | 151 | `s̻` | 0.000% | 0 | eu:dict |
+| 132 | 152 | `î` | 0.000% | 1 | lt:dict |
+| 133 | 154 | `ɽ` | 0.004% | 2 | de:dict de:fleurs |
+| 134 | 156 | `á` | 0.111% | 1 | sl:dict sl:fleurs |
+| 135 | 157 | `é` | 0.079% | 1 | sl:dict sl:fleurs |
+| 136 | 158 | `ó` | 0.074% | 1 | sl:dict sl:fleurs |
+| 137 | 159 | `ĭ` | 0.007% | 2 | de:dict de:fleurs sv:fleurs |
+| 138 | 160 | `ʃʲ` | 0.040% | 2 | lt:dict lt:fleurs ro:dict ro:fleurs |
+| 139 | 161 | `â` | 0.001% | 1 | lt:dict lt:fleurs |
+| 140 | 162 | `s̪` | 0.014% | 1 | lt:dict lt:fleurs |
+| 141 | 163 | `í` | 0.076% | 1 | sl:dict sl:fleurs |
+| 142 | 164 | `tʼ` | 0.000% | 0 | egy:dict |
+| 143 | 165 | `r̩` | 0.014% | 3 | cs:dict cs:fleurs sk:dict sk:fleurs |
+| 144 | 166 | `xʲ` | 0.001% | 2 | pl:dict |
+| 145 | 167 | `ĩ` | 0.021% | 1 | la:dict pt-BR:dict pt:dict pt:fleurs |
+| 146 | 168 | `ɜ` | 0.053% | 2 | en-GB:dict lb:dict lb:fleurs |
+| 147 | 169 | `o͡ʊ` | 0.006% | 2 | sk:dict sk:fleurs |
+| 148 | 171 | `l̥` | 0.004% | 2 | da:dict da:fleurs is:dict is:fleurs se:dict |
+| 149 | 172 | `ô` | 0.004% | 1 | lt:dict lt:fleurs |
+| 150 | 173 | `ɐ̃` | 0.084% | 1 | pt-BR:dict pt:dict pt:fleurs |
+| 151 | 174 | `kʼ` | 0.000% | 0 | egy:dict |
+| 152 | 175 | `a̯` | 0.000% | 0 | ga:dict se:dict |
+| 153 | 178 | `ʊ̃` | 0.000% | 0 | la:dict |
+| 154 | 179 | `l̠` | 0.000% | 0 | la:dict |
+| 155 | 181 | `a͡ʊ` | 0.012% | 2 | arg:dict eu:dict ia:dict id:dict id:fleurs mi:dict +1 |
+| 156 | 182 | `cʰ` | 0.001% | 2 | is:dict is:fleurs |
+| 157 | 183 | `à` | 0.065% | 1 | sl:dict sl:fleurs |
+| 158 | 185 | `ɪ̯` | 0.046% | 4 | da:dict de:dict de:fleurs lt:dict lt:fleurs tl:dict +1 |
+| 159 | 186 | `e̯` | 0.000% | 0 | gl:dict la:dict se:dict |
+| 160 | 187 | `y̯` | 0.010% | 1 | nl:dict nl:fleurs |
+| 161 | 188 | `n̥` | 0.003% | 3 | cy-sw:dict cy:dict cy:fleurs is:dict is:fleurs |
+| 162 | 189 | `l̩` | 0.008% | 5 | cs:dict cs:fleurs da:dict da:fleurs ro:fleurs sk:dict |
+| 163 | 190 | `ɬ` | 0.021% | 2 | cy-sw:dict cy:dict cy:fleurs sw:dict sw:fleurs |
+| 164 | 192 | `ʋʲ` | 0.035% | 1 | lt:dict lt:fleurs |
+| 165 | 194 | `ɾʲ` | 0.074% | 2 | ga:dict ga:fleurs lt:dict lt:fleurs |
+| 166 | 196 | `t̪ʰ` | 0.000% | 0 | la:dict |
+| 167 | 197 | `e͡ɪ` | 0.000% | 1 | arg:dict eu:dict pap:dict sq:dict |
+| 168 | 198 | `ŋ̩` | 0.004% | 2 | da:dict da:fleurs |
+| 169 | 199 | `ɰ` | 0.025% | 1 | tl:dict tl:fleurs |
+| 170 | 200 | `a̝` | 0.146% | 1 | da:dict gl:dict gl:fleurs |
+| 171 | 201 | `ɻ` | 0.000% | 0 | pt-BR:dict |
+| 172 | 203 | `ʍ` | 0.001% | 1 | enm:dict sw:dict sw:fleurs |
+| 173 | 204 | `ũ` | 0.023% | 1 | pt-BR:dict pt:dict pt:fleurs |
+| 174 | 206 | `m̩` | 0.005% | 2 | da:dict da:fleurs |
+| 175 | 207 | `r̝` | 0.016% | 1 | cs:dict cs:fleurs |
+| 176 | 208 | `w̃` | 0.033% | 1 | pt-BR:dict pt:dict pt:fleurs |
+| 177 | 212 | `o͡ɪ` | 0.002% | 2 | eu:dict lb:dict lb:fleurs mi:dict mi:fleurs |
+| 178 | 213 | `n̩` | 0.022% | 5 | da:dict da:fleurs de:fleurs nb:dict nb:fleurs |
+| 179 | 214 | `ì` | 0.057% | 1 | sl:dict sl:fleurs |
+| 180 | 215 | `ʊ̯` | 0.012% | 4 | da:dict de:fleurs gl:dict lt:dict lt:fleurs tl:dict +1 |
+| 181 | 217 | `ʒʲ` | 0.020% | 2 | lt:dict lt:fleurs |
+| 182 | 218 | `n̠ʲ` | 0.021% | 1 | ga:dict ga:fleurs la-eccl:dict |
+| 183 | 219 | `ɱ` | 0.007% | 3 | gl:dict gl:fleurs hu:dict hu:fleurs sw:dict sw:fleurs |
+| 184 | 220 | `qʼ` | 0.000% | 0 | egy:dict |
+| 185 | 221 | `t͡ʃʼ` | 0.000% | 0 | egy:dict |
+| 186 | 222 | `è` | 0.028% | 1 | sl:dict sl:fleurs |
+| 187 | 223 | `ŋ̥` | 0.002% | 2 | cy-sw:dict cy:dict cy:fleurs is:fleurs |
+| 188 | 224 | `m̥` | 0.000% | 1 | cy-sw:dict cy:dict is:dict |
+| 189 | 229 | `ú` | 0.013% | 1 | sl:dict sl:fleurs |
+| 190 | 230 | `kʷ` | 0.000% | 0 | la:dict |
+| 191 | 231 | `ò` | 0.006% | 1 | sl:dict sl:fleurs |
+| 192 | 233 | `ù` | 0.008% | 1 | sl:dict sl:fleurs |
+| 193 | 234 | `o̯` | 0.010% | 1 | gl:dict gl:fleurs se:dict |
+| 194 | 235 | `l̠ʲ` | 0.013% | 1 | ga:dict ga:fleurs la-eccl:dict |
+| 195 | 237 | `e̝` | 0.096% | 1 | da:dict gl:dict gl:fleurs |
+| 196 | 238 | `j̃` | 0.032% | 1 | pt-BR:dict pt:dict pt:fleurs |
+| 197 | 239 | `ɛ́` | 0.014% | 1 | sl:dict sl:fleurs |
+| 198 | 240 | `ɔ́` | 0.008% | 1 | sl:dict sl:fleurs |
+| 199 | 241 | `ɔ̀` | 0.004% | 1 | sl:dict sl:fleurs |
+| 200 | 243 | `e͡ʊ` | 0.000% | 0 | arg:dict eu:dict ia:dict |
+| 201 | 245 | `ɛ̀` | 0.004% | 1 | sl:dict sl:fleurs |
+| 202 | 247 | `œ̃` | 0.009% | 1 | fr:fleurs |
+| 203 | 249 | `ɑ̯` | 0.000% | 0 | se:dict |
+| 204 | 259 | `ɘ` | 0.000% | 0 | da:dict |
+| 205 | 265 | `ŋʲ` | 0.002% | 1 | lt:fleurs |
+| 206 | 266 | `ð̞` | 0.000% | 0 | gl:dict |
+| 207 | 267 | `β̞` | 0.000% | 0 | gl:dict |
+
+### `vietnamese`
+
+Latin script, space-delimited, tonal (tone letters). Kept out of latin so that latin holds no tonal language. Languages: vi vi-c vi-s.
+
+`fleurs` share is of the language group's pooled FLEURS output; `langs` is how many member languages emit the phoneme there. `selected by` names every language:source whose coverage needed it.
+
+| local | gold | phoneme | fleurs share | langs | selected by |
+|---:|---:|---|---:|---:|---|
+| 4 | 4 | `a` | 7.426% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 5 | 5 | `s` | 2.046% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 6 | 6 | `i` | 5.342% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 7 | 7 | `e` | 1.994% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 8 | 8 | `n` | 5.349% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 9 | 9 | `t` | 4.059% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 10 | 10 | `l` | 1.806% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 11 | 11 | `k` | 6.768% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 12 | 12 | `o` | 3.156% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 13 | 13 | `r` | 0.252% | 1 | vi:fleurs |
+| 14 | 14 | `m` | 2.761% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 15 | 15 | `d` | 3.051% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 16 | 16 | `u` | 2.430% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 17 | 19 | `f` | 0.854% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 18 | 20 | `j` | 3.566% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 19 | 21 | `ə` | 4.936% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 20 | 22 | `b` | 1.821% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 21 | 23 | `p` | 0.685% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 22 | 24 | `ɛ` | 1.776% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 23 | 25 | `w` | 3.724% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 24 | 27 | `v` | 2.122% | 1 | vi:dict vi:fleurs |
+| 25 | 29 | `z` | 2.355% | 1 | vi:dict vi:fleurs |
+| 26 | 30 | `ʔ` | 3.295% | 1 | vi-c:dict vi:dict vi:fleurs |
+| 27 | 31 | `ɔ` | 2.630% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 28 | 32 | `ŋ` | 4.469% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 29 | 34 | `ʃ` | 0.064% | 1 | vi:fleurs |
+| 30 | 35 | `ɯ` | 3.570% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 31 | 36 | `h` | 1.704% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 32 | 39 | `x` | 1.121% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 33 | 46 | `ʂ` | 0.000% | 0 | vi-c:dict vi-s:dict |
+| 34 | 47 | `ɣ` | 0.391% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 35 | 54 | `ɲ` | 1.211% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 36 | 71 | `ʈ` | 0.000% | 0 | vi-c:dict vi-s:dict |
+| 37 | 76 | `tʰ` | 1.960% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 38 | 82 | `c` | 2.746% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 39 | 88 | `ɤ̆` | 2.385% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 40 | 89 | `ʐ` | 0.000% | 0 | vi-c:dict vi-s:dict |
+| 41 | 94 | `ă` | 2.099% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 42 | 96 | `ɤ` | 1.403% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 43 | 97 | `ŋ͡m` | 2.246% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
+| 44 | 123 | `k͡p` | 0.365% | 1 | vi-c:dict vi-s:dict vi:dict vi:fleurs |
 
 ### `cyrillic`
 
@@ -449,130 +549,129 @@ Cyrillic script, space-delimited, no tone. Languages: ady ba be bg hbs hbs-Cyrl 
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | 6.041% | 7 | ady:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +10 |
-| 5 | 5 | `s` | 4.230% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 6 | 6 | `i` | 5.913% | 8 | ba:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +12 |
-| 7 | 7 | `e` | 3.259% | 5 | ba:dict hbs-Cyrl:dict hbs:dict hbs:fleurs kk:dict kk:fleurs +7 |
-| 8 | 8 | `n` | 5.748% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 9 | 9 | `t` | 5.017% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 10 | 10 | `l` | 1.372% | 7 | ady:dict ba:dict bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict +8 |
-| 11 | 11 | `k` | 3.223% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 12 | 12 | `o` | 3.578% | 7 | ba:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +11 |
-| 13 | 13 | `r` | 3.667% | 7 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +12 |
-| 14 | 14 | `m` | 2.666% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 15 | 15 | `d` | 2.556% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 16 | 16 | `u` | 1.811% | 8 | ba:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +13 |
-| 17 | 17 | `ɪ` | 2.765% | 5 | ba:dict be:dict be:fleurs kk:dict kk:fleurs ru:dict +5 |
-| 18 | 18 | `ɾ` | 0.839% | 6 | bg:dict bg:fleurs kk:dict kk:fleurs mk:dict mk:fleurs |
+| 4 | 4 | `a` | 6.084% | 7 | ady:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +10 |
+| 5 | 5 | `s` | 4.212% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 6 | 6 | `i` | 5.890% | 8 | ba:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +11 |
+| 7 | 7 | `e` | 3.285% | 5 | ba:dict hbs-Cyrl:dict hbs:dict hbs:fleurs kk:dict kk:fleurs +7 |
+| 8 | 8 | `n` | 5.786% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 9 | 9 | `t` | 4.910% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 10 | 10 | `l` | 1.385% | 6 | ady:dict ba:dict bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict +8 |
+| 11 | 11 | `k` | 3.187% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 12 | 12 | `o` | 3.598% | 7 | ba:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +11 |
+| 13 | 13 | `r` | 3.645% | 7 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +12 |
+| 14 | 14 | `m` | 2.660% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 15 | 15 | `d` | 2.550% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 16 | 16 | `u` | 1.816% | 8 | ba:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +13 |
+| 17 | 17 | `ɪ` | 2.774% | 5 | ba:dict be:dict be:fleurs kk:dict kk:fleurs ru:dict +5 |
+| 18 | 18 | `ɾ` | 0.824% | 4 | bg:dict bg:fleurs kk:dict kk:fleurs mk:dict mk:fleurs |
 | 19 | 19 | `f` | 0.473% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 20 | 20 | `j` | 2.833% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 21 | 21 | `ə` | 3.033% | 6 | ady:dict bg:dict bg:fleurs kk:dict kk:fleurs ru:dict +3 |
-| 22 | 22 | `b` | 1.419% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 23 | 23 | `p` | 2.616% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 24 | 24 | `ɛ` | 4.393% | 7 | be:dict be:fleurs bg:dict bg:fleurs mk:dict mk:fleurs +6 |
-| 25 | 25 | `w` | 0.491% | 6 | ady:dict ba:dict be:dict be:fleurs kk:dict kk:fleurs +3 |
-| 26 | 26 | `ɑ` | 2.546% | 5 | ba:dict be:dict be:fleurs kk:dict kk:fleurs sr:dict +4 |
-| 27 | 27 | `v` | 2.224% | 7 | be:dict be:fleurs bg:dict bg:fleurs kk:dict kk:fleurs +6 |
+| 20 | 20 | `j` | 2.855% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 21 | 21 | `ə` | 2.988% | 6 | ady:dict bg:dict bg:fleurs kk:dict kk:fleurs ru:dict +3 |
+| 22 | 22 | `b` | 1.436% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 23 | 23 | `p` | 2.636% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 24 | 24 | `ɛ` | 4.256% | 6 | be:dict be:fleurs bg:dict bg:fleurs mk:dict mk:fleurs +6 |
+| 25 | 25 | `w` | 0.495% | 4 | ady:dict ba:dict be:dict be:fleurs kk:dict kk:fleurs +3 |
+| 26 | 26 | `ɑ` | 2.568% | 5 | ba:dict be:dict be:fleurs kk:dict kk:fleurs sr:dict +4 |
+| 27 | 27 | `v` | 2.227% | 7 | be:dict be:fleurs bg:dict bg:fleurs kk:dict kk:fleurs +6 |
 | 28 | 28 | `ɡ` | 0.941% | 7 | bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict hbs:fleurs kk:dict +8 |
-| 29 | 29 | `z` | 1.772% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 29 | 29 | `z` | 1.794% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
 | 30 | 30 | `ʔ` | 0.014% | 1 | ady:dict ba:dict kk:dict kk:fleurs tt:dict |
-| 31 | 31 | `ɔ` | 2.766% | 4 | be:dict be:fleurs bg:dict bg:fleurs mk:dict mk:fleurs +2 |
-| 32 | 32 | `ŋ` | 0.163% | 5 | ba:dict bg:fleurs kk:dict kk:fleurs mk:dict mk:fleurs +3 |
-| 33 | 33 | `ʊ` | 0.949% | 4 | kk:dict kk:fleurs ru:dict ru:fleurs sr:dict sr:fleurs +2 |
-| 34 | 34 | `ʃ` | 0.949% | 7 | ady:dict ba:dict bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict +10 |
+| 31 | 31 | `ɔ` | 2.773% | 4 | be:dict be:fleurs bg:dict bg:fleurs mk:dict mk:fleurs +2 |
+| 32 | 32 | `ŋ` | 0.163% | 4 | ba:dict bg:fleurs kk:dict kk:fleurs mk:dict mk:fleurs +3 |
+| 33 | 33 | `ʊ` | 0.959% | 4 | kk:dict kk:fleurs ru:dict ru:fleurs sr:dict sr:fleurs +2 |
+| 34 | 34 | `ʃ` | 0.954% | 6 | ady:dict ba:dict bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict +10 |
 | 35 | 35 | `ɯ` | 0.000% | 0 | ba:dict tt:dict |
-| 36 | 36 | `h` | 0.049% | 3 | ba:dict sr:dict sr:fleurs tt:dict |
+| 36 | 36 | `h` | 0.047% | 1 | ba:dict sr:dict sr:fleurs tt:dict |
 | 37 | 37 | `ʁ` | 0.000% | 0 | ady:dict ba:dict tt:dict |
-| 38 | 38 | `ɐ` | 2.257% | 4 | bg:dict bg:fleurs ru:dict ru:fleurs sr:dict sr:fleurs +2 |
-| 39 | 39 | `x` | 0.731% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
-| 40 | 41 | `æ` | 0.137% | 3 | ba:dict kk:dict kk:fleurs ru:dict ru:fleurs sr:fleurs +1 |
-| 41 | 43 | `ɫ` | 1.296% | 5 | ba:dict bg:dict bg:fleurs kk:dict kk:fleurs mk:dict +6 |
-| 42 | 44 | `q` | 0.259% | 1 | ady:dict ba:dict kk:dict kk:fleurs tt:dict |
-| 43 | 45 | `ʒ` | 0.605% | 7 | ady:dict bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict hbs:fleurs +9 |
-| 44 | 46 | `ʂ` | 0.364% | 2 | ady:dict be:dict be:fleurs ru:dict ru:fleurs |
-| 45 | 47 | `ɣ` | 0.189% | 1 | ady:dict ba:dict be:dict be:fleurs tt:dict |
+| 38 | 38 | `ɐ` | 2.271% | 4 | bg:dict bg:fleurs ru:dict ru:fleurs sr:dict sr:fleurs +2 |
+| 39 | 39 | `x` | 0.737% | 8 | ady:dict ba:dict be:dict be:fleurs bg:dict bg:fleurs +14 |
+| 40 | 41 | `æ` | 0.138% | 3 | ba:dict kk:dict kk:fleurs ru:dict ru:fleurs sr:fleurs +1 |
+| 41 | 43 | `ɫ` | 1.310% | 5 | ba:dict bg:dict bg:fleurs kk:dict kk:fleurs mk:dict +6 |
+| 42 | 44 | `q` | 0.262% | 1 | ady:dict ba:dict kk:dict kk:fleurs tt:dict |
+| 43 | 45 | `ʒ` | 0.610% | 6 | ady:dict bg:dict bg:fleurs hbs-Cyrl:dict hbs:dict hbs:fleurs +9 |
+| 44 | 46 | `ʂ` | 0.367% | 2 | ady:dict be:dict be:fleurs ru:dict ru:fleurs |
+| 45 | 47 | `ɣ` | 0.192% | 1 | ady:dict ba:dict be:dict be:fleurs tt:dict |
 | 46 | 48 | `y` | 0.003% | 1 | ba:dict tt:dict |
-| 47 | 49 | `ɨ` | 0.966% | 2 | be:dict be:fleurs ru:dict ru:fleurs |
+| 47 | 49 | `ɨ` | 0.970% | 2 | be:dict be:fleurs ru:dict ru:fleurs |
 | 48 | 51 | `ħ` | 0.000% | 0 | ady:dict |
-| 49 | 52 | `ɕ` | 0.067% | 2 | ady:dict ba:dict ru:dict ru:fleurs tt:dict |
-| 50 | 54 | `ɲ` | 0.236% | 3 | hbs-Cyrl:dict hbs:dict hbs:fleurs mk:dict mk:fleurs sr:dict +1 |
-| 51 | 55 | `ɵ` | 0.114% | 2 | kk:dict kk:fleurs ru:dict ru:fleurs |
-| 52 | 56 | `t͡s` | 0.910% | 7 | ady:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +10 |
-| 53 | 59 | `œ` | 0.001% | 1 | ba:dict tt:dict |
+| 49 | 52 | `ɕ` | 0.065% | 2 | ady:dict ba:dict ru:dict ru:fleurs tt:dict |
+| 50 | 54 | `ɲ` | 0.237% | 3 | hbs-Cyrl:dict hbs:dict hbs:fleurs mk:dict mk:fleurs sr:dict +1 |
+| 51 | 55 | `ɵ` | 0.116% | 2 | kk:dict kk:fleurs ru:dict ru:fleurs |
+| 52 | 56 | `t͡s` | 0.916% | 7 | ady:dict be:dict be:fleurs bg:dict bg:fleurs hbs-Cyrl:dict +10 |
+| 53 | 59 | `œ` | 0.000% | 0 | ba:dict tt:dict |
 | 54 | 60 | `ʉ` | 0.035% | 2 | ru:dict ru:fleurs |
-| 55 | 63 | `tʲ` | 0.406% | 3 | bg:dict bg:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
-| 56 | 64 | `lʲ` | 0.614% | 3 | bg:dict bg:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
-| 57 | 65 | `sʲ` | 0.431% | 4 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs +2 |
-| 58 | 66 | `nʲ` | 0.684% | 4 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs +2 |
-| 59 | 69 | `ʎ` | 0.154% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs sr:dict sr:fleurs |
+| 55 | 63 | `tʲ` | 0.398% | 3 | bg:dict bg:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
+| 56 | 64 | `lʲ` | 0.622% | 3 | bg:dict bg:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
+| 57 | 65 | `sʲ` | 0.438% | 4 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs +2 |
+| 58 | 66 | `nʲ` | 0.694% | 4 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs +2 |
+| 59 | 69 | `ʎ` | 0.157% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs sr:dict sr:fleurs |
 | 60 | 70 | `ɒ` | 0.000% | 0 | ba:dict tt:dict |
-| 61 | 71 | `ʈ` | 0.142% | 1 | be:dict be:fleurs |
-| 62 | 73 | `rʲ` | 0.289% | 4 | be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs uk:dict +1 |
-| 63 | 74 | `t͡ʃ` | 0.572% | 5 | ady:dict hbs-Cyrl:dict hbs:dict hbs:fleurs mk:dict mk:fleurs +4 |
-| 64 | 78 | `t͡ɕ` | 0.273% | 3 | hbs-Cyrl:dict hbs:dict hbs:fleurs ru:dict ru:fleurs sr:dict +1 |
-| 65 | 81 | `t̪` | 1.018% | 1 | bg:dict bg:fleurs |
-| 66 | 82 | `c` | 0.037% | 1 | mk:dict mk:fleurs |
-| 67 | 83 | `ɭ` | 0.399% | 1 | be:dict be:fleurs |
-| 68 | 84 | `mʲ` | 0.275% | 4 | be:dict be:fleurs bg:fleurs ru:dict ru:fleurs uk:dict +1 |
-| 69 | 89 | `ʐ` | 0.222% | 2 | ady:dict be:dict be:fleurs ru:dict ru:fleurs |
-| 70 | 90 | `vʲ` | 0.189% | 3 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs |
-| 71 | 91 | `d͡ʒ` | 0.032% | 5 | ady:dict hbs:dict mk:dict mk:fleurs sr:dict uk:dict +1 |
-| 72 | 93 | `ʀ` | 0.167% | 1 | kk:dict kk:fleurs |
-| 73 | 95 | `dʲ` | 0.204% | 4 | bg:dict bg:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
-| 74 | 96 | `ɤ` | 0.128% | 1 | bg:dict bg:fleurs |
+| 61 | 71 | `ʈ` | 0.144% | 1 | be:dict be:fleurs |
+| 62 | 73 | `rʲ` | 0.291% | 4 | be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs uk:dict +1 |
+| 63 | 74 | `t͡ʃ` | 0.577% | 5 | ady:dict hbs-Cyrl:dict hbs:dict hbs:fleurs mk:dict mk:fleurs +4 |
+| 64 | 78 | `t͡ɕ` | 0.277% | 3 | hbs-Cyrl:dict hbs:dict hbs:fleurs ru:dict ru:fleurs sr:dict +1 |
+| 65 | 81 | `t̪` | 1.031% | 1 | bg:dict bg:fleurs |
+| 66 | 82 | `c` | 0.036% | 1 | mk:dict mk:fleurs |
+| 67 | 83 | `ɭ` | 0.400% | 1 | be:dict be:fleurs |
+| 68 | 84 | `mʲ` | 0.273% | 4 | be:dict be:fleurs bg:fleurs ru:dict ru:fleurs uk:dict +1 |
+| 69 | 89 | `ʐ` | 0.224% | 2 | ady:dict be:dict be:fleurs ru:dict ru:fleurs |
+| 70 | 90 | `vʲ` | 0.190% | 3 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs |
+| 71 | 91 | `d͡ʒ` | 0.030% | 4 | ady:dict hbs:dict mk:dict sr:dict uk:dict uk:fleurs |
+| 72 | 93 | `ʀ` | 0.168% | 1 | kk:dict kk:fleurs |
+| 73 | 95 | `dʲ` | 0.206% | 4 | bg:dict bg:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
+| 74 | 96 | `ɤ` | 0.129% | 1 | bg:dict bg:fleurs |
 | 75 | 99 | `ʑ` | 0.000% | 0 | ady:dict ba:dict tt:dict |
-| 76 | 100 | `pʲ` | 0.117% | 4 | be:dict be:fleurs bg:dict ru:dict ru:fleurs uk:dict +1 |
-| 77 | 101 | `ʌ` | 0.183% | 1 | be:dict be:fleurs |
-| 78 | 102 | `ʋ` | 0.725% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs uk:dict uk:fleurs |
-| 79 | 106 | `kʲ` | 0.172% | 4 | ady:dict bg:dict bg:fleurs ru:dict ru:fleurs uk:dict +1 |
-| 80 | 109 | `d̪` | 0.314% | 1 | bg:dict bg:fleurs |
-| 81 | 110 | `d͡ʑ` | 0.049% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs sr:dict sr:fleurs |
-| 82 | 112 | `bʲ` | 0.095% | 4 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs +2 |
+| 76 | 100 | `pʲ` | 0.118% | 4 | be:dict be:fleurs bg:dict ru:dict ru:fleurs uk:dict +1 |
+| 77 | 101 | `ʌ` | 0.185% | 1 | be:dict be:fleurs |
+| 78 | 102 | `ʋ` | 0.735% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs uk:dict uk:fleurs |
+| 79 | 106 | `kʲ` | 0.174% | 4 | ady:dict bg:dict bg:fleurs ru:dict ru:fleurs uk:dict +1 |
+| 80 | 109 | `d̪` | 0.318% | 1 | bg:dict bg:fleurs |
+| 81 | 110 | `d͡ʑ` | 0.050% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs sr:dict sr:fleurs |
+| 82 | 112 | `bʲ` | 0.096% | 4 | be:dict be:fleurs bg:dict bg:fleurs ru:dict ru:fleurs +2 |
 | 83 | 113 | `ɟ` | 0.017% | 1 | mk:dict mk:fleurs |
-| 84 | 116 | `d͡z` | 0.019% | 3 | ady:dict mk:dict uk:dict uk:fleurs |
-| 85 | 117 | `ɦ` | 0.174% | 2 | uk:dict uk:fleurs |
-| 86 | 120 | `i̯` | 0.114% | 2 | uk:dict uk:fleurs |
-| 87 | 122 | `zʲ` | 0.122% | 4 | be:dict be:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
-| 88 | 125 | `o̝` | 0.273% | 1 | bg:dict bg:fleurs |
-| 89 | 129 | `ɡʲ` | 0.049% | 2 | ady:dict bg:fleurs ru:dict ru:fleurs |
-| 90 | 130 | `ǎ` | 0.250% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 84 | 116 | `d͡z` | 0.020% | 3 | ady:dict mk:dict uk:dict uk:fleurs |
+| 85 | 117 | `ɦ` | 0.175% | 1 | uk:dict uk:fleurs |
+| 86 | 120 | `i̯` | 0.116% | 2 | uk:dict uk:fleurs |
+| 87 | 122 | `zʲ` | 0.123% | 4 | be:dict be:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
+| 88 | 125 | `o̝` | 0.277% | 1 | bg:dict bg:fleurs |
+| 89 | 129 | `ɡʲ` | 0.048% | 2 | ady:dict bg:fleurs ru:dict ru:fleurs |
+| 90 | 130 | `ǎ` | 0.253% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
 | 91 | 132 | `t͡ʂ` | 0.006% | 1 | ady:dict ru:fleurs |
-| 92 | 135 | `u̯` | 0.174% | 1 | uk:dict uk:fleurs |
+| 92 | 135 | `u̯` | 0.176% | 1 | uk:dict uk:fleurs |
 | 93 | 138 | `fʲ` | 0.041% | 4 | be:dict be:fleurs ru:dict ru:fleurs uk:dict uk:fleurs |
-| 94 | 139 | `ǒ` | 0.277% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
-| 95 | 141 | `ě` | 0.213% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
-| 96 | 144 | `ǐ` | 0.172% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 94 | 139 | `ǒ` | 0.278% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 95 | 141 | `ě` | 0.216% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 96 | 144 | `ǐ` | 0.174% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
 | 97 | 148 | `χ` | 0.000% | 0 | ady:dict |
-| 98 | 152 | `î` | 0.172% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
-| 99 | 153 | `ê` | 0.352% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 98 | 152 | `î` | 0.174% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 99 | 153 | `ê` | 0.349% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
 | 100 | 160 | `ʃʲ` | 0.012% | 1 | uk:fleurs |
-| 101 | 161 | `â` | 0.266% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 101 | 161 | `â` | 0.268% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
 | 102 | 164 | `tʼ` | 0.000% | 0 | ady:dict |
-| 103 | 165 | `r̩` | 0.053% | 1 | mk:dict mk:fleurs |
+| 103 | 165 | `r̩` | 0.048% | 1 | mk:dict mk:fleurs |
 | 104 | 166 | `xʲ` | 0.012% | 2 | ru:dict uk:dict uk:fleurs |
-| 105 | 170 | `ǔ` | 0.085% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
-| 106 | 172 | `ô` | 0.241% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
-| 107 | 176 | `û` | 0.138% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 105 | 170 | `ǔ` | 0.087% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 106 | 172 | `ô` | 0.244% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 107 | 176 | `û` | 0.135% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
 | 108 | 184 | `uʲ` | 0.020% | 1 | be:dict be:fleurs |
 | 109 | 190 | `ɬ` | 0.000% | 0 | ady:dict |
-| 110 | 192 | `ʋʲ` | 0.113% | 1 | uk:dict uk:fleurs |
+| 110 | 192 | `ʋʲ` | 0.114% | 1 | uk:dict uk:fleurs |
 | 111 | 193 | `pʼ` | 0.000% | 0 | ady:dict |
-| 112 | 195 | `t͡sʲ` | 0.132% | 3 | be:dict be:fleurs bg:fleurs uk:dict uk:fleurs |
-| 113 | 202 | `d͡ʐ` | 0.005% | 1 | ru:dict ru:fleurs |
+| 112 | 195 | `t͡sʲ` | 0.131% | 3 | be:dict be:fleurs bg:fleurs uk:dict uk:fleurs |
+| 113 | 202 | `d͡ʐ` | 0.005% | 1 | ru:dict |
 | 114 | 203 | `ʍ` | 0.028% | 1 | uk:dict uk:fleurs |
 | 115 | 205 | `ř` | 0.006% | 1 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
 | 116 | 209 | `t͡sʼ` | 0.000% | 0 | ady:dict |
 | 117 | 217 | `ʒʲ` | 0.005% | 1 | uk:fleurs |
-| 118 | 219 | `ɱ` | 0.010% | 2 | mk:fleurs |
+| 118 | 219 | `ɱ` | 0.011% | 2 | mk:fleurs |
 | 119 | 221 | `t͡ʃʼ` | 0.000% | 0 | ady:dict |
 | 120 | 227 | `ɣʲ` | 0.003% | 1 | be:dict |
 | 121 | 230 | `kʷ` | 0.000% | 0 | ady:dict |
-| 122 | 232 | `r̂` | 0.044% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
-| 123 | 239 | `ɛ́` | 0.007% | 1 | uk:fleurs |
-| 124 | 242 | `ɡʷ` | 0.000% | 0 | ady:dict |
-| 125 | 253 | `d͡zʲ` | 0.005% | 2 | uk:dict uk:fleurs |
-| 126 | 255 | `ʃʼ` | 0.000% | 0 | ady:dict |
-| 127 | 261 | `t͡ʃʲ` | 0.012% | 1 | uk:fleurs |
+| 122 | 232 | `r̂` | 0.031% | 2 | hbs-Cyrl:dict hbs:dict hbs:fleurs |
+| 123 | 242 | `ɡʷ` | 0.000% | 0 | ady:dict |
+| 124 | 253 | `d͡zʲ` | 0.005% | 2 | uk:dict uk:fleurs |
+| 125 | 255 | `ʃʼ` | 0.000% | 0 | ady:dict |
+| 126 | 261 | `t͡ʃʲ` | 0.012% | 1 | uk:fleurs |
 
 ### `other_alphabetic`
 
@@ -582,109 +681,106 @@ Greek/Armenian/Georgian/Hangul/Ethiopic. Space-delimited alphabets and abugidas 
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | 3.850% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict ka:fleurs +1 |
-| 5 | 5 | `s` | 4.196% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 6 | 6 | `i` | 8.730% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 7 | 7 | `e` | 1.931% | 4 | am:dict am:fleurs el:dict el:fleurs grc:dict ka:fleurs |
-| 8 | 8 | `n` | 6.759% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 9 | 9 | `t` | 3.655% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +5 |
-| 10 | 10 | `l` | 2.736% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +5 |
-| 11 | 11 | `k` | 2.441% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +5 |
-| 12 | 12 | `o` | 2.576% | 4 | am:dict am:fleurs el:dict el:fleurs grc:dict ka:fleurs +2 |
-| 13 | 13 | `r` | 2.430% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy:dict +4 |
-| 14 | 14 | `m` | 4.084% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 15 | 15 | `d` | 2.126% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 16 | 16 | `u` | 3.084% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 17 | 17 | `ɪ` | 0.001% | 1 | ko:fleurs |
-| 18 | 18 | `ɾ` | 3.305% | 4 | am:fleurs el:dict el:fleurs hy-west:dict hy:dict hy:fleurs +2 |
-| 19 | 19 | `f` | 0.465% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +3 |
-| 20 | 20 | `j` | 1.975% | 5 | am:dict am:fleurs el:fleurs hy-west:dict hy:dict hy:fleurs +2 |
-| 21 | 21 | `ə` | 3.393% | 2 | am:dict am:fleurs hy-west:dict hy:dict hy:fleurs |
-| 22 | 22 | `b` | 1.810% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 23 | 23 | `p` | 1.343% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
-| 24 | 24 | `ɛ` | 4.193% | 5 | el:fleurs grc:dict hy-west:dict hy:dict hy:fleurs ka:dict +1 |
-| 25 | 25 | `w` | 0.740% | 5 | am:dict am:fleurs el:fleurs grc:dict ko:dict ko:fleurs |
-| 26 | 26 | `ɑ` | 7.104% | 3 | hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs |
-| 27 | 27 | `v` | 1.798% | 5 | am:fleurs el:dict el:fleurs grc:dict hy-west:dict hy:dict +4 |
-| 28 | 28 | `ɡ` | 1.589% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
-| 29 | 29 | `z` | 0.709% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
-| 30 | 30 | `ʔ` | 0.478% | 1 | am:dict am:fleurs |
-| 31 | 31 | `ɔ` | 2.304% | 5 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +1 |
-| 32 | 32 | `ŋ` | 0.763% | 4 | el:dict el:fleurs grc:dict hy-west:dict hy:dict hy:fleurs +2 |
-| 33 | 34 | `ʃ` | 0.728% | 5 | am:dict am:fleurs el:fleurs hy-west:dict hy:dict hy:fleurs +3 |
-| 34 | 35 | `ɯ` | 0.894% | 2 | ko:dict ko:fleurs |
-| 35 | 36 | `h` | 0.830% | 5 | am:dict am:fleurs grc:dict hy-west:dict hy:dict hy:fleurs +4 |
-| 36 | 37 | `ʁ` | 0.247% | 2 | hy-west:dict hy:dict hy:fleurs |
-| 37 | 39 | `x` | 0.538% | 4 | el:dict el:fleurs grc:dict ka:dict ka:fleurs ko:dict +1 |
-| 38 | 40 | `ð` | 0.333% | 1 | el:dict el:fleurs grc:dict |
-| 39 | 42 | `β` | 0.259% | 2 | am:dict am:fleurs grc:dict ko:dict ko:fleurs |
-| 40 | 45 | `ʒ` | 0.056% | 4 | am:dict hy-west:dict hy:dict hy:fleurs ka:dict |
-| 41 | 47 | `ɣ` | 0.224% | 4 | el:dict el:fleurs grc:dict ka:dict ka:fleurs |
-| 42 | 48 | `y` | 0.001% | 1 | grc:dict |
-| 43 | 49 | `ɨ` | 1.813% | 1 | am:dict am:fleurs |
-| 44 | 52 | `ɕ` | 0.014% | 1 | ko:dict ko:fleurs |
-| 45 | 54 | `ɲ` | 0.142% | 3 | am:dict am:fleurs el:dict el:fleurs grc:dict ko:dict +1 |
-| 46 | 56 | `t͡s` | 0.534% | 3 | hy:dict hy:fleurs ka:dict ka:fleurs |
-| 47 | 57 | `ʏ` | 0.002% | 1 | hy-west:dict ko:fleurs |
-| 48 | 69 | `ʎ` | 0.047% | 2 | el:dict el:fleurs ko:dict ko:fleurs |
-| 49 | 71 | `ʈ` | 0.164% | 1 | am:dict am:fleurs |
-| 50 | 74 | `t͡ʃ` | 0.419% | 3 | am:dict am:fleurs hy:dict hy:fleurs ka:dict ka:fleurs |
-| 51 | 75 | `a̠` | 1.470% | 1 | ko:dict ko:fleurs |
-| 52 | 76 | `tʰ` | 1.160% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +2 |
-| 53 | 78 | `t͡ɕ` | 0.278% | 1 | ko:dict ko:fleurs |
-| 54 | 79 | `θ` | 0.215% | 1 | el:dict el:fleurs grc:dict |
-| 55 | 82 | `c` | 0.343% | 1 | el:dict el:fleurs grc:dict |
-| 56 | 83 | `ɭ` | 0.451% | 1 | ko:dict ko:fleurs |
-| 57 | 86 | `ç` | 0.213% | 3 | am:dict am:fleurs el:dict el:fleurs grc:dict ko:dict +1 |
-| 58 | 91 | `d͡ʒ` | 0.192% | 3 | am:dict am:fleurs hy-west:dict hy:dict hy:fleurs ka:dict +1 |
-| 59 | 92 | `kʰ` | 0.665% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +2 |
-| 60 | 101 | `ʌ` | 0.880% | 1 | ko:dict ko:fleurs |
-| 61 | 103 | `sʰ` | 0.468% | 1 | ko:dict ko:fleurs |
-| 62 | 105 | `pʰ` | 0.434% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +2 |
-| 63 | 108 | `k̚` | 0.141% | 1 | ko:dict ko:fleurs |
-| 64 | 110 | `d͡ʑ` | 0.287% | 1 | ko:dict ko:fleurs |
-| 65 | 111 | `o̞` | 0.627% | 1 | ko:dict ko:fleurs |
-| 66 | 113 | `ɟ` | 0.013% | 1 | el:dict el:fleurs grc:dict |
-| 67 | 115 | `ɸ` | 0.027% | 1 | grc:dict ko:dict ko:fleurs |
-| 68 | 116 | `d͡z` | 0.160% | 2 | hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs |
-| 69 | 117 | `ɦ` | 0.222% | 1 | ko:dict ko:fleurs |
-| 70 | 118 | `ʝ` | 0.213% | 2 | el:dict el:fleurs grc:dict ko:dict ko:fleurs |
-| 71 | 119 | `ɥ` | 0.047% | 1 | ko:dict ko:fleurs |
-| 72 | 120 | `i̯` | 0.017% | 1 | el:fleurs grc:dict |
-| 73 | 124 | `ɕʰ` | 0.103% | 1 | ko:dict ko:fleurs |
-| 74 | 127 | `ɛ̝` | 0.308% | 1 | ko:dict ko:fleurs |
-| 75 | 128 | `t͡ɕʰ` | 0.146% | 1 | ko:dict ko:fleurs |
-| 76 | 130 | `ǎ` | 0.000% | 0 | grc:dict |
-| 77 | 131 | `t̚` | 0.116% | 1 | ko:dict ko:fleurs |
-| 78 | 134 | `e̞` | 0.340% | 1 | ko:dict ko:fleurs |
-| 79 | 135 | `u̯` | 0.000% | 0 | grc:dict |
-| 80 | 139 | `ǒ` | 0.000% | 0 | grc:dict |
-| 81 | 141 | `ě` | 0.000% | 0 | grc:dict |
-| 82 | 142 | `r̥` | 0.000% | 0 | grc:dict |
-| 83 | 144 | `ǐ` | 0.000% | 0 | grc:dict |
-| 84 | 148 | `χ` | 0.170% | 1 | hy-west:dict hy:dict hy:fleurs |
-| 85 | 150 | `p̚` | 0.042% | 1 | ko:dict ko:fleurs |
-| 86 | 153 | `ê` | 0.000% | 0 | grc:dict |
-| 87 | 155 | `t͡sʰ` | 0.505% | 1 | hy-west:dict hy:dict hy:fleurs |
-| 88 | 156 | `á` | 0.000% | 0 | grc:dict |
-| 89 | 157 | `é` | 0.000% | 0 | grc:dict |
-| 90 | 158 | `ó` | 0.000% | 0 | grc:dict |
-| 91 | 163 | `í` | 0.000% | 0 | grc:dict |
-| 92 | 164 | `tʼ` | 0.407% | 1 | ka:dict ka:fleurs |
-| 93 | 165 | `r̩` | 0.006% | 2 | ko:fleurs |
-| 94 | 172 | `ô` | 0.000% | 0 | grc:dict |
-| 95 | 174 | `kʼ` | 0.365% | 1 | ka:dict ka:fleurs |
-| 96 | 177 | `t͡ʃʰ` | 0.277% | 1 | hy-west:dict hy:dict hy:fleurs |
-| 97 | 180 | `ø̞` | 0.094% | 1 | ko:dict ko:fleurs |
-| 98 | 193 | `pʼ` | 0.191% | 1 | ka:dict ka:fleurs |
-| 99 | 199 | `ɰ` | 0.146% | 1 | ko:dict ko:fleurs |
-| 100 | 203 | `ʍ` | 0.000% | 0 | grc:dict |
-| 101 | 209 | `t͡sʼ` | 0.183% | 1 | ka:dict ka:fleurs |
-| 102 | 219 | `ɱ` | 0.022% | 2 | el:dict el:fleurs |
-| 103 | 220 | `qʼ` | 0.179% | 1 | ka:dict ka:fleurs |
-| 104 | 221 | `t͡ʃʼ` | 0.031% | 1 | ka:dict ka:fleurs |
-| 105 | 225 | `ɛ̂` | 0.000% | 0 | grc:dict |
-| 106 | 239 | `ɛ́` | 0.012% | 1 | ka:fleurs |
+| 4 | 4 | `a` | 3.855% | 4 | am:dict am:fleurs el:dict el:fleurs grc:dict |
+| 5 | 5 | `s` | 4.175% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 6 | 6 | `i` | 8.711% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 7 | 7 | `e` | 1.885% | 2 | am:dict am:fleurs el:dict el:fleurs grc:dict |
+| 8 | 8 | `n` | 6.781% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 9 | 9 | `t` | 3.551% | 4 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
+| 10 | 10 | `l` | 2.770% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
+| 11 | 11 | `k` | 2.434% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
+| 12 | 12 | `o` | 2.575% | 3 | am:dict am:fleurs el:dict el:fleurs grc:dict ko:dict +1 |
+| 13 | 13 | `r` | 2.420% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy:dict +3 |
+| 14 | 14 | `m` | 4.079% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 15 | 15 | `d` | 2.128% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 16 | 16 | `u` | 3.113% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 17 | 18 | `ɾ` | 3.289% | 3 | el:dict el:fleurs hy-west:dict hy:dict hy:fleurs ko:dict +1 |
+| 18 | 19 | `f` | 0.463% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +3 |
+| 19 | 20 | `j` | 1.968% | 3 | am:dict am:fleurs hy-west:dict hy:dict hy:fleurs ko:dict +1 |
+| 20 | 21 | `ə` | 3.324% | 2 | am:dict am:fleurs hy-west:dict hy:dict hy:fleurs |
+| 21 | 22 | `b` | 1.812% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 22 | 23 | `p` | 1.342% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
+| 23 | 24 | `ɛ` | 4.166% | 2 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs |
+| 24 | 25 | `w` | 0.738% | 3 | am:dict am:fleurs grc:dict ko:dict ko:fleurs |
+| 25 | 26 | `ɑ` | 7.227% | 2 | hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs |
+| 26 | 27 | `v` | 1.813% | 5 | am:fleurs el:dict el:fleurs grc:dict hy-west:dict hy:dict +3 |
+| 27 | 28 | `ɡ` | 1.591% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +6 |
+| 28 | 29 | `z` | 0.720% | 5 | am:dict am:fleurs el:dict el:fleurs grc:dict hy-west:dict +4 |
+| 29 | 30 | `ʔ` | 0.487% | 1 | am:dict am:fleurs |
+| 30 | 31 | `ɔ` | 2.328% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +1 |
+| 31 | 32 | `ŋ` | 0.765% | 4 | el:dict el:fleurs grc:dict hy-west:dict hy:dict hy:fleurs +2 |
+| 32 | 34 | `ʃ` | 0.727% | 4 | am:dict am:fleurs hy-west:dict hy:dict hy:fleurs ka:dict +2 |
+| 33 | 35 | `ɯ` | 0.894% | 1 | ko:dict ko:fleurs |
+| 34 | 36 | `h` | 0.840% | 4 | am:dict am:fleurs grc:dict hy-west:dict hy:dict hy:fleurs +4 |
+| 35 | 37 | `ʁ` | 0.251% | 1 | hy-west:dict hy:dict hy:fleurs |
+| 36 | 39 | `x` | 0.544% | 4 | el:dict el:fleurs grc:dict ka:dict ka:fleurs ko:dict +1 |
+| 37 | 40 | `ð` | 0.339% | 1 | el:dict el:fleurs grc:dict |
+| 38 | 42 | `β` | 0.264% | 2 | am:dict am:fleurs grc:dict ko:dict ko:fleurs |
+| 39 | 45 | `ʒ` | 0.056% | 3 | am:dict hy-west:dict hy:dict hy:fleurs ka:dict |
+| 40 | 47 | `ɣ` | 0.228% | 3 | el:dict el:fleurs grc:dict ka:dict ka:fleurs |
+| 41 | 48 | `y` | 0.000% | 0 | grc:dict |
+| 42 | 49 | `ɨ` | 1.846% | 1 | am:dict am:fleurs |
+| 43 | 52 | `ɕ` | 0.010% | 1 | ko:dict ko:fleurs |
+| 44 | 54 | `ɲ` | 0.138% | 3 | am:dict am:fleurs el:dict el:fleurs grc:dict ko:dict +1 |
+| 45 | 56 | `t͡s` | 0.535% | 2 | hy:dict hy:fleurs ka:dict ka:fleurs |
+| 46 | 57 | `ʏ` | 0.002% | 1 | hy-west:dict |
+| 47 | 69 | `ʎ` | 0.044% | 2 | el:dict el:fleurs ko:dict ko:fleurs |
+| 48 | 71 | `ʈ` | 0.166% | 1 | am:dict am:fleurs |
+| 49 | 74 | `t͡ʃ` | 0.426% | 3 | am:dict am:fleurs hy:dict hy:fleurs ka:dict ka:fleurs |
+| 50 | 75 | `a̠` | 1.468% | 1 | ko:dict ko:fleurs |
+| 51 | 76 | `tʰ` | 1.176% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +2 |
+| 52 | 78 | `t͡ɕ` | 0.274% | 1 | ko:dict ko:fleurs |
+| 53 | 79 | `θ` | 0.219% | 1 | el:dict el:fleurs grc:dict |
+| 54 | 82 | `c` | 0.349% | 1 | el:dict el:fleurs grc:dict |
+| 55 | 83 | `ɭ` | 0.432% | 1 | ko:dict ko:fleurs |
+| 56 | 86 | `ç` | 0.211% | 3 | am:dict am:fleurs el:dict el:fleurs grc:dict ko:dict +1 |
+| 57 | 91 | `d͡ʒ` | 0.192% | 3 | am:dict am:fleurs hy-west:dict hy:dict hy:fleurs ka:dict +1 |
+| 58 | 92 | `kʰ` | 0.677% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +2 |
+| 59 | 101 | `ʌ` | 0.871% | 1 | ko:dict ko:fleurs |
+| 60 | 103 | `sʰ` | 0.471% | 1 | ko:dict ko:fleurs |
+| 61 | 105 | `pʰ` | 0.441% | 3 | grc:dict hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs +2 |
+| 62 | 108 | `k̚` | 0.138% | 1 | ko:dict ko:fleurs |
+| 63 | 110 | `d͡ʑ` | 0.289% | 1 | ko:dict ko:fleurs |
+| 64 | 111 | `o̞` | 0.629% | 1 | ko:dict ko:fleurs |
+| 65 | 113 | `ɟ` | 0.013% | 1 | el:dict grc:dict |
+| 66 | 115 | `ɸ` | 0.028% | 1 | grc:dict ko:dict ko:fleurs |
+| 67 | 116 | `d͡z` | 0.161% | 2 | hy-west:dict hy:dict hy:fleurs ka:dict ka:fleurs |
+| 68 | 117 | `ɦ` | 0.224% | 1 | ko:dict ko:fleurs |
+| 69 | 118 | `ʝ` | 0.217% | 2 | el:dict el:fleurs grc:dict ko:dict ko:fleurs |
+| 70 | 119 | `ɥ` | 0.040% | 1 | ko:dict ko:fleurs |
+| 71 | 120 | `i̯` | 0.017% | 1 | el:fleurs grc:dict |
+| 72 | 124 | `ɕʰ` | 0.103% | 1 | ko:dict ko:fleurs |
+| 73 | 127 | `ɛ̝` | 0.293% | 1 | ko:dict ko:fleurs |
+| 74 | 128 | `t͡ɕʰ` | 0.144% | 1 | ko:dict ko:fleurs |
+| 75 | 130 | `ǎ` | 0.000% | 0 | grc:dict |
+| 76 | 131 | `t̚` | 0.113% | 1 | ko:dict ko:fleurs |
+| 77 | 134 | `e̞` | 0.335% | 1 | ko:dict ko:fleurs |
+| 78 | 135 | `u̯` | 0.000% | 0 | grc:dict |
+| 79 | 139 | `ǒ` | 0.000% | 0 | grc:dict |
+| 80 | 141 | `ě` | 0.000% | 0 | grc:dict |
+| 81 | 142 | `r̥` | 0.000% | 0 | grc:dict |
+| 82 | 144 | `ǐ` | 0.000% | 0 | grc:dict |
+| 83 | 148 | `χ` | 0.173% | 1 | hy-west:dict hy:dict hy:fleurs |
+| 84 | 150 | `p̚` | 0.042% | 1 | ko:dict ko:fleurs |
+| 85 | 153 | `ê` | 0.000% | 0 | grc:dict |
+| 86 | 155 | `t͡sʰ` | 0.509% | 1 | hy-west:dict hy:dict hy:fleurs |
+| 87 | 156 | `á` | 0.000% | 0 | grc:dict |
+| 88 | 157 | `é` | 0.000% | 0 | grc:dict |
+| 89 | 158 | `ó` | 0.000% | 0 | grc:dict |
+| 90 | 163 | `í` | 0.000% | 0 | grc:dict |
+| 91 | 164 | `tʼ` | 0.414% | 1 | ka:dict ka:fleurs |
+| 92 | 172 | `ô` | 0.000% | 0 | grc:dict |
+| 93 | 174 | `kʼ` | 0.369% | 1 | ka:dict ka:fleurs |
+| 94 | 177 | `t͡ʃʰ` | 0.282% | 1 | hy-west:dict hy:dict hy:fleurs |
+| 95 | 180 | `ø̞` | 0.094% | 1 | ko:dict ko:fleurs |
+| 96 | 193 | `pʼ` | 0.194% | 1 | ka:dict ka:fleurs |
+| 97 | 199 | `ɰ` | 0.146% | 1 | ko:dict ko:fleurs |
+| 98 | 203 | `ʍ` | 0.000% | 0 | grc:dict |
+| 99 | 209 | `t͡sʼ` | 0.187% | 1 | ka:dict ka:fleurs |
+| 100 | 219 | `ɱ` | 0.021% | 1 | el:dict el:fleurs |
+| 101 | 220 | `qʼ` | 0.182% | 1 | ka:dict ka:fleurs |
+| 102 | 221 | `t͡ʃʼ` | 0.031% | 1 | ka:dict ka:fleurs |
+| 103 | 225 | `ɛ̂` | 0.000% | 0 | grc:dict |
 
 ### `abjad`
 
@@ -694,93 +790,92 @@ Arabic script and Syriac. Orthography underspecifies vowels, so the grapheme seq
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | 13.116% | 4 | ar:dict ar:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +3 |
-| 5 | 5 | `s` | 3.025% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 6 | 6 | `i` | 6.319% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +5 |
-| 7 | 7 | `e` | 6.594% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 8 | 8 | `n` | 5.855% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 9 | 9 | `t` | 3.377% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 10 | 10 | `l` | 4.109% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 11 | 11 | `k` | 3.561% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 12 | 12 | `o` | 2.650% | 4 | fa:dict fa:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
-| 13 | 13 | `r` | 4.185% | 4 | ar:dict ar:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
-| 14 | 14 | `m` | 3.847% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 15 | 15 | `d` | 3.411% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 16 | 16 | `u` | 1.733% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 17 | 17 | `ɪ` | 0.556% | 4 | ar:dict ar:fleurs ku:fleurs sd:dict sd:fleurs syc:dict +3 |
-| 18 | 18 | `ɾ` | 1.125% | 1 | fa:dict fa:fleurs ug:dict |
-| 19 | 19 | `f` | 1.022% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +5 |
-| 20 | 20 | `j` | 1.942% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 21 | 21 | `ə` | 2.729% | 3 | sd:dict sd:fleurs syc:dict ur:dict ur:fleurs |
-| 22 | 22 | `b` | 2.815% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 23 | 23 | `p` | 0.959% | 5 | fa:dict fa:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
-| 24 | 24 | `ɛ` | 0.154% | 4 | sd:dict sd:fleurs syc:dict ur:dict ur:fleurs |
-| 25 | 25 | `w` | 1.384% | 4 | ar:dict ar:fleurs fa:fleurs ku:dict ku:fleurs syc:dict +1 |
-| 26 | 26 | `ɑ` | 0.002% | 1 | syc:dict ug:dict |
-| 27 | 27 | `v` | 0.244% | 3 | fa:dict fa:fleurs ku:dict ku:fleurs syc:dict |
-| 28 | 28 | `ɡ` | 1.204% | 5 | fa:dict fa:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
-| 29 | 29 | `z` | 1.103% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 30 | 30 | `ʔ` | 1.142% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +1 |
-| 31 | 31 | `ɔ` | 0.047% | 3 | sd:fleurs ur:dict ur:fleurs |
-| 32 | 32 | `ŋ` | 0.013% | 2 | ku:fleurs ug:dict |
-| 33 | 33 | `ʊ` | 0.223% | 4 | ar:dict ar:fleurs fa:dict fa:fleurs sd:dict sd:fleurs +2 |
-| 34 | 34 | `ʃ` | 0.838% | 4 | ar:dict ar:fleurs fa:dict fa:fleurs sd:dict sd:fleurs +4 |
-| 35 | 36 | `h` | 2.906% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
-| 36 | 37 | `ʁ` | 0.002% | 1 | ug:dict |
-| 37 | 39 | `x` | 0.589% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +5 |
-| 38 | 40 | `ð` | 0.143% | 2 | ar:dict ar:fleurs syc:dict |
-| 39 | 41 | `æ` | 1.910% | 1 | fa:dict fa:fleurs ug:dict |
-| 40 | 43 | `ɫ` | 0.193% | 1 | ku:dict ku:fleurs |
-| 41 | 44 | `q` | 0.733% | 4 | ar:dict ar:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
-| 42 | 45 | `ʒ` | 0.260% | 2 | ar:dict ar:fleurs fa:dict fa:fleurs |
+| 4 | 4 | `a` | 13.107% | 4 | ar:dict ar:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +3 |
+| 5 | 5 | `s` | 3.004% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 6 | 6 | `i` | 6.276% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +5 |
+| 7 | 7 | `e` | 6.599% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 8 | 8 | `n` | 5.918% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 9 | 9 | `t` | 3.269% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 10 | 10 | `l` | 4.094% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 11 | 11 | `k` | 3.590% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 12 | 12 | `o` | 2.685% | 4 | fa:dict fa:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
+| 13 | 13 | `r` | 4.211% | 4 | ar:dict ar:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
+| 14 | 14 | `m` | 3.842% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 15 | 15 | `d` | 3.387% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 16 | 16 | `u` | 1.713% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 17 | 17 | `ɪ` | 0.532% | 3 | ar:dict ar:fleurs sd:dict sd:fleurs syc:dict ug:dict +2 |
+| 18 | 18 | `ɾ` | 1.142% | 1 | fa:dict fa:fleurs ug:dict |
+| 19 | 19 | `f` | 1.003% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +5 |
+| 20 | 20 | `j` | 1.961% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 21 | 21 | `ə` | 2.735% | 2 | sd:dict sd:fleurs syc:dict ur:dict ur:fleurs |
+| 22 | 22 | `b` | 2.821% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 23 | 23 | `p` | 0.955% | 4 | fa:dict fa:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
+| 24 | 24 | `ɛ` | 0.082% | 2 | sd:dict syc:dict ur:dict ur:fleurs |
+| 25 | 25 | `w` | 1.377% | 2 | ar:dict ar:fleurs ku:dict ku:fleurs syc:dict ug:dict |
+| 26 | 26 | `ɑ` | 0.000% | 0 | syc:dict ug:dict |
+| 27 | 27 | `v` | 0.245% | 2 | fa:dict fa:fleurs ku:dict ku:fleurs syc:dict |
+| 28 | 28 | `ɡ` | 1.214% | 4 | fa:dict fa:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
+| 29 | 29 | `z` | 1.121% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 30 | 30 | `ʔ` | 1.148% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +1 |
+| 31 | 31 | `ɔ` | 0.014% | 2 | ur:dict ur:fleurs |
+| 32 | 32 | `ŋ` | 0.000% | 0 | ug:dict |
+| 33 | 33 | `ʊ` | 0.209% | 4 | ar:dict ar:fleurs fa:dict fa:fleurs sd:dict sd:fleurs +2 |
+| 34 | 34 | `ʃ` | 0.837% | 4 | ar:dict ar:fleurs fa:dict fa:fleurs sd:dict sd:fleurs +4 |
+| 35 | 36 | `h` | 2.917% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +6 |
+| 36 | 37 | `ʁ` | 0.000% | 0 | ug:dict |
+| 37 | 39 | `x` | 0.595% | 5 | ar:dict ar:fleurs fa:dict fa:fleurs ku:dict ku:fleurs +5 |
+| 38 | 40 | `ð` | 0.145% | 1 | ar:dict ar:fleurs syc:dict |
+| 39 | 41 | `æ` | 1.923% | 1 | fa:dict fa:fleurs ug:dict |
+| 40 | 43 | `ɫ` | 0.196% | 1 | ku:dict ku:fleurs |
+| 41 | 44 | `q` | 0.744% | 4 | ar:dict ar:fleurs ku:dict ku:fleurs sd:dict sd:fleurs +4 |
+| 42 | 45 | `ʒ` | 0.265% | 2 | ar:dict ar:fleurs fa:dict |
 | 43 | 46 | `ʂ` | 0.172% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 44 | 47 | `ɣ` | 0.150% | 3 | ar:dict ar:fleurs sd:dict sd:fleurs syc:dict ur:dict +1 |
-| 45 | 48 | `y` | 0.938% | 3 | fa:fleurs ku:dict ku:fleurs ug:dict |
-| 46 | 50 | `ʕ` | 0.547% | 2 | ar:dict ar:fleurs ku:dict ku:fleurs syc:dict |
-| 47 | 51 | `ħ` | 0.281% | 1 | ar:dict ar:fleurs syc:dict |
-| 48 | 53 | `ɳ` | 0.217% | 1 | sd:dict sd:fleurs |
-| 49 | 54 | `ɲ` | 0.015% | 1 | sd:dict sd:fleurs |
-| 50 | 59 | `œ` | 0.008% | 1 | fa:fleurs ug:dict |
-| 51 | 62 | `tˤ` | 0.150% | 1 | ar:dict ar:fleurs syc:dict |
-| 52 | 67 | `sˤ` | 0.130% | 1 | ar:dict ar:fleurs syc:dict |
-| 53 | 70 | `ɒ` | 1.711% | 1 | fa:dict fa:fleurs |
-| 54 | 71 | `ʈ` | 0.389% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 55 | 74 | `t͡ʃ` | 0.055% | 2 | fa:dict fa:fleurs ug:dict |
-| 56 | 76 | `tʰ` | 0.265% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 57 | 79 | `θ` | 0.133% | 2 | ar:dict ar:fleurs syc:dict |
-| 58 | 81 | `t̪` | 0.507% | 2 | sd:dict sd:fleurs |
-| 59 | 82 | `c` | 0.308% | 3 | ku:dict ku:fleurs sd:dict sd:fleurs ur:dict ur:fleurs |
-| 60 | 86 | `ç` | 0.111% | 1 | ku:dict ku:fleurs |
-| 61 | 87 | `õ` | 0.118% | 1 | ur:dict ur:fleurs |
-| 62 | 89 | `ʐ` | 0.037% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 63 | 91 | `d͡ʒ` | 0.184% | 2 | fa:dict fa:fleurs ug:dict |
-| 64 | 92 | `kʰ` | 0.264% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 44 | 47 | `ɣ` | 0.153% | 3 | ar:dict ar:fleurs sd:dict sd:fleurs syc:dict ur:dict +1 |
+| 45 | 48 | `y` | 0.936% | 1 | ku:dict ku:fleurs ug:dict |
+| 46 | 50 | `ʕ` | 0.557% | 2 | ar:dict ar:fleurs ku:dict syc:dict |
+| 47 | 51 | `ħ` | 0.286% | 1 | ar:dict ar:fleurs syc:dict |
+| 48 | 53 | `ɳ` | 0.220% | 1 | sd:dict sd:fleurs |
+| 49 | 54 | `ɲ` | 0.016% | 1 | sd:dict sd:fleurs |
+| 50 | 59 | `œ` | 0.000% | 0 | ug:dict |
+| 51 | 62 | `tˤ` | 0.153% | 1 | ar:dict ar:fleurs syc:dict |
+| 52 | 67 | `sˤ` | 0.133% | 1 | ar:dict ar:fleurs syc:dict |
+| 53 | 70 | `ɒ` | 1.739% | 1 | fa:dict fa:fleurs |
+| 54 | 71 | `ʈ` | 0.396% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 55 | 74 | `t͡ʃ` | 0.054% | 1 | fa:dict fa:fleurs ug:dict |
+| 56 | 76 | `tʰ` | 0.269% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 57 | 79 | `θ` | 0.135% | 2 | ar:dict ar:fleurs syc:dict |
+| 58 | 81 | `t̪` | 0.516% | 2 | sd:dict sd:fleurs |
+| 59 | 82 | `c` | 0.279% | 3 | ku:dict ku:fleurs sd:dict sd:fleurs ur:dict ur:fleurs |
+| 60 | 86 | `ç` | 0.113% | 1 | ku:dict ku:fleurs |
+| 61 | 87 | `õ` | 0.120% | 1 | ur:dict ur:fleurs |
+| 62 | 89 | `ʐ` | 0.038% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 63 | 91 | `d͡ʒ` | 0.187% | 2 | fa:dict fa:fleurs ug:dict |
+| 64 | 92 | `kʰ` | 0.269% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
 | 65 | 94 | `ă` | 0.000% | 0 | syc:dict |
-| 66 | 98 | `ɖ` | 0.256% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 67 | 101 | `ʌ` | 2.723% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 68 | 102 | `ʋ` | 0.501% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 66 | 98 | `ɖ` | 0.261% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 67 | 101 | `ʌ` | 2.771% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 68 | 102 | `ʋ` | 0.504% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
 | 69 | 105 | `pʰ` | 0.012% | 2 | sd:dict sd:fleurs ur:dict |
-| 70 | 113 | `ɟ` | 0.916% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 71 | 114 | `ẽ` | 0.285% | 1 | ur:dict ur:fleurs |
+| 70 | 113 | `ɟ` | 0.932% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 71 | 114 | `ẽ` | 0.290% | 1 | ur:dict ur:fleurs |
 | 72 | 137 | `ã` | 0.020% | 1 | ur:dict ur:fleurs |
-| 73 | 140 | `a͡ɪ` | 0.051% | 2 | ur:dict ur:fleurs |
+| 73 | 140 | `a͡ɪ` | 0.046% | 1 | ur:dict ur:fleurs |
 | 74 | 148 | `χ` | 0.000% | 0 | ug:dict |
-| 75 | 152 | `î` | 1.204% | 1 | ku:dict ku:fleurs |
-| 76 | 153 | `ê` | 0.580% | 1 | ku:dict ku:fleurs |
+| 75 | 152 | `î` | 1.225% | 1 | ku:dict ku:fleurs |
+| 76 | 153 | `ê` | 0.590% | 1 | ku:dict ku:fleurs |
 | 77 | 163 | `í` | 0.000% | 0 | fa:dict |
-| 78 | 167 | `ĩ` | 0.006% | 1 | sd:fleurs |
-| 79 | 176 | `û` | 0.167% | 1 | ku:dict ku:fleurs |
-| 80 | 181 | `a͡ʊ` | 0.000% | 0 | sd:dict |
-| 81 | 182 | `cʰ` | 0.076% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 82 | 198 | `ŋ̩` | 0.003% | 1 | sd:dict |
-| 83 | 205 | `ř` | 0.201% | 1 | ku:dict ku:fleurs |
-| 84 | 216 | `ʈʰ` | 0.047% | 2 | sd:dict sd:fleurs ur:dict |
-| 85 | 226 | `bʰ` | 0.093% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 86 | 228 | `dʰ` | 0.082% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
-| 87 | 246 | `ɡʰ` | 0.014% | 2 | sd:dict ur:dict ur:fleurs |
-| 88 | 250 | `ɟʰ` | 0.003% | 1 | ur:dict |
-| 89 | 251 | `ɖʰ` | 0.012% | 2 | sd:dict sd:fleurs ur:dict |
-| 90 | 263 | `ʌ̃` | 0.024% | 1 | sd:fleurs |
+| 78 | 176 | `û` | 0.170% | 1 | ku:dict ku:fleurs |
+| 79 | 181 | `a͡ʊ` | 0.000% | 0 | sd:dict |
+| 80 | 182 | `cʰ` | 0.065% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 81 | 198 | `ŋ̩` | 0.003% | 1 | sd:dict |
+| 82 | 205 | `ř` | 0.202% | 1 | ku:dict ku:fleurs |
+| 83 | 216 | `ʈʰ` | 0.048% | 2 | sd:dict sd:fleurs ur:dict |
+| 84 | 226 | `bʰ` | 0.094% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 85 | 228 | `dʰ` | 0.084% | 2 | sd:dict sd:fleurs ur:dict ur:fleurs |
+| 86 | 246 | `ɡʰ` | 0.014% | 2 | sd:dict ur:dict ur:fleurs |
+| 87 | 250 | `ɟʰ` | 0.003% | 1 | ur:dict |
+| 88 | 251 | `ɖʰ` | 0.012% | 2 | sd:dict sd:fleurs ur:dict |
+| 89 | 263 | `ʌ̃` | 0.025% | 1 | sd:fleurs |
 
 ### `brahmic`
 
@@ -790,100 +885,98 @@ Indic abugidas. Inherent vowel and conjunct consonants, so character count and p
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | 4.518% | 3 | hi:dict hi:fleurs or:dict or:fleurs ta:dict ta:fleurs |
-| 5 | 5 | `s` | 2.319% | 3 | hi:fleurs or:dict or:fleurs ta:dict ta:fleurs |
-| 6 | 6 | `i` | 4.800% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 7 | 7 | `e` | 4.296% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 8 | 8 | `n` | 2.524% | 3 | hi:dict hi:fleurs or:dict or:fleurs ta:dict ta:fleurs |
-| 9 | 9 | `t` | 0.157% | 3 | hi:dict hi:fleurs or:fleurs sa:dict ta:fleurs |
-| 10 | 10 | `l` | 0.597% | 3 | hi:dict or:dict or:fleurs ta:dict |
-| 11 | 11 | `k` | 4.964% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 12 | 12 | `o` | 1.611% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 13 | 13 | `r` | 2.646% | 3 | or:dict or:fleurs sa:dict ta:dict ta:fleurs |
-| 14 | 14 | `m` | 3.392% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 15 | 15 | `d` | 0.057% | 3 | hi:dict hi:fleurs or:fleurs sa:dict ta:fleurs |
-| 16 | 16 | `u` | 1.862% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 17 | 17 | `ɪ` | 0.754% | 1 | hi:dict hi:fleurs ta:dict |
-| 18 | 18 | `ɾ` | 4.279% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 19 | 19 | `f` | 0.025% | 3 | hi:dict hi:fleurs |
-| 20 | 20 | `j` | 2.037% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 21 | 21 | `ə` | 1.843% | 1 | hi:dict hi:fleurs ta:dict |
-| 22 | 22 | `b` | 1.958% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 23 | 23 | `p` | 2.962% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 24 | 24 | `ɛ` | 0.487% | 3 | hi:dict hi:fleurs or:fleurs ta:fleurs |
-| 25 | 25 | `w` | 0.046% | 2 | hi:dict hi:fleurs or:fleurs sa:dict |
-| 26 | 26 | `ɑ` | 1.658% | 1 | sa:dict ta:dict ta:fleurs |
-| 27 | 28 | `ɡ` | 1.851% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 28 | 29 | `z` | 0.041% | 1 | hi:dict hi:fleurs |
-| 29 | 30 | `ʔ` | 1.505% | 1 | ta:dict ta:fleurs |
-| 30 | 31 | `ɔ` | 7.646% | 3 | hi:dict hi:fleurs or:dict or:fleurs ta:fleurs |
-| 31 | 32 | `ŋ` | 0.792% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 32 | 33 | `ʊ` | 0.299% | 1 | hi:dict hi:fleurs |
-| 33 | 34 | `ʃ` | 0.305% | 1 | hi:dict hi:fleurs |
-| 34 | 35 | `ɯ` | 2.985% | 1 | ta:dict ta:fleurs |
-| 35 | 36 | `h` | 0.806% | 2 | or:dict or:fleurs sa:dict ta:dict ta:fleurs |
+| 4 | 4 | `a` | 4.542% | 2 | hi:dict or:dict or:fleurs ta:dict ta:fleurs |
+| 5 | 5 | `s` | 2.267% | 2 | or:dict or:fleurs ta:dict ta:fleurs |
+| 6 | 6 | `i` | 4.785% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 7 | 7 | `e` | 4.221% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 8 | 8 | `n` | 2.518% | 3 | hi:dict or:dict or:fleurs ta:dict ta:fleurs |
+| 9 | 9 | `t` | 0.013% | 1 | hi:dict hi:fleurs sa:dict |
+| 10 | 10 | `l` | 0.597% | 1 | hi:dict or:dict or:fleurs ta:dict |
+| 11 | 11 | `k` | 4.990% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 12 | 12 | `o` | 1.608% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 13 | 13 | `r` | 2.639% | 2 | or:dict or:fleurs sa:dict ta:dict ta:fleurs |
+| 14 | 14 | `m` | 3.399% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 15 | 15 | `d` | 0.011% | 2 | hi:dict hi:fleurs sa:dict |
+| 16 | 16 | `u` | 1.844% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 17 | 17 | `ɪ` | 0.758% | 1 | hi:dict hi:fleurs ta:dict |
+| 18 | 18 | `ɾ` | 4.295% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 19 | 19 | `f` | 0.011% | 1 | hi:dict hi:fleurs |
+| 20 | 20 | `j` | 2.043% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 21 | 21 | `ə` | 1.836% | 1 | hi:dict hi:fleurs ta:dict |
+| 22 | 22 | `b` | 1.977% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 23 | 23 | `p` | 2.978% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 24 | 24 | `ɛ` | 0.370% | 1 | hi:dict hi:fleurs |
+| 25 | 25 | `w` | 0.030% | 1 | hi:dict hi:fleurs sa:dict |
+| 26 | 26 | `ɑ` | 1.674% | 1 | sa:dict ta:dict ta:fleurs |
+| 27 | 28 | `ɡ` | 1.867% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 28 | 29 | `z` | 0.042% | 1 | hi:dict hi:fleurs |
+| 29 | 30 | `ʔ` | 1.508% | 1 | ta:dict ta:fleurs |
+| 30 | 31 | `ɔ` | 7.692% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
+| 31 | 32 | `ŋ` | 0.801% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 32 | 33 | `ʊ` | 0.300% | 1 | hi:dict hi:fleurs |
+| 33 | 34 | `ʃ` | 0.306% | 1 | hi:dict hi:fleurs |
+| 34 | 35 | `ɯ` | 3.016% | 1 | ta:dict ta:fleurs |
+| 35 | 36 | `h` | 0.813% | 2 | or:dict or:fleurs sa:dict ta:dict ta:fleurs |
 | 36 | 38 | `ɐ` | 0.000% | 0 | sa:dict |
-| 37 | 39 | `x` | 0.008% | 1 | hi:dict hi:fleurs |
+| 37 | 39 | `x` | 0.005% | 1 | hi:dict |
 | 38 | 44 | `q` | 0.000% | 0 | hi:dict |
-| 39 | 46 | `ʂ` | 0.036% | 2 | sa:dict ta:dict ta:fleurs |
-| 40 | 47 | `ɣ` | 0.006% | 2 | hi:dict |
-| 41 | 49 | `ɨ` | 2.750% | 1 | ta:dict ta:fleurs |
-| 42 | 52 | `ɕ` | 0.007% | 2 | sa:dict |
-| 43 | 53 | `ɳ` | 0.897% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 44 | 54 | `ɲ` | 0.076% | 2 | or:dict or:fleurs sa:dict ta:dict ta:fleurs |
+| 39 | 46 | `ʂ` | 0.037% | 2 | sa:dict ta:dict ta:fleurs |
+| 40 | 47 | `ɣ` | 0.003% | 1 | hi:dict |
+| 41 | 49 | `ɨ` | 2.774% | 1 | ta:dict ta:fleurs |
+| 42 | 52 | `ɕ` | 0.003% | 1 | sa:dict |
+| 43 | 53 | `ɳ` | 0.908% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 44 | 54 | `ɲ` | 0.077% | 2 | or:dict or:fleurs sa:dict ta:dict |
 | 45 | 60 | `ʉ` | 0.000% | 0 | ta:dict |
-| 46 | 71 | `ʈ` | 1.335% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 47 | 74 | `t͡ʃ` | 0.386% | 3 | hi:dict hi:fleurs or:dict or:fleurs |
+| 46 | 71 | `ʈ` | 1.341% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 47 | 74 | `t͡ʃ` | 0.387% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
 | 48 | 78 | `t͡ɕ` | 0.000% | 0 | sa:dict |
-| 49 | 81 | `t̪` | 2.614% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 50 | 83 | `ɭ` | 0.968% | 1 | sa:dict ta:dict ta:fleurs |
+| 49 | 81 | `t̪` | 2.623% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 50 | 83 | `ɭ` | 0.980% | 1 | sa:dict ta:dict ta:fleurs |
 | 51 | 85 | `ɔ̃` | 0.011% | 2 | hi:dict hi:fleurs |
-| 52 | 87 | `õ` | 0.244% | 1 | hi:dict hi:fleurs |
-| 53 | 91 | `d͡ʒ` | 1.061% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
-| 54 | 92 | `kʰ` | 0.332% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 55 | 98 | `ɖ` | 0.940% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 56 | 101 | `ʌ` | 6.232% | 1 | ta:dict ta:fleurs |
-| 57 | 102 | `ʋ` | 1.613% | 2 | hi:dict hi:fleurs sa:dict ta:dict ta:fleurs |
-| 58 | 105 | `pʰ` | 0.163% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 52 | 87 | `õ` | 0.247% | 1 | hi:dict hi:fleurs |
+| 53 | 91 | `d͡ʒ` | 1.073% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
+| 54 | 92 | `kʰ` | 0.335% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 55 | 98 | `ɖ` | 0.951% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 56 | 101 | `ʌ` | 6.282% | 1 | ta:dict ta:fleurs |
+| 57 | 102 | `ʋ` | 1.629% | 2 | hi:dict hi:fleurs sa:dict ta:dict ta:fleurs |
+| 58 | 105 | `pʰ` | 0.165% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
 | 59 | 108 | `k̚` | 0.006% | 1 | hi:dict hi:fleurs |
-| 60 | 109 | `d̪` | 2.071% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 61 | 110 | `d͡ʑ` | 0.078% | 1 | sa:dict ta:dict ta:fleurs |
-| 62 | 114 | `ẽ` | 0.310% | 2 | hi:dict hi:fleurs or:fleurs |
-| 63 | 116 | `d͡z` | 0.011% | 1 | or:fleurs |
-| 64 | 117 | `ɦ` | 0.795% | 1 | hi:dict hi:fleurs sa:dict |
-| 65 | 121 | `ɛ̃` | 0.117% | 1 | hi:dict hi:fleurs |
-| 66 | 126 | `n̪` | 1.606% | 2 | hi:dict hi:fleurs sa:dict ta:dict ta:fleurs |
-| 67 | 128 | `t͡ɕʰ` | 0.003% | 1 | sa:dict |
-| 68 | 131 | `t̚` | 0.028% | 2 | hi:dict hi:fleurs |
-| 69 | 137 | `ã` | 0.204% | 2 | hi:dict hi:fleurs or:dict |
-| 70 | 147 | `l̪` | 2.033% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
-| 71 | 149 | `ä` | 1.887% | 1 | hi:dict hi:fleurs |
-| 72 | 150 | `p̚` | 0.004% | 1 | hi:dict |
-| 73 | 154 | `ɽ` | 0.149% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
-| 74 | 162 | `s̪` | 1.034% | 1 | hi:dict hi:fleurs sa:dict |
-| 75 | 163 | `í` | 0.000% | 0 | sa:dict |
-| 76 | 165 | `r̩` | 0.000% | 0 | sa:dict |
-| 77 | 167 | `ĩ` | 0.175% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 78 | 173 | `ɐ̃` | 0.000% | 0 | sa:dict |
-| 79 | 177 | `t͡ʃʰ` | 0.255% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
-| 80 | 178 | `ʊ̃` | 0.030% | 1 | hi:dict hi:fleurs |
-| 81 | 185 | `ɪ̯` | 1.005% | 1 | ta:dict ta:fleurs |
-| 82 | 191 | `ə̃` | 0.331% | 1 | hi:dict hi:fleurs |
-| 83 | 196 | `t̪ʰ` | 0.650% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 84 | 201 | `ɻ` | 0.192% | 1 | ta:dict ta:fleurs |
-| 85 | 204 | `ũ` | 0.052% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
-| 86 | 210 | `d̪ʱ` | 0.434% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 87 | 211 | `bʱ` | 0.364% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 88 | 216 | `ʈʰ` | 0.115% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 89 | 226 | `bʰ` | 0.093% | 1 | or:dict or:fleurs |
-| 90 | 229 | `ú` | 0.000% | 0 | sa:dict |
-| 91 | 236 | `ɪ̃` | 0.101% | 1 | hi:dict hi:fleurs |
-| 92 | 244 | `ɡʱ` | 0.074% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
-| 93 | 245 | `ɛ̀` | 0.009% | 1 | or:fleurs |
-| 94 | 246 | `ɡʰ` | 0.011% | 1 | or:dict or:fleurs |
-| 95 | 252 | `d͡ʒʱ` | 0.024% | 2 | hi:dict hi:fleurs or:dict |
-| 96 | 254 | `ɖʱ` | 0.012% | 2 | hi:dict hi:fleurs or:dict sa:dict |
-| 97 | 256 | `ɽʱ` | 0.020% | 2 | hi:dict hi:fleurs or:dict |
+| 60 | 109 | `d̪` | 2.085% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 61 | 110 | `d͡ʑ` | 0.079% | 1 | sa:dict ta:dict ta:fleurs |
+| 62 | 114 | `ẽ` | 0.314% | 2 | hi:dict hi:fleurs or:fleurs |
+| 63 | 117 | `ɦ` | 0.804% | 1 | hi:dict hi:fleurs sa:dict |
+| 64 | 121 | `ɛ̃` | 0.119% | 1 | hi:dict hi:fleurs |
+| 65 | 126 | `n̪` | 1.625% | 2 | hi:dict hi:fleurs sa:dict ta:dict ta:fleurs |
+| 66 | 128 | `t͡ɕʰ` | 0.000% | 0 | sa:dict |
+| 67 | 131 | `t̚` | 0.025% | 1 | hi:dict hi:fleurs |
+| 68 | 137 | `ã` | 0.206% | 2 | hi:dict hi:fleurs or:dict |
+| 69 | 147 | `l̪` | 2.057% | 3 | hi:dict hi:fleurs or:dict or:fleurs sa:dict ta:dict +1 |
+| 70 | 149 | `ä` | 1.910% | 1 | hi:dict hi:fleurs |
+| 71 | 150 | `p̚` | 0.004% | 1 | hi:dict |
+| 72 | 154 | `ɽ` | 0.151% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
+| 73 | 162 | `s̪` | 1.046% | 1 | hi:dict hi:fleurs sa:dict |
+| 74 | 163 | `í` | 0.000% | 0 | sa:dict |
+| 75 | 165 | `r̩` | 0.000% | 0 | sa:dict |
+| 76 | 167 | `ĩ` | 0.176% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 77 | 173 | `ɐ̃` | 0.000% | 0 | sa:dict |
+| 78 | 177 | `t͡ʃʰ` | 0.258% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
+| 79 | 178 | `ʊ̃` | 0.030% | 1 | hi:dict hi:fleurs |
+| 80 | 185 | `ɪ̯` | 1.017% | 1 | ta:dict ta:fleurs |
+| 81 | 191 | `ə̃` | 0.335% | 1 | hi:dict hi:fleurs |
+| 82 | 196 | `t̪ʰ` | 0.658% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 83 | 201 | `ɻ` | 0.194% | 1 | ta:dict ta:fleurs |
+| 84 | 204 | `ũ` | 0.052% | 2 | hi:dict hi:fleurs or:dict or:fleurs |
+| 85 | 210 | `d̪ʱ` | 0.439% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 86 | 211 | `bʱ` | 0.368% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 87 | 216 | `ʈʰ` | 0.117% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 88 | 226 | `bʰ` | 0.094% | 1 | or:dict or:fleurs |
+| 89 | 229 | `ú` | 0.000% | 0 | sa:dict |
+| 90 | 236 | `ɪ̃` | 0.102% | 1 | hi:dict hi:fleurs |
+| 91 | 244 | `ɡʱ` | 0.075% | 2 | hi:dict hi:fleurs or:dict or:fleurs sa:dict |
+| 92 | 246 | `ɡʰ` | 0.011% | 1 | or:dict |
+| 93 | 252 | `d͡ʒʱ` | 0.024% | 2 | hi:dict hi:fleurs or:dict |
+| 94 | 254 | `ɖʱ` | 0.013% | 2 | hi:dict or:dict sa:dict |
+| 95 | 256 | `ɽʱ` | 0.020% | 2 | hi:dict hi:fleurs or:dict |
 
 ### `cjk`
 
@@ -893,102 +986,93 @@ Han script. Needs word segmentation AND carries lexical tone. Languages: yue zh 
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 5 | 5 | `s` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 6 | 6 | `i` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 7 | 7 | `e` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 8 | 8 | `n` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 9 | 9 | `t` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 10 | 10 | `l` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 11 | 11 | `k` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 12 | 12 | `o` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 13 | 14 | `m` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 14 | 16 | `u` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 15 | 17 | `ɪ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 16 | 19 | `f` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 17 | 20 | `j` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 18 | 21 | `ə` | - | 0 | zh-Hant:dict zh:dict |
-| 19 | 23 | `p` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 20 | 24 | `ɛ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 21 | 25 | `w` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 22 | 26 | `ɑ` | - | 0 | zh-Hant:dict zh:dict |
-| 23 | 31 | `ɔ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 24 | 32 | `ŋ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 25 | 33 | `ʊ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 26 | 35 | `ɯ` | - | 0 | zh-Hant:dict zh:dict |
-| 27 | 36 | `h` | - | 0 | yue:dict |
-| 28 | 38 | `ɐ` | - | 0 | yue:dict |
-| 29 | 39 | `x` | - | 0 | zh-Hant:dict zh:dict |
-| 30 | 46 | `ʂ` | - | 0 | zh-Hant:dict zh:dict |
-| 31 | 48 | `y` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 32 | 52 | `ɕ` | - | 0 | zh-Hant:dict zh:dict |
-| 33 | 55 | `ɵ` | - | 0 | yue:dict |
-| 34 | 59 | `œ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 35 | 71 | `ʈ` | - | 0 | zh-Hant:dict zh:dict |
-| 36 | 76 | `tʰ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 37 | 89 | `ʐ` | - | 0 | zh-Hant:dict zh:dict |
-| 38 | 92 | `kʰ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 39 | 96 | `ɤ` | - | 0 | zh-Hant:dict zh:dict |
-| 40 | 103 | `sʰ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 41 | 105 | `pʰ` | - | 0 | yue:dict zh-Hant:dict zh:dict |
-| 42 | 119 | `ɥ` | - | 0 | zh-Hant:dict zh:dict |
-| 43 | 124 | `ɕʰ` | - | 0 | zh-Hant:dict zh:dict |
-| 44 | 136 | `ʂʰ` | - | 0 | zh-Hant:dict zh:dict |
-| 45 | 143 | `ɚ` | - | 0 | zh-Hant:dict zh:dict |
-| 46 | 201 | `ɻ` | - | 0 | zh-Hant:dict zh:dict |
-| 47 | 206 | `m̩` | - | 0 | yue:dict |
+| 4 | 4 | `a` | 4.451% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 5 | 5 | `s` | 4.707% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 6 | 6 | `i` | 7.248% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 7 | 7 | `e` | 1.676% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 8 | 8 | `n` | 5.797% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 9 | 9 | `t` | 10.083% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 10 | 10 | `l` | 1.827% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 11 | 11 | `k` | 4.368% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 12 | 12 | `o` | 1.424% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 13 | 14 | `m` | 1.677% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 14 | 16 | `u` | 4.360% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 15 | 17 | `ɪ` | 4.638% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 16 | 19 | `f` | 1.059% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 17 | 20 | `j` | 4.373% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 18 | 21 | `ə` | 0.680% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 19 | 23 | `p` | 1.953% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 20 | 24 | `ɛ` | 1.270% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 21 | 25 | `w` | 2.409% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 22 | 26 | `ɑ` | 1.853% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 23 | 31 | `ɔ` | 2.911% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 24 | 32 | `ŋ` | 5.955% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 25 | 33 | `ʊ` | 3.343% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 26 | 35 | `ɯ` | 0.211% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 27 | 36 | `h` | 0.936% | 1 | yue:dict yue:fleurs |
+| 28 | 38 | `ɐ` | 3.293% | 1 | yue:dict yue:fleurs |
+| 29 | 39 | `x` | 0.844% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 30 | 46 | `ʂ` | 2.300% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 31 | 48 | `y` | 1.706% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 32 | 52 | `ɕ` | 1.873% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 33 | 55 | `ɵ` | 0.676% | 1 | yue:dict yue:fleurs |
+| 34 | 59 | `œ` | 0.983% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 35 | 71 | `ʈ` | 1.579% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 36 | 76 | `tʰ` | 1.162% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 37 | 89 | `ʐ` | 0.402% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 38 | 92 | `kʰ` | 0.818% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 39 | 96 | `ɤ` | 1.543% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 40 | 103 | `sʰ` | 0.969% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 41 | 105 | `pʰ` | 0.347% | 2 | yue:dict yue:fleurs zh-Hant:dict zh:dict zh:fleurs |
+| 42 | 119 | `ɥ` | 0.392% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 43 | 124 | `ɕʰ` | 0.512% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 44 | 136 | `ʂʰ` | 0.423% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 45 | 143 | `ɚ` | 0.919% | 1 | zh-Hant:dict zh:dict zh:fleurs |
+| 46 | 201 | `ɻ` | 0.045% | 1 | zh-Hant:dict zh:dict |
+| 47 | 206 | `m̩` | 0.000% | 0 | yue:dict |
 
 ### `thai_khmer`
 
-Thai and Khmer script. Needs word segmentation; Thai is tonal. Languages: km th.
+Thai and Khmer script. Needs word segmentation; Thai is tonal. Languages: th.
 
 `fleurs` share is of the language group's pooled FLEURS output; `langs` is how many member languages emit the phoneme there. `selected by` names every language:source whose coverage needed it.
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | - | 0 | km:dict th:dict |
-| 5 | 5 | `s` | - | 0 | km:dict th:dict |
-| 6 | 6 | `i` | - | 0 | km:dict th:dict |
-| 7 | 7 | `e` | - | 0 | km:dict th:dict |
-| 8 | 8 | `n` | - | 0 | km:dict th:dict |
-| 9 | 9 | `t` | - | 0 | km:dict th:dict |
-| 10 | 10 | `l` | - | 0 | km:dict th:dict |
-| 11 | 11 | `k` | - | 0 | km:dict th:dict |
-| 12 | 12 | `o` | - | 0 | km:dict th:dict |
-| 13 | 13 | `r` | - | 0 | km:dict th:dict |
-| 14 | 14 | `m` | - | 0 | km:dict th:dict |
-| 15 | 15 | `d` | - | 0 | km:dict th:dict |
-| 16 | 16 | `u` | - | 0 | km:dict th:dict |
-| 17 | 19 | `f` | - | 0 | th:dict |
-| 18 | 20 | `j` | - | 0 | th:dict |
-| 19 | 21 | `ə` | - | 0 | km:dict |
-| 20 | 22 | `b` | - | 0 | km:dict th:dict |
-| 21 | 23 | `p` | - | 0 | km:dict th:dict |
-| 22 | 24 | `ɛ` | - | 0 | km:dict th:dict |
-| 23 | 25 | `w` | - | 0 | th:dict |
-| 24 | 26 | `ɑ` | - | 0 | km:dict |
-| 25 | 27 | `v` | - | 0 | km:dict |
-| 26 | 30 | `ʔ` | - | 0 | km:dict th:dict |
-| 27 | 31 | `ɔ` | - | 0 | km:dict th:dict |
-| 28 | 32 | `ŋ` | - | 0 | km:dict th:dict |
-| 29 | 33 | `ʊ` | - | 0 | km:dict |
-| 30 | 35 | `ɯ` | - | 0 | th:dict |
-| 31 | 36 | `h` | - | 0 | km:dict th:dict |
-| 32 | 48 | `y` | - | 0 | km:dict |
-| 33 | 49 | `ɨ` | - | 0 | km:dict |
-| 34 | 54 | `ɲ` | - | 0 | km:dict |
-| 35 | 76 | `tʰ` | - | 0 | km:dict th:dict |
-| 36 | 78 | `t͡ɕ` | - | 0 | th:dict |
-| 37 | 82 | `c` | - | 0 | km:dict |
-| 38 | 92 | `kʰ` | - | 0 | km:dict th:dict |
-| 39 | 96 | `ɤ` | - | 0 | th:dict |
-| 40 | 105 | `pʰ` | - | 0 | km:dict th:dict |
-| 41 | 108 | `k̚` | - | 0 | th:dict |
-| 42 | 128 | `t͡ɕʰ` | - | 0 | th:dict |
-| 43 | 131 | `t̚` | - | 0 | th:dict |
-| 44 | 150 | `p̚` | - | 0 | th:dict |
-| 45 | 175 | `a̯` | - | 0 | th:dict |
-| 46 | 182 | `cʰ` | - | 0 | km:dict |
+| 4 | 4 | `a` | 17.380% | 1 | th:dict th:fleurs |
+| 5 | 5 | `s` | 2.848% | 1 | th:dict th:fleurs |
+| 6 | 6 | `i` | 5.317% | 1 | th:dict th:fleurs |
+| 7 | 7 | `e` | 1.584% | 1 | th:dict th:fleurs |
+| 8 | 8 | `n` | 8.228% | 1 | th:dict th:fleurs |
+| 9 | 9 | `t` | 1.666% | 1 | th:dict th:fleurs |
+| 10 | 10 | `l` | 2.654% | 1 | th:dict th:fleurs |
+| 11 | 11 | `k` | 2.960% | 1 | th:dict th:fleurs |
+| 12 | 12 | `o` | 2.478% | 1 | th:dict th:fleurs |
+| 13 | 13 | `r` | 3.469% | 1 | th:dict th:fleurs |
+| 14 | 14 | `m` | 4.626% | 1 | th:dict th:fleurs |
+| 15 | 15 | `d` | 1.457% | 1 | th:dict th:fleurs |
+| 16 | 16 | `u` | 2.626% | 1 | th:dict th:fleurs |
+| 17 | 19 | `f` | 0.209% | 1 | th:dict th:fleurs |
+| 18 | 20 | `j` | 5.159% | 1 | th:dict th:fleurs |
+| 19 | 22 | `b` | 0.903% | 1 | th:dict th:fleurs |
+| 20 | 23 | `p` | 1.721% | 1 | th:dict th:fleurs |
+| 21 | 24 | `ɛ` | 1.821% | 1 | th:dict th:fleurs |
+| 22 | 25 | `w` | 2.554% | 1 | th:dict th:fleurs |
+| 23 | 30 | `ʔ` | 2.333% | 1 | th:dict th:fleurs |
+| 24 | 31 | `ɔ` | 2.399% | 1 | th:dict th:fleurs |
+| 25 | 32 | `ŋ` | 4.311% | 1 | th:dict th:fleurs |
+| 26 | 35 | `ɯ` | 1.699% | 1 | th:dict th:fleurs |
+| 27 | 36 | `h` | 0.869% | 1 | th:dict th:fleurs |
+| 28 | 76 | `tʰ` | 3.166% | 1 | th:dict th:fleurs |
+| 29 | 78 | `t͡ɕ` | 1.057% | 1 | th:dict th:fleurs |
+| 30 | 92 | `kʰ` | 3.078% | 1 | th:dict th:fleurs |
+| 31 | 96 | `ɤ` | 0.518% | 1 | th:dict th:fleurs |
+| 32 | 105 | `pʰ` | 1.590% | 1 | th:dict th:fleurs |
+| 33 | 108 | `k̚` | 2.030% | 1 | th:dict th:fleurs |
+| 34 | 128 | `t͡ɕʰ` | 1.175% | 1 | th:dict th:fleurs |
+| 35 | 131 | `t̚` | 2.533% | 1 | th:dict th:fleurs |
+| 36 | 150 | `p̚` | 1.484% | 1 | th:dict th:fleurs |
+| 37 | 175 | `a̯` | 2.099% | 1 | th:dict th:fleurs |
 
 ### `japanese`
 
@@ -998,28 +1082,28 @@ Mixed kanji/kana. Needs word segmentation; no tone. Languages: ja.
 
 | local | gold | phoneme | fleurs share | langs | selected by |
 |---:|---:|---|---:|---:|---|
-| 4 | 4 | `a` | - | 0 | ja:dict |
-| 5 | 5 | `s` | - | 0 | ja:dict |
-| 6 | 6 | `i` | - | 0 | ja:dict |
-| 7 | 7 | `e` | - | 0 | ja:dict |
-| 8 | 8 | `n` | - | 0 | ja:dict |
-| 9 | 9 | `t` | - | 0 | ja:dict |
-| 10 | 11 | `k` | - | 0 | ja:dict |
-| 11 | 12 | `o` | - | 0 | ja:dict |
-| 12 | 14 | `m` | - | 0 | ja:dict |
-| 13 | 15 | `d` | - | 0 | ja:dict |
-| 14 | 18 | `ɾ` | - | 0 | ja:dict |
-| 15 | 20 | `j` | - | 0 | ja:dict |
-| 16 | 22 | `b` | - | 0 | ja:dict |
-| 17 | 23 | `p` | - | 0 | ja:dict |
-| 18 | 28 | `ɡ` | - | 0 | ja:dict |
-| 19 | 29 | `z` | - | 0 | ja:dict |
-| 20 | 35 | `ɯ` | - | 0 | ja:dict |
-| 21 | 36 | `h` | - | 0 | ja:dict |
-| 22 | 52 | `ɕ` | - | 0 | ja:dict |
-| 23 | 61 | `ɴ` | - | 0 | ja:dict |
-| 24 | 86 | `ç` | - | 0 | ja:dict |
-| 25 | 99 | `ʑ` | - | 0 | ja:dict |
-| 26 | 115 | `ɸ` | - | 0 | ja:dict |
-| 27 | 199 | `ɰ` | - | 0 | ja:dict |
+| 4 | 4 | `a` | 13.815% | 1 | ja:dict ja:fleurs |
+| 5 | 5 | `s` | 4.439% | 1 | ja:dict ja:fleurs |
+| 6 | 6 | `i` | 10.396% | 1 | ja:dict ja:fleurs |
+| 7 | 7 | `e` | 6.683% | 1 | ja:dict ja:fleurs |
+| 8 | 8 | `n` | 5.051% | 1 | ja:dict ja:fleurs |
+| 9 | 9 | `t` | 6.743% | 1 | ja:dict ja:fleurs |
+| 10 | 11 | `k` | 6.857% | 1 | ja:dict ja:fleurs |
+| 11 | 12 | `o` | 11.318% | 1 | ja:dict ja:fleurs |
+| 12 | 14 | `m` | 2.992% | 1 | ja:dict ja:fleurs |
+| 13 | 15 | `d` | 3.120% | 1 | ja:dict ja:fleurs |
+| 14 | 18 | `ɾ` | 4.307% | 1 | ja:dict ja:fleurs |
+| 15 | 20 | `j` | 1.949% | 1 | ja:dict ja:fleurs |
+| 16 | 22 | `b` | 1.179% | 1 | ja:dict ja:fleurs |
+| 17 | 23 | `p` | 0.385% | 1 | ja:dict ja:fleurs |
+| 18 | 28 | `ɡ` | 1.908% | 1 | ja:dict ja:fleurs |
+| 19 | 29 | `z` | 0.476% | 1 | ja:dict ja:fleurs |
+| 20 | 35 | `ɯ` | 7.623% | 1 | ja:dict ja:fleurs |
+| 21 | 36 | `h` | 0.824% | 1 | ja:dict ja:fleurs |
+| 22 | 52 | `ɕ` | 3.725% | 1 | ja:dict ja:fleurs |
+| 23 | 61 | `ɴ` | 3.083% | 1 | ja:dict ja:fleurs |
+| 24 | 86 | `ç` | 0.412% | 1 | ja:dict ja:fleurs |
+| 25 | 99 | `ʑ` | 0.824% | 1 | ja:dict ja:fleurs |
+| 26 | 115 | `ɸ` | 0.272% | 1 | ja:dict ja:fleurs |
+| 27 | 199 | `ɰ` | 1.621% | 1 | ja:dict ja:fleurs |
 

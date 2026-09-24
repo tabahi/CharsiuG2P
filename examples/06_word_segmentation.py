@@ -2,8 +2,8 @@
 
     python examples/06_word_segmentation.py
 
-CharsiuG2P takes one word at a time. Thai, Khmer, Burmese, Japanese and Chinese
-do not put spaces between words, so `split_words` would hand the model whole
+CharsiuG2P takes one word at a time. Thai, Japanese and Chinese do not put
+spaces between words, so `split_words` would hand the model whole
 clauses. `segment` splits them into words first (see
 standard_g2p/word_segmentation.py for the backend per language and why).
 Part 1 needs only the segmenter packages; part 2 runs the model.
@@ -17,8 +17,6 @@ from standard_g2p.word_segmentation import segment, split_words, has_segmenter
 
 SENTENCES = [
     ('th', 'ประเทศต่าง ๆ ใช้ดาวเทียมเพื่อการสื่อสาร'),   # ๆ repeats the previous word
-    ('km', 'ខ្ញុំចង់ទៅផ្សារនៅថ្ងៃស្អែក។'),
-    ('my', 'မြန်မာနိုင်ငံ၏ အကြီးဆုံးမြို့ ဖြစ်သည်။'),     # ၏ is read aloud, not punctuation
     ('ja', '今日は東京へ行きます。'),                      # は/へ are read wa/e
     ('zh', '音乐会在下午三点开始。'),                      # 乐 is yuè in 音乐, lè in 快乐
     ('yue', '我哋一齊去公園行吓啦。'),

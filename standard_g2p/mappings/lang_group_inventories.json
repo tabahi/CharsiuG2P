@@ -105,9 +105,9 @@
   "uk": "cyrillic",
   "ur": "abjad",
   "uz": "latin",
-  "vi": "latin",
-  "vi-c": "latin",
-  "vi-s": "latin",
+  "vi": "vietnamese",
+  "vi-c": "vietnamese",
+  "vi-s": "vietnamese",
   "yue": "cjk",
   "zh": "cjk",
   "zh-Hant": "cjk"
@@ -267,13 +267,10 @@
     "tk",
     "tl",
     "tr",
-    "uz",
-    "vi",
-    "vi-c",
-    "vi-s"
+    "uz"
    ],
    "excluded_langs": [],
-   "n_tokens": 213,
+   "n_tokens": 208,
    "tokens": [
     "<blank>",
     "SIL",
@@ -359,7 +356,6 @@
     "ɔ̃",
     "ç",
     "õ",
-    "ɤ̆",
     "ʐ",
     "vʲ",
     "d͡ʒ",
@@ -368,7 +364,6 @@
     "ă",
     "dʲ",
     "ɤ",
-    "ŋ͡m",
     "ɖ",
     "ʑ",
     "pʲ",
@@ -392,7 +387,6 @@
     "i̯",
     "ɛ̃",
     "zʲ",
-    "k͡p",
     "o̝",
     "n̪",
     "ɛ̝",
@@ -450,7 +444,6 @@
     "ɰ",
     "a̝",
     "ɻ",
-    "d͡ʐ",
     "ʍ",
     "ũ",
     "m̩",
@@ -468,7 +461,6 @@
     "è",
     "ŋ̥",
     "m̥",
-    "ɛ̂",
     "ú",
     "kʷ",
     "ò",
@@ -574,7 +566,6 @@
     85,
     86,
     87,
-    88,
     89,
     90,
     91,
@@ -583,7 +574,6 @@
     94,
     95,
     96,
-    97,
     98,
     99,
     100,
@@ -607,7 +597,6 @@
     120,
     121,
     122,
-    123,
     125,
     126,
     127,
@@ -665,7 +654,6 @@
     199,
     200,
     201,
-    202,
     203,
     204,
     206,
@@ -683,7 +671,6 @@
     222,
     223,
     224,
-    225,
     229,
     230,
     231,
@@ -793,6 +780,7 @@
     81,
     82,
     83,
+    3,
     84,
     85,
     86,
@@ -801,19 +789,20 @@
     89,
     90,
     91,
+    3,
     92,
     93,
     94,
     95,
     96,
+    3,
     97,
     98,
-    3,
     99,
     100,
+    3,
     101,
     102,
-    3,
     103,
     104,
     105,
@@ -826,15 +815,18 @@
     112,
     113,
     114,
+    3,
+    3,
     115,
     116,
     117,
     3,
     118,
     119,
-    120,
     3,
+    120,
     121,
+    3,
     122,
     3,
     123,
@@ -843,24 +835,22 @@
     125,
     3,
     126,
+    3,
+    3,
     127,
-    3,
     128,
-    3,
     129,
-    3,
-    3,
     130,
+    3,
+    3,
     131,
     132,
-    133,
     3,
+    133,
     3,
     134,
     135,
-    3,
     136,
-    3,
     137,
     138,
     139,
@@ -872,107 +862,104 @@
     145,
     146,
     147,
+    3,
     148,
     149,
     150,
-    3,
     151,
     152,
+    3,
+    3,
     153,
     154,
+    3,
     155,
-    3,
-    3,
     156,
     157,
     3,
     158,
     159,
     160,
-    3,
     161,
     162,
     163,
+    3,
     164,
+    3,
     165,
+    3,
     166,
-    3,
     167,
-    3,
     168,
-    3,
     169,
     170,
     171,
+    3,
     172,
     173,
+    3,
     174,
     175,
     176,
-    177,
     3,
+    3,
+    3,
+    177,
     178,
     179,
     180,
-    3,
-    3,
     3,
     181,
     182,
     183,
     184,
-    3,
     185,
     186,
     187,
     188,
+    3,
+    3,
+    3,
+    3,
     189,
     190,
     191,
+    3,
     192,
     193,
-    3,
-    3,
-    3,
     194,
+    3,
     195,
     196,
-    3,
     197,
     198,
     199,
     3,
     200,
+    3,
     201,
+    3,
     202,
+    3,
     203,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     204,
     3,
+    3,
+    3,
+    3,
+    3,
     205,
-    3,
     206,
-    3,
     207,
-    3,
-    208,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    209,
-    3,
-    3,
-    3,
-    3,
-    3,
-    210,
-    211,
-    212,
     3,
     3
    ],
@@ -988,7 +975,7 @@
      "dict": 1.0
     },
     "az": {
-     "fleurs": 1.000089,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "bs": {
@@ -1011,7 +998,7 @@
      "dict": 1.0
     },
     "da": {
-     "fleurs": 1.000032,
+     "fleurs": 1.000033,
      "dict": 0.999909
     },
     "de": {
@@ -1045,14 +1032,14 @@
      "dict": 1.0
     },
     "et": {
-     "fleurs": 0.999875,
+     "fleurs": 0.999936,
      "dict": 0.999917
     },
     "eu": {
      "dict": 1.0
     },
     "fi": {
-     "fleurs": 1.000059,
+     "fleurs": 0.99994,
      "dict": 0.999932
     },
     "fr": {
@@ -1063,11 +1050,11 @@
      "dict": 0.999999
     },
     "ga": {
-     "fleurs": 0.99991,
+     "fleurs": 1.0,
      "dict": 0.99991
     },
     "gl": {
-     "fleurs": 1.000166,
+     "fleurs": 1.000168,
      "dict": 1.000033
     },
     "hu": {
@@ -1103,15 +1090,15 @@
      "dict": 1.0
     },
     "lt": {
-     "fleurs": 0.999751,
-     "dict": 0.999443
+     "fleurs": 0.999692,
+     "dict": 0.999429
     },
     "mi": {
-     "fleurs": 1.000162,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "ms": {
-     "fleurs": 1.000556,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "mt": {
@@ -1130,8 +1117,8 @@
      "dict": 1.0
     },
     "pl": {
-     "fleurs": 1.0,
-     "dict": 0.999998
+     "fleurs": 0.999581,
+     "dict": 0.999633
     },
     "pt": {
      "fleurs": 1.0,
@@ -1141,7 +1128,7 @@
      "dict": 1.0
     },
     "ro": {
-     "fleurs": 1.00007,
+     "fleurs": 1.0,
      "dict": 0.999969
     },
     "se": {
@@ -1152,18 +1139,18 @@
      "dict": 1.0
     },
     "sl": {
-     "fleurs": 0.999943,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "sq": {
      "dict": 1.0
     },
     "sv": {
-     "fleurs": 0.999909,
+     "fleurs": 0.999907,
      "dict": 1.0
     },
     "sw": {
-     "fleurs": 1.000689,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "tk": {
@@ -1179,16 +1166,6 @@
     },
     "uz": {
      "fleurs": 1.0,
-     "dict": 1.0
-    },
-    "vi": {
-     "fleurs": 1.000149,
-     "dict": 1.0
-    },
-    "vi-c": {
-     "dict": 1.0
-    },
-    "vi-s": {
      "dict": 1.0
     }
    },
@@ -1277,12 +1254,7 @@
      "tl:dict",
      "tl:fleurs",
      "tr:dict",
-     "tr:fleurs",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "s": [
      "af:dict",
@@ -1372,11 +1344,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "i": [
      "af:dict",
@@ -1468,11 +1436,7 @@
      "tl:dict",
      "tl:fleurs",
      "tr:dict",
-     "tr:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "e": [
      "af:fleurs",
@@ -1556,11 +1520,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "n": [
      "af:dict",
@@ -1654,11 +1614,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "t": [
      "af:dict",
@@ -1750,11 +1706,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "l": [
      "af:dict",
@@ -1844,11 +1796,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "k": [
      "af:dict",
@@ -1940,11 +1888,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "o": [
      "ang:dict",
@@ -2029,11 +1973,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "r": [
      "af:dict",
@@ -2108,8 +2048,7 @@
      "sv:fleurs",
      "tk:dict",
      "tr:dict",
-     "tr:fleurs",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "m": [
      "af:dict",
@@ -2203,11 +2142,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "d": [
      "af:dict",
@@ -2297,11 +2232,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "u": [
      "af:dict",
@@ -2392,11 +2323,7 @@
      "tl:dict",
      "tl:fleurs",
      "tr:dict",
-     "tr:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "ɪ": [
      "af:dict",
@@ -2571,11 +2498,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "j": [
      "af:dict",
@@ -2666,11 +2589,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ə": [
      "af:dict",
@@ -2715,11 +2634,7 @@
      "sl:dict",
      "sl:fleurs",
      "sq:dict",
-     "sv:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "sv:fleurs"
     ],
     "b": [
      "af:dict",
@@ -2810,11 +2725,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "p": [
      "af:dict",
@@ -2907,11 +2818,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ɛ": [
      "af:dict",
@@ -2977,11 +2884,7 @@
      "sw:dict",
      "sw:fleurs",
      "tr:dict",
-     "tr:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "w": [
      "af:dict",
@@ -3044,11 +2947,7 @@
      "sw:fleurs",
      "tl:dict",
      "tl:fleurs",
-     "tr:dict",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:dict"
     ],
     "ɑ": [
      "af:dict",
@@ -3075,7 +2974,6 @@
      "ga:fleurs",
      "lb:dict",
      "lb:fleurs",
-     "lt:fleurs",
      "nb:dict",
      "nb:fleurs",
      "nl:dict",
@@ -3161,9 +3059,7 @@
      "sw:dict",
      "sw:fleurs",
      "tr:dict",
-     "tr:fleurs",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "ɡ": [
      "af:dict",
@@ -3321,9 +3217,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ʔ": [
      "de:dict",
@@ -3334,9 +3228,7 @@
      "sv:fleurs",
      "tl:dict",
      "tl:fleurs",
-     "vi-c:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ɔ": [
      "af:dict",
@@ -3393,11 +3285,7 @@
      "sv:fleurs",
      "sw:fleurs",
      "tr:dict",
-     "tr:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "ŋ": [
      "af:dict",
@@ -3460,11 +3348,7 @@
      "tl:dict",
      "tl:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ʊ": [
      "af:dict",
@@ -3581,19 +3465,14 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ɯ": [
      "az:dict",
      "az:fleurs",
      "tk:dict",
      "tr:dict",
-     "tr:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tr:fleurs"
     ],
     "h": [
      "af:dict",
@@ -3661,11 +3540,7 @@
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
-     "uz:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "uz:fleurs"
     ],
     "ʁ": [
      "da:dict",
@@ -3745,11 +3620,7 @@
      "sv:fleurs",
      "tk:dict",
      "tl:dict",
-     "tl:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tl:fleurs"
     ],
     "ð": [
      "arg:dict",
@@ -3784,7 +3655,6 @@
      "bs:fleurs",
      "da:dict",
      "da:fleurs",
-     "de:fleurs",
      "en-GB:dict",
      "en:dict",
      "en:fleurs",
@@ -3827,7 +3697,6 @@
      "en:dict",
      "en:fleurs",
      "lt:dict",
-     "lt:fleurs",
      "pt:dict",
      "pt:fleurs",
      "sq:dict",
@@ -3893,14 +3762,11 @@
      "pl:dict",
      "pl:fleurs",
      "sv:dict",
-     "sv:fleurs",
-     "vi-c:dict",
-     "vi-s:dict"
+     "sv:fleurs"
     ],
     "ɣ": [
      "arg:dict",
      "az:dict",
-     "az:fleurs",
      "enm:dict",
      "es-MX:dict",
      "es:dict",
@@ -3917,11 +3783,7 @@
      "pt:dict",
      "pt:fleurs",
      "sv:fleurs",
-     "sw:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "sw:fleurs"
     ],
     "y": [
      "af:dict",
@@ -3949,7 +3811,6 @@
      "lb:dict",
      "lb:fleurs",
      "mt:dict",
-     "mt:fleurs",
      "nb:dict",
      "nb:fleurs",
      "nl:dict",
@@ -3957,7 +3818,6 @@
      "sq:dict",
      "sv:dict",
      "sv:fleurs",
-     "sw:fleurs",
      "tr:dict",
      "tr:fleurs",
      "uz:dict",
@@ -3987,11 +3847,9 @@
      "da:fleurs",
      "lb:dict",
      "lb:fleurs",
-     "lt:fleurs",
      "pl:dict",
      "pl:fleurs",
-     "sw:fleurs",
-     "vi:fleurs"
+     "sw:fleurs"
     ],
     "ɳ": [
      "lb:dict",
@@ -4018,7 +3876,6 @@
      "eu:dict",
      "fr-CA:dict",
      "fr:dict",
-     "fr:fleurs",
      "ga:dict",
      "ga:fleurs",
      "gl:dict",
@@ -4048,11 +3905,7 @@
      "sw:dict",
      "sw:fleurs",
      "tl:dict",
-     "tl:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "tl:fleurs"
     ],
     "ɵ": [
      "et:dict",
@@ -4169,12 +4022,10 @@
      "sv:fleurs"
     ],
     "tʲ": [
-     "cs:fleurs",
      "ga:dict",
      "ga:fleurs",
      "lt:dict",
      "lt:fleurs",
-     "ro:fleurs",
      "sk:dict",
      "sk:fleurs"
     ],
@@ -4247,9 +4098,7 @@
      "nb:dict",
      "nb:fleurs",
      "sv:dict",
-     "sv:fleurs",
-     "vi-c:dict",
-     "vi-s:dict"
+     "sv:fleurs"
     ],
     "ɹ": [
      "da:dict",
@@ -4277,7 +4126,6 @@
      "bs:dict",
      "bs:fleurs",
      "ca:dict",
-     "ca:fleurs",
      "cs:dict",
      "cs:fleurs",
      "de:dict",
@@ -4321,11 +4169,7 @@
      "is:dict",
      "is:fleurs",
      "se:dict",
-     "sv:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "sv:fleurs"
     ],
     "ɐ̯": [
      "da:dict",
@@ -4388,11 +4232,7 @@
      "mt:dict",
      "mt:fleurs",
      "sv:fleurs",
-     "sw:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "sw:fleurs"
     ],
     "ɭ": [
      "da:dict",
@@ -4439,17 +4279,9 @@
      "pt:dict",
      "pt:fleurs"
     ],
-    "ɤ̆": [
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
-    ],
     "ʐ": [
      "pl:dict",
-     "pl:fleurs",
-     "vi-c:dict",
-     "vi-s:dict"
+     "pl:fleurs"
     ],
     "vʲ": [
      "ga:dict",
@@ -4504,11 +4336,7 @@
      "lb:fleurs"
     ],
     "ă": [
-     "ro:fleurs",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "ro:fleurs"
     ],
     "dʲ": [
      "ga:dict",
@@ -4519,17 +4347,7 @@
      "sk:fleurs"
     ],
     "ɤ": [
-     "ga:dict",
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
-    ],
-    "ŋ͡m": [
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
+     "ga:dict"
     ],
     "ɖ": [
      "nb:dict",
@@ -4703,12 +4521,6 @@
      "lt:dict",
      "lt:fleurs",
      "ro:fleurs"
-    ],
-    "k͡p": [
-     "vi-c:dict",
-     "vi-s:dict",
-     "vi:dict",
-     "vi:fleurs"
     ],
     "o̝": [
      "gl:dict",
@@ -4962,8 +4774,7 @@
      "da:dict",
      "da:fleurs",
      "ro:fleurs",
-     "sk:dict",
-     "sk:fleurs"
+     "sk:dict"
     ],
     "ɬ": [
      "cy-sw:dict",
@@ -5007,9 +4818,6 @@
     "ɻ": [
      "pt-BR:dict"
     ],
-    "d͡ʐ": [
-     "pl:fleurs"
-    ],
     "ʍ": [
      "enm:dict",
      "sw:dict",
@@ -5021,7 +4829,6 @@
      "pt:fleurs"
     ],
     "m̩": [
-     "cs:fleurs",
      "da:dict",
      "da:fleurs"
     ],
@@ -5099,9 +4906,6 @@
      "cy:dict",
      "is:dict"
     ],
-    "ɛ̂": [
-     "lt:fleurs"
-    ],
     "ú": [
      "sl:dict",
      "sl:fleurs"
@@ -5178,6 +4982,626 @@
     ]
    }
   },
+  "vietnamese": {
+   "lang_group": "vietnamese",
+   "description": "Latin script, space-delimited, tonal (tone letters). Kept out of latin so that latin holds no tonal language.",
+   "langs": [
+    "vi",
+    "vi-c",
+    "vi-s"
+   ],
+   "excluded_langs": [],
+   "n_tokens": 45,
+   "tokens": [
+    "<blank>",
+    "SIL",
+    "noise",
+    "<unk>",
+    "a",
+    "s",
+    "i",
+    "e",
+    "n",
+    "t",
+    "l",
+    "k",
+    "o",
+    "r",
+    "m",
+    "d",
+    "u",
+    "f",
+    "j",
+    "ə",
+    "b",
+    "p",
+    "ɛ",
+    "w",
+    "v",
+    "z",
+    "ʔ",
+    "ɔ",
+    "ŋ",
+    "ʃ",
+    "ɯ",
+    "h",
+    "x",
+    "ʂ",
+    "ɣ",
+    "ɲ",
+    "ʈ",
+    "tʰ",
+    "c",
+    "ɤ̆",
+    "ʐ",
+    "ă",
+    "ɤ",
+    "ŋ͡m",
+    "k͡p"
+   ],
+   "gold_index": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    27,
+    29,
+    30,
+    31,
+    32,
+    34,
+    35,
+    36,
+    39,
+    46,
+    47,
+    54,
+    71,
+    76,
+    82,
+    88,
+    89,
+    94,
+    96,
+    97,
+    123
+   ],
+   "gold_to_local": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    3,
+    3,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    3,
+    24,
+    3,
+    25,
+    26,
+    27,
+    28,
+    3,
+    29,
+    30,
+    31,
+    3,
+    3,
+    32,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    33,
+    34,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    35,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    36,
+    3,
+    3,
+    3,
+    3,
+    37,
+    3,
+    3,
+    3,
+    3,
+    3,
+    38,
+    3,
+    3,
+    3,
+    3,
+    3,
+    39,
+    40,
+    3,
+    3,
+    3,
+    3,
+    41,
+    3,
+    42,
+    43,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    44,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "coverage": {
+    "vi": {
+     "fleurs": 0.999398,
+     "dict": 1.0
+    },
+    "vi-c": {
+     "dict": 1.0
+    },
+    "vi-s": {
+     "dict": 1.0
+    }
+   },
+   "selected_by": {
+    "a": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "s": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "i": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "e": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "n": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "t": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "l": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "k": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "o": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "r": [
+     "vi:fleurs"
+    ],
+    "m": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "d": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "u": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "f": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "j": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ə": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "b": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "p": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ɛ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "w": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "v": [
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "z": [
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ʔ": [
+     "vi-c:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ɔ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ŋ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ʃ": [
+     "vi:fleurs"
+    ],
+    "ɯ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "h": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "x": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ʂ": [
+     "vi-c:dict",
+     "vi-s:dict"
+    ],
+    "ɣ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ɲ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ʈ": [
+     "vi-c:dict",
+     "vi-s:dict"
+    ],
+    "tʰ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "c": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ɤ̆": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ʐ": [
+     "vi-c:dict",
+     "vi-s:dict"
+    ],
+    "ă": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ɤ": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "ŋ͡m": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ],
+    "k͡p": [
+     "vi-c:dict",
+     "vi-s:dict",
+     "vi:dict",
+     "vi:fleurs"
+    ]
+   }
+  },
   "cyrillic": {
    "lang_group": "cyrillic",
    "description": "Cyrillic script, space-delimited, no tone.",
@@ -5196,7 +5620,7 @@
     "uk"
    ],
    "excluded_langs": [],
-   "n_tokens": 128,
+   "n_tokens": 127,
    "tokens": [
     "<blank>",
     "SIL",
@@ -5321,7 +5745,6 @@
     "ɣʲ",
     "kʷ",
     "r̂",
-    "ɛ́",
     "ɡʷ",
     "d͡zʲ",
     "ʃʼ",
@@ -5451,7 +5874,6 @@
     227,
     230,
     232,
-    239,
     242,
     253,
     255,
@@ -5697,29 +6119,29 @@
     3,
     3,
     3,
+    3,
+    3,
+    3,
     123,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     124,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     125,
     3,
+    3,
+    3,
+    3,
+    3,
     126,
-    3,
-    3,
-    3,
-    3,
-    3,
-    127,
     3,
     3,
     3,
@@ -5756,15 +6178,15 @@
      "dict": 1.0
     },
     "mk": {
-     "fleurs": 0.999859,
+     "fleurs": 0.999857,
      "dict": 0.999765
     },
     "ru": {
-     "fleurs": 1.000081,
+     "fleurs": 1.0,
      "dict": 0.999998
     },
     "sr": {
-     "fleurs": 0.999929,
+     "fleurs": 0.999928,
      "dict": 0.999494
     },
     "tt": {
@@ -5825,7 +6247,6 @@
      "hbs-Cyrl:dict",
      "hbs:dict",
      "hbs:fleurs",
-     "kk:fleurs",
      "mk:dict",
      "mk:fleurs",
      "ru:dict",
@@ -6592,7 +7013,6 @@
      "ady:dict",
      "hbs:dict",
      "mk:dict",
-     "mk:fleurs",
      "sr:dict",
      "uk:dict",
      "uk:fleurs"
@@ -6810,8 +7230,7 @@
      "uk:fleurs"
     ],
     "d͡ʐ": [
-     "ru:dict",
-     "ru:fleurs"
+     "ru:dict"
     ],
     "ʍ": [
      "uk:dict",
@@ -6845,9 +7264,6 @@
      "hbs:dict",
      "hbs:fleurs"
     ],
-    "ɛ́": [
-     "uk:fleurs"
-    ],
     "ɡʷ": [
      "ady:dict"
     ],
@@ -6876,7 +7292,7 @@
     "ko"
    ],
    "excluded_langs": [],
-   "n_tokens": 107,
+   "n_tokens": 104,
    "tokens": [
     "<blank>",
     "SIL",
@@ -6895,7 +7311,6 @@
     "m",
     "d",
     "u",
-    "ɪ",
     "ɾ",
     "f",
     "j",
@@ -6971,7 +7386,6 @@
     "ó",
     "í",
     "tʼ",
-    "r̩",
     "ô",
     "kʼ",
     "t͡ʃʰ",
@@ -6983,8 +7397,7 @@
     "ɱ",
     "qʼ",
     "t͡ʃʼ",
-    "ɛ̂",
-    "ɛ́"
+    "ɛ̂"
    ],
    "gold_index": [
     0,
@@ -7004,7 +7417,6 @@
     14,
     15,
     16,
-    17,
     18,
     19,
     20,
@@ -7080,7 +7492,6 @@
     158,
     163,
     164,
-    165,
     172,
     174,
     177,
@@ -7092,8 +7503,7 @@
     219,
     220,
     221,
-    225,
-    239
+    225
    ],
    "gold_to_local": [
     0,
@@ -7113,6 +7523,7 @@
     14,
     15,
     16,
+    3,
     17,
     18,
     19,
@@ -7128,164 +7539,173 @@
     29,
     30,
     31,
-    32,
     3,
+    32,
     33,
     34,
     35,
-    36,
     3,
+    36,
     37,
+    3,
     38,
+    3,
     3,
     39,
     3,
-    3,
     40,
-    3,
     41,
     42,
-    43,
     3,
+    3,
+    43,
     3,
     44,
     3,
     45,
-    3,
     46,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     47,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     3,
     48,
     3,
+    3,
     49,
-    3,
-    3,
     50,
     51,
+    3,
     52,
-    3,
     53,
+    3,
+    3,
     54,
-    3,
-    3,
     55,
+    3,
+    3,
     56,
     3,
     3,
+    3,
+    3,
     57,
-    3,
-    3,
-    3,
-    3,
     58,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     59,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     3,
     60,
     3,
     61,
     3,
+    3,
     62,
     3,
-    3,
     63,
-    3,
     64,
+    3,
     65,
     3,
     66,
-    3,
     67,
     68,
     69,
     70,
     71,
+    3,
+    3,
+    3,
     72,
     3,
     3,
-    3,
     73,
-    3,
-    3,
     74,
+    3,
     75,
-    3,
     76,
+    3,
+    3,
     77,
-    3,
-    3,
     78,
+    3,
+    3,
+    3,
     79,
     3,
-    3,
-    3,
     80,
-    3,
     81,
+    3,
     82,
+    3,
+    3,
     3,
     83,
     3,
-    3,
-    3,
     84,
+    3,
     3,
     85,
     3,
-    3,
     86,
-    3,
     87,
     88,
     89,
+    3,
+    3,
+    3,
+    3,
     90,
-    3,
-    3,
-    3,
-    3,
     91,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     92,
+    3,
     93,
-    3,
-    3,
-    3,
-    3,
     3,
     3,
     94,
     3,
+    3,
     95,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     96,
     3,
     3,
+    3,
+    3,
+    3,
     97,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     3,
     3,
     3,
@@ -7299,29 +7719,19 @@
     3,
     3,
     3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     100,
-    3,
-    3,
-    3,
-    3,
-    3,
     101,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     102,
+    3,
+    3,
+    3,
     103,
-    104,
-    3,
-    3,
-    3,
-    105,
     3,
     3,
     3,
@@ -7335,7 +7745,7 @@
     3,
     3,
     3,
-    106,
+    3,
     3,
     3,
     3,
@@ -7369,29 +7779,29 @@
    ],
    "coverage": {
     "am": {
-     "fleurs": 0.999959,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "el": {
-     "fleurs": 0.999618,
+     "fleurs": 0.999837,
      "dict": 1.0
     },
     "grc": {
      "dict": 0.999155
     },
     "hy": {
-     "fleurs": 0.999817,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "hy-west": {
      "dict": 1.0
     },
     "ka": {
-     "fleurs": 1.000078,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "ko": {
-     "fleurs": 0.999452,
+     "fleurs": 0.999696,
      "dict": 0.999939
     }
    },
@@ -7401,9 +7811,7 @@
      "am:fleurs",
      "el:dict",
      "el:fleurs",
-     "grc:dict",
-     "ka:fleurs",
-     "ko:fleurs"
+     "grc:dict"
     ],
     "s": [
      "am:dict",
@@ -7438,8 +7846,7 @@
      "am:fleurs",
      "el:dict",
      "el:fleurs",
-     "grc:dict",
-     "ka:fleurs"
+     "grc:dict"
     ],
     "n": [
      "am:dict",
@@ -7464,7 +7871,6 @@
      "hy-west:dict",
      "hy:dict",
      "hy:fleurs",
-     "ka:fleurs",
      "ko:dict",
      "ko:fleurs"
     ],
@@ -7478,8 +7884,7 @@
      "hy:dict",
      "hy:fleurs",
      "ka:dict",
-     "ka:fleurs",
-     "ko:fleurs"
+     "ka:fleurs"
     ],
     "k": [
      "am:dict",
@@ -7490,7 +7895,6 @@
      "hy-west:dict",
      "hy:dict",
      "hy:fleurs",
-     "ka:fleurs",
      "ko:dict",
      "ko:fleurs"
     ],
@@ -7500,7 +7904,6 @@
      "el:dict",
      "el:fleurs",
      "grc:dict",
-     "ka:fleurs",
      "ko:dict",
      "ko:fleurs"
     ],
@@ -7513,8 +7916,7 @@
      "hy:dict",
      "hy:fleurs",
      "ka:dict",
-     "ka:fleurs",
-     "ko:fleurs"
+     "ka:fleurs"
     ],
     "m": [
      "am:dict",
@@ -7558,11 +7960,7 @@
      "ko:dict",
      "ko:fleurs"
     ],
-    "ɪ": [
-     "ko:fleurs"
-    ],
     "ɾ": [
-     "am:fleurs",
      "el:dict",
      "el:fleurs",
      "hy-west:dict",
@@ -7585,7 +7983,6 @@
     "j": [
      "am:dict",
      "am:fleurs",
-     "el:fleurs",
      "hy-west:dict",
      "hy:dict",
      "hy:fleurs",
@@ -7626,7 +8023,6 @@
      "ko:fleurs"
     ],
     "ɛ": [
-     "el:fleurs",
      "grc:dict",
      "hy-west:dict",
      "hy:dict",
@@ -7637,7 +8033,6 @@
     "w": [
      "am:dict",
      "am:fleurs",
-     "el:fleurs",
      "grc:dict",
      "ko:dict",
      "ko:fleurs"
@@ -7658,8 +8053,7 @@
      "hy:dict",
      "hy:fleurs",
      "ka:dict",
-     "ka:fleurs",
-     "ko:fleurs"
+     "ka:fleurs"
     ],
     "ɡ": [
      "am:dict",
@@ -7713,7 +8107,6 @@
     "ʃ": [
      "am:dict",
      "am:fleurs",
-     "el:fleurs",
      "hy-west:dict",
      "hy:dict",
      "hy:fleurs",
@@ -7804,8 +8197,7 @@
      "ka:fleurs"
     ],
     "ʏ": [
-     "hy-west:dict",
-     "ko:fleurs"
+     "hy-west:dict"
     ],
     "ʎ": [
      "el:dict",
@@ -7917,7 +8309,6 @@
     ],
     "ɟ": [
      "el:dict",
-     "el:fleurs",
      "grc:dict"
     ],
     "ɸ": [
@@ -8022,9 +8413,6 @@
      "ka:dict",
      "ka:fleurs"
     ],
-    "r̩": [
-     "ko:fleurs"
-    ],
     "ô": [
      "grc:dict"
     ],
@@ -8070,9 +8458,6 @@
     ],
     "ɛ̂": [
      "grc:dict"
-    ],
-    "ɛ́": [
-     "ka:fleurs"
     ]
    }
   },
@@ -8089,7 +8474,7 @@
     "ur"
    ],
    "excluded_langs": [],
-   "n_tokens": 91,
+   "n_tokens": 90,
    "tokens": [
     "<blank>",
     "SIL",
@@ -8169,7 +8554,6 @@
     "î",
     "ê",
     "í",
-    "ĩ",
     "û",
     "a͡ʊ",
     "cʰ",
@@ -8262,7 +8646,6 @@
     152,
     153,
     163,
-    167,
     176,
     181,
     182,
@@ -8444,21 +8827,37 @@
     3,
     3,
     3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     78,
     3,
     3,
     3,
     3,
-    3,
-    3,
-    3,
-    3,
     79,
-    3,
-    3,
-    3,
-    3,
     80,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     81,
     3,
     3,
@@ -8466,16 +8865,11 @@
     3,
     3,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     82,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     3,
@@ -8492,55 +8886,44 @@
     3,
     3,
     3,
-    3,
     84,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     85,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     86,
     3,
     3,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     87,
-    3,
-    3,
-    3,
     88,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     89,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    90,
     3,
     3,
     3,
@@ -8550,20 +8933,20 @@
    ],
    "coverage": {
     "ar": {
-     "fleurs": 1.000056,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "fa": {
-     "fleurs": 0.999577,
+     "fleurs": 1.0,
      "dict": 1.000068
     },
     "ku": {
-     "fleurs": 0.99985,
+     "fleurs": 1.0,
      "dict": 1.000016
     },
     "sd": {
-     "fleurs": 0.999723,
-     "dict": 0.999816
+     "fleurs": 0.999493,
+     "dict": 0.999698
     },
     "syc": {
      "dict": 0.999663
@@ -8572,8 +8955,8 @@
      "dict": 1.0
     },
     "ur": {
-     "fleurs": 1.000072,
-     "dict": 0.999916
+     "fleurs": 1.000073,
+     "dict": 0.999776
     }
    },
    "selected_by": {
@@ -8754,7 +9137,6 @@
     "ɪ": [
      "ar:dict",
      "ar:fleurs",
-     "ku:fleurs",
      "sd:dict",
      "sd:fleurs",
      "syc:dict",
@@ -8829,7 +9211,6 @@
     ],
     "ɛ": [
      "sd:dict",
-     "sd:fleurs",
      "syc:dict",
      "ur:dict",
      "ur:fleurs"
@@ -8837,7 +9218,6 @@
     "w": [
      "ar:dict",
      "ar:fleurs",
-     "fa:fleurs",
      "ku:dict",
      "ku:fleurs",
      "syc:dict",
@@ -8890,12 +9270,10 @@
      "syc:dict"
     ],
     "ɔ": [
-     "sd:fleurs",
      "ur:dict",
      "ur:fleurs"
     ],
     "ŋ": [
-     "ku:fleurs",
      "ug:dict"
     ],
     "ʊ": [
@@ -8979,8 +9357,7 @@
     "ʒ": [
      "ar:dict",
      "ar:fleurs",
-     "fa:dict",
-     "fa:fleurs"
+     "fa:dict"
     ],
     "ʂ": [
      "sd:dict",
@@ -8998,7 +9375,6 @@
      "ur:fleurs"
     ],
     "y": [
-     "fa:fleurs",
      "ku:dict",
      "ku:fleurs",
      "ug:dict"
@@ -9007,7 +9383,6 @@
      "ar:dict",
      "ar:fleurs",
      "ku:dict",
-     "ku:fleurs",
      "syc:dict"
     ],
     "ħ": [
@@ -9024,7 +9399,6 @@
      "sd:fleurs"
     ],
     "œ": [
-     "fa:fleurs",
      "ug:dict"
     ],
     "tˤ": [
@@ -9158,9 +9532,6 @@
     "í": [
      "fa:dict"
     ],
-    "ĩ": [
-     "sd:fleurs"
-    ],
     "û": [
      "ku:dict",
      "ku:fleurs"
@@ -9226,7 +9597,7 @@
     "ta"
    ],
    "excluded_langs": [],
-   "n_tokens": 98,
+   "n_tokens": 96,
    "tokens": [
     "<blank>",
     "SIL",
@@ -9291,7 +9662,6 @@
     "d̪",
     "d͡ʑ",
     "ẽ",
-    "d͡z",
     "ɦ",
     "ɛ̃",
     "n̪",
@@ -9321,7 +9691,6 @@
     "ú",
     "ɪ̃",
     "ɡʱ",
-    "ɛ̀",
     "ɡʰ",
     "d͡ʒʱ",
     "ɖʱ",
@@ -9391,7 +9760,6 @@
     109,
     110,
     114,
-    116,
     117,
     121,
     126,
@@ -9421,7 +9789,6 @@
     229,
     236,
     244,
-    245,
     246,
     252,
     254,
@@ -9544,19 +9911,25 @@
     3,
     62,
     3,
+    3,
     63,
+    3,
+    3,
+    3,
     64,
+    3,
     3,
     3,
     3,
     65,
     3,
-    3,
-    3,
-    3,
     66,
     3,
+    3,
     67,
+    3,
+    3,
+    3,
     3,
     3,
     68,
@@ -9565,56 +9938,55 @@
     3,
     3,
     3,
+    3,
+    3,
+    3,
+    3,
     69,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     70,
-    3,
     71,
+    3,
+    3,
+    3,
     72,
     3,
     3,
     3,
+    3,
+    3,
+    3,
+    3,
     73,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     74,
+    3,
     75,
     3,
     76,
+    3,
+    3,
+    3,
+    3,
     3,
     77,
     3,
     3,
     3,
-    3,
-    3,
     78,
-    3,
-    3,
-    3,
     79,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     80,
     3,
     3,
     3,
     3,
     3,
-    3,
     81,
-    3,
     3,
     3,
     3,
@@ -9627,19 +9999,24 @@
     83,
     3,
     3,
-    3,
-    3,
     84,
     3,
     3,
+    3,
+    3,
+    3,
     85,
-    3,
-    3,
-    3,
-    3,
-    3,
     86,
+    3,
+    3,
+    3,
+    3,
     87,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     3,
@@ -9647,14 +10024,11 @@
     88,
     3,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     89,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     90,
@@ -9664,27 +10038,20 @@
     3,
     3,
     3,
+    3,
     91,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     92,
+    3,
+    3,
+    3,
+    3,
+    3,
     93,
+    3,
     94,
     3,
-    3,
-    3,
-    3,
-    3,
     95,
-    3,
-    96,
-    3,
-    97,
     3,
     3,
     3,
@@ -9701,32 +10068,30 @@
    ],
    "coverage": {
     "hi": {
-     "fleurs": 0.999775,
+     "fleurs": 1.0,
      "dict": 0.999575
     },
     "or": {
-     "fleurs": 1.000053,
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "sa": {
      "dict": 0.999566
     },
     "ta": {
-     "fleurs": 0.99984,
+     "fleurs": 1.0,
      "dict": 0.999755
     }
    },
    "selected_by": {
     "a": [
      "hi:dict",
-     "hi:fleurs",
      "or:dict",
      "or:fleurs",
      "ta:dict",
      "ta:fleurs"
     ],
     "s": [
-     "hi:fleurs",
      "or:dict",
      "or:fleurs",
      "ta:dict",
@@ -9752,7 +10117,6 @@
     ],
     "n": [
      "hi:dict",
-     "hi:fleurs",
      "or:dict",
      "or:fleurs",
      "ta:dict",
@@ -9761,9 +10125,7 @@
     "t": [
      "hi:dict",
      "hi:fleurs",
-     "or:fleurs",
-     "sa:dict",
-     "ta:fleurs"
+     "sa:dict"
     ],
     "l": [
      "hi:dict",
@@ -9808,9 +10170,7 @@
     "d": [
      "hi:dict",
      "hi:fleurs",
-     "or:fleurs",
-     "sa:dict",
-     "ta:fleurs"
+     "sa:dict"
     ],
     "u": [
      "hi:dict",
@@ -9873,14 +10233,11 @@
     ],
     "ɛ": [
      "hi:dict",
-     "hi:fleurs",
-     "or:fleurs",
-     "ta:fleurs"
+     "hi:fleurs"
     ],
     "w": [
      "hi:dict",
      "hi:fleurs",
-     "or:fleurs",
      "sa:dict"
     ],
     "ɑ": [
@@ -9909,8 +10266,7 @@
      "hi:dict",
      "hi:fleurs",
      "or:dict",
-     "or:fleurs",
-     "ta:fleurs"
+     "or:fleurs"
     ],
     "ŋ": [
      "hi:dict",
@@ -9944,8 +10300,7 @@
      "sa:dict"
     ],
     "x": [
-     "hi:dict",
-     "hi:fleurs"
+     "hi:dict"
     ],
     "q": [
      "hi:dict"
@@ -9978,8 +10333,7 @@
      "or:dict",
      "or:fleurs",
      "sa:dict",
-     "ta:dict",
-     "ta:fleurs"
+     "ta:dict"
     ],
     "ʉ": [
      "ta:dict"
@@ -10085,9 +10439,6 @@
     "ẽ": [
      "hi:dict",
      "hi:fleurs",
-     "or:fleurs"
-    ],
-    "d͡z": [
      "or:fleurs"
     ],
     "ɦ": [
@@ -10235,12 +10586,8 @@
      "or:fleurs",
      "sa:dict"
     ],
-    "ɛ̀": [
-     "or:fleurs"
-    ],
     "ɡʰ": [
-     "or:dict",
-     "or:fleurs"
+     "or:dict"
     ],
     "d͡ʒʱ": [
      "hi:dict",
@@ -10249,7 +10596,6 @@
     ],
     "ɖʱ": [
      "hi:dict",
-     "hi:fleurs",
      "or:dict",
      "sa:dict"
     ],
@@ -10646,9 +10992,11 @@
    ],
    "coverage": {
     "yue": {
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "zh": {
+     "fleurs": 1.0,
      "dict": 1.0
     },
     "zh-Hant": {
@@ -10658,194 +11006,262 @@
    "selected_by": {
     "a": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "s": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "i": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "e": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "n": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "t": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "l": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "k": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "o": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "m": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "u": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɪ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "f": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "j": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ə": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "p": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɛ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "w": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɑ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɔ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ŋ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ʊ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɯ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "h": [
-     "yue:dict"
+     "yue:dict",
+     "yue:fleurs"
     ],
     "ɐ": [
-     "yue:dict"
+     "yue:dict",
+     "yue:fleurs"
     ],
     "x": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ʂ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "y": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɕ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɵ": [
-     "yue:dict"
+     "yue:dict",
+     "yue:fleurs"
     ],
     "œ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ʈ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "tʰ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ʐ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "kʰ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɤ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "sʰ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "pʰ": [
      "yue:dict",
+     "yue:fleurs",
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɥ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɕʰ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ʂʰ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɚ": [
      "zh-Hant:dict",
-     "zh:dict"
+     "zh:dict",
+     "zh:fleurs"
     ],
     "ɻ": [
      "zh-Hant:dict",
@@ -10860,13 +11276,13 @@
    "lang_group": "thai_khmer",
    "description": "Thai and Khmer script. Needs word segmentation; Thai is tonal.",
    "langs": [
-    "km",
     "th"
    ],
    "excluded_langs": [
+    "km",
     "tts"
    ],
-   "n_tokens": 47,
+   "n_tokens": 38,
    "tokens": [
     "<blank>",
     "SIL",
@@ -10887,25 +11303,17 @@
     "u",
     "f",
     "j",
-    "ə",
     "b",
     "p",
     "ɛ",
     "w",
-    "ɑ",
-    "v",
     "ʔ",
     "ɔ",
     "ŋ",
-    "ʊ",
     "ɯ",
     "h",
-    "y",
-    "ɨ",
-    "ɲ",
     "tʰ",
     "t͡ɕ",
-    "c",
     "kʰ",
     "ɤ",
     "pʰ",
@@ -10913,8 +11321,7 @@
     "t͡ɕʰ",
     "t̚",
     "p̚",
-    "a̯",
-    "cʰ"
+    "a̯"
    ],
    "gold_index": [
     0,
@@ -10936,25 +11343,17 @@
     16,
     19,
     20,
-    21,
     22,
     23,
     24,
     25,
-    26,
-    27,
     30,
     31,
     32,
-    33,
     35,
     36,
-    48,
-    49,
-    54,
     76,
     78,
-    82,
     92,
     96,
     105,
@@ -10962,8 +11361,7 @@
     128,
     131,
     150,
-    175,
-    182
+    175
    ],
    "gold_to_local": [
     0,
@@ -10987,10 +11385,15 @@
     3,
     17,
     18,
+    3,
     19,
     20,
     21,
     22,
+    3,
+    3,
+    3,
+    3,
     23,
     24,
     25,
@@ -10998,10 +11401,65 @@
     3,
     26,
     27,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     28,
+    3,
     29,
     3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     30,
+    3,
+    3,
+    3,
     31,
     3,
     3,
@@ -11011,11 +11469,25 @@
     3,
     3,
     3,
-    3,
-    3,
-    3,
     32,
+    3,
+    3,
     33,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     3,
@@ -11023,28 +11495,47 @@
     34,
     3,
     3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
     35,
     3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     36,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
     3,
     3,
     3,
@@ -11056,99 +11547,6 @@
     3,
     3,
     3,
-    3,
-    3,
-    38,
-    3,
-    3,
-    3,
-    39,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    40,
-    3,
-    3,
-    41,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    42,
-    3,
-    3,
-    43,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    44,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    45,
-    3,
-    3,
-    3,
-    3,
-    3,
-    3,
-    46,
     3,
     3,
     3,
@@ -11238,165 +11636,147 @@
     3
    ],
    "coverage": {
-    "km": {
-     "dict": 0.999814
-    },
     "th": {
+     "fleurs": 1.0,
      "dict": 1.0
     }
    },
    "selected_by": {
     "a": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "s": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "i": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "e": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "n": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "t": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "l": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "k": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "o": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "r": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "m": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "d": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "u": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "f": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "j": [
-     "th:dict"
-    ],
-    "ə": [
-     "km:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "b": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "p": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "ɛ": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "w": [
-     "th:dict"
-    ],
-    "ɑ": [
-     "km:dict"
-    ],
-    "v": [
-     "km:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "ʔ": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "ɔ": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "ŋ": [
-     "km:dict",
-     "th:dict"
-    ],
-    "ʊ": [
-     "km:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "ɯ": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "h": [
-     "km:dict",
-     "th:dict"
-    ],
-    "y": [
-     "km:dict"
-    ],
-    "ɨ": [
-     "km:dict"
-    ],
-    "ɲ": [
-     "km:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "tʰ": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "t͡ɕ": [
-     "th:dict"
-    ],
-    "c": [
-     "km:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "kʰ": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "ɤ": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "pʰ": [
-     "km:dict",
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "k̚": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "t͡ɕʰ": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "t̚": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "p̚": [
-     "th:dict"
+     "th:dict",
+     "th:fleurs"
     ],
     "a̯": [
-     "th:dict"
-    ],
-    "cʰ": [
-     "km:dict"
+     "th:dict",
+     "th:fleurs"
     ]
    }
   },
@@ -11742,81 +12122,106 @@
    ],
    "coverage": {
     "ja": {
+     "fleurs": 1.0,
      "dict": 0.999376
     }
    },
    "selected_by": {
     "a": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "s": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "i": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "e": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "n": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "t": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "k": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "o": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "m": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "d": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɾ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "j": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "b": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "p": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɡ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "z": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɯ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "h": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɕ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɴ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ç": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ʑ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɸ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ],
     "ɰ": [
-     "ja:dict"
+     "ja:dict",
+     "ja:fleurs"
     ]
    }
   },

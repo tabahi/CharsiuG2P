@@ -478,9 +478,15 @@ def needs_word_segmentation(lang):
 # ---------------------------------------------------------------------------
 # Language groups
 #
-# Languages are sorted into language groups by writing system, word
-# segmentation and tone, not by language family. Each language group has its
-# own token list (lang_group_inventory), and downstream tasks are expected to
+# Languages are sorted into language groups by script, not by language
+# family. Small scripts that need no special processing are merged by kind
+# (other_alphabetic, abjad, brahmic); scripts that need their own processing
+# (word segmentation) keep a language group of their own. One exception to
+# script: Vietnamese is written in Latin script but is tonal, and would be the
+# only language in 'latin' whose tone layer is filled, so it has a language
+# group of its own ('vietnamese'). It added only 3 tokens to latin's list
+# (ɤ̆ ŋ͡m k͡p); the reason is tone, not the phoneme inventory. Each language
+# group has its own token list (lang_group_inventory), and downstream tasks are expected to
 # use those local tokens. "Language group" is never shortened to "group" here:
 # the phoneme groups of phoneme_features (gold_phg) are the other meaning.
 #
@@ -498,12 +504,15 @@ def needs_word_segmentation(lang):
 # East Asian (tone and script) and mostly-Turkic (7 of 10).
 #
 # Writing system, by contrast, separates cleanly and predicts what the text
-# processing has to branch on (segmentation, tone). Membership below is generated from the
-# measured dominant script of each dictionary's keys.
+# processing has to branch on (word segmentation). Membership below is
+# generated from the measured dominant script of each dictionary's keys, except
+# for 'vietnamese' (see above).
 # ---------------------------------------------------------------------------
 
 LANG_GROUPS = {
     'latin': 'Latin script, space-delimited, no tone. The default path.',
+    'vietnamese': 'Latin script, space-delimited, tonal (tone letters). Kept out '
+                  'of latin so that latin holds no tonal language.',
     'cyrillic': 'Cyrillic script, space-delimited, no tone.',
     'other_alphabetic': 'Greek/Armenian/Georgian/Hangul/Ethiopic. Space-delimited '
                         'alphabets and abugidas that need no special handling.',
@@ -526,7 +535,10 @@ LANG_GROUP_MEMBERS = {
         'isl', 'ita', 'lat', 'lit', 'ltz', 'mlt', 'mri', 'msa',
         'nld', 'nob', 'pap', 'pol', 'por', 'ron', 'slk', 'slv',
         'sme', 'spa', 'sqi', 'swa', 'swe', 'tgl', 'tuk', 'tur',
-        'uzb', 'vie',
+        'uzb',
+    },
+    'vietnamese': {
+        'vie',
     },
     'cyrillic': {
         'ady', 'bak', 'bel', 'bul', 'hbs', 'kaz', 'mkd', 'rus',
@@ -568,8 +580,11 @@ ISO_TO_LANG_GROUP = {iso: g for g, members in LANG_GROUP_MEMBERS.items()
 # its language group, and comes back into use by being removed from here once
 # its blocker is fixed, without the language groups changing. See the README.
 EXCLUDED_ISO = {
-    'mya': 'tone is written as diacritics, so the tone layer stays empty '
-           '(it is word-segmented now, with pyidaungsu)',
+    'khm': 'left out for now to focus on the major languages (it is '
+           'word-segmented, with khmer-nltk)',
+    'mya': 'left out for now to focus on the major languages; also, its tone '
+           'is written as diacritics, so the tone layer stays empty (it is '
+           'word-segmented, with pyidaungsu)',
     'nan': 'no maintained segmenter, and 70% of its entries are two-character '
            'words carrying tone sandhi that per-character input cannot produce',
     'tts': 'the dictionary is a romanisation, not IPA, so the model returns '
