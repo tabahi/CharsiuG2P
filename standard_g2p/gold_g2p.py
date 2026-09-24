@@ -461,11 +461,11 @@ tag_to_iso, bcp47_to_tag = _lc.tag_to_iso, _lc.bcp47_to_tag
 tag_to_bcp47 = _lc.tag_to_bcp47
 lang_is_supported = _lc.lang_is_supported
 is_tonal, needs_word_segmentation = _lc.is_tonal, _lc.needs_word_segmentation
-PROCESSING_GROUPS = _lc.PROCESSING_GROUPS
-PROCESSING_GROUP_MEMBERS = _lc.PROCESSING_GROUP_MEMBERS
-ISO_TO_GROUP, EXCLUDED_ISO, FAMILY_ISO = _lc.ISO_TO_GROUP, _lc.EXCLUDED_ISO, _lc.FAMILY_ISO
-processing_group, is_excluded = _lc.processing_group, _lc.is_excluded
-group_members, family = _lc.group_members, _lc.family
+LANG_GROUPS = _lc.LANG_GROUPS
+LANG_GROUP_MEMBERS = _lc.LANG_GROUP_MEMBERS
+ISO_TO_LANG_GROUP, EXCLUDED_ISO, FAMILY_ISO = _lc.ISO_TO_LANG_GROUP, _lc.EXCLUDED_ISO, _lc.FAMILY_ISO
+lang_group, is_excluded = _lc.lang_group, _lc.is_excluded
+lang_group_members, family = _lc.lang_group_members, _lc.family
 
 # SUPPORTED_LANGS above is what the model reports; TAG_TO_ISO is what the
 # mapping tables were built against. If they ever drift, every ISO lookup for
@@ -738,7 +738,8 @@ class goldG2P:
 
             gold_ph        inventory index per mapped unit (a segment that
                             backs off to several units contributes several)
-            gold_phg       broad phonetic group index, aligned with gold_ph
+            gold_phg       phoneme group index (phoneme_features.GROUPS),
+                           aligned with gold_ph
             gold_unmapped  sorted list of distinct segments that had no
                            mapping (direct or backoff) -- i.e. still <unk>
 
@@ -916,23 +917,34 @@ class goldG2P:
             d = self._phonemize_words_tag(words, tag)
 
             # MSWC-style SRTs carry 'trim': [leading_silence, trailing_silence].
+            # SIL comes from the module, not self._inv, which is None when
+            # map_inventory is off. The gold arrays get SIL added directly
+            # rather than remapping the whole segment, which would count
+            # every unmapped segment in it twice in self.unmapped.
             trim = seg.get('trim')
             if sil_from_trim and trim and d['phonemes']:
+                sil = phoneme_inventory_gold.SIL
+                if self.map_inventory:
+                    sil_ph = self._inv.TOKEN_INDEX[sil]
+                    sil_phg = self._feat.GROUPS.get(sil, 0)
                 if trim[0] > self.TRIM_START_THRESHOLD:
-                    d['phonemes'].insert(0, self._inv.SIL)
+                    d['phonemes'].insert(0, sil)
                     d['tone'].insert(0, 0)
                     d['stress'].insert(0, 0)
                     d['length'].insert(0, 0)
                     d['word_num'].insert(0, d['word_num'][0])
+                    if self.map_inventory:
+                        d['gold_ph'].insert(0, sil_ph)
+                        d['gold_phg'].insert(0, sil_phg)
                 if len(trim) > 1 and trim[1] > self.TRIM_END_THRESHOLD:
-                    d['phonemes'].append(self._inv.SIL)
+                    d['phonemes'].append(sil)
                     d['tone'].append(0)
                     d['stress'].append(0)
                     d['length'].append(0)
                     d['word_num'].append(d['word_num'][-1])
-                if self.map_inventory:
-                    d['gold_ph'], d['gold_phg'], d['gold_unmapped'] = (
-                        self._gold_map(d['phonemes']))
+                    if self.map_inventory:
+                        d['gold_ph'].append(sil_ph)
+                        d['gold_phg'].append(sil_phg)
 
             # Misalignment here is silent corruption that only shows up as bad
             # training targets much later, so refuse to write it out.

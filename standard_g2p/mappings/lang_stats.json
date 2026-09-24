@@ -2909,7 +2909,7 @@
   "n": 86,
   "nn_same_family": 48,
   "nn_same_subfamily": 34,
-  "nn_same_group": 49,
+  "nn_same_lang_group": 49,
   "jsd_k8_purity": {
    "1": {
     "family": "indo-european",

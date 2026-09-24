@@ -40,7 +40,7 @@ sys.path.insert(0, os.path.join(ROOT, 'standard_g2p'))
 
 from gold_g2p import decompose_ipa                        # noqa: E402
 import phoneme_inventory_gold as PI                         # noqa: E402
-from lang_codes import (TAG_TO_ISO, ISO_TO_TAG, ISO_TO_GROUP,  # noqa: E402
+from lang_codes import (TAG_TO_ISO, ISO_TO_TAG, ISO_TO_LANG_GROUP,  # noqa: E402
                         FAMILY_ISO, tag_to_bcp47, bcp47_to_tag)
 
 DEFAULT_DICTS = os.path.join(ROOT, 'dicts')
@@ -208,22 +208,22 @@ def cluster(per_iso_freq, isos):
 
 
 def agreement(clustering, iso_of):
-    """How far the clusters line up with genetic family and processing group.
+    """How far the clusters line up with genetic family and language group.
 
     Computed rather than asserted in the prose, so the write-up cannot drift
     from the numbers when the measurement changes. `iso_of` maps each label
-    back to the ISO 639-3 key FAMILY_ISO / ISO_TO_GROUP use.
+    back to the ISO 639-3 key FAMILY_ISO / ISO_TO_LANG_GROUP use.
     """
     top = lambda code: FAMILY_ISO[iso_of[code]].split(':')[0]     # noqa: E731
     fine = lambda code: FAMILY_ISO[iso_of[code]]                  # noqa: E731
-    grp = lambda code: ISO_TO_GROUP[iso_of[code]]                 # noqa: E731
+    grp = lambda code: ISO_TO_LANG_GROUP[iso_of[code]]                 # noqa: E731
 
     nn = clustering['nearest_neighbour']
     n = len(nn)
     out = {'n': n,
            'nn_same_family': sum(top(a) == top(v['nearest']) for a, v in nn.items()),
            'nn_same_subfamily': sum(fine(a) == fine(v['nearest']) for a, v in nn.items()),
-           'nn_same_group': sum(grp(a) == grp(v['nearest']) for a, v in nn.items())}
+           'nn_same_lang_group': sum(grp(a) == grp(v['nearest']) for a, v in nn.items())}
 
     # Per JSD cluster at k=8: its majority family and how much of it that is.
     purity = {}
@@ -359,7 +359,7 @@ def write_markdown(stats, per_tag, path):
     c = stats['clustering']
     ag = stats['agreement']
     A(f'{c["n_languages"]} languages, {c["n_phoneme_types"]} distinct phonemes of the '
-      f'{stats["inventory_space"]} -- the space the models are trained in, so '
+      f'{stats["inventory_space"]} -- the space the local tokens are drawn from, so '
       f'sub-phonemic detail the inventory backs off (`d̥` -> `d`) does not count '
       f'as a difference. Stress, tone and length are separate layers.')
     A('')
@@ -395,8 +395,8 @@ def write_markdown(stats, per_tag, path):
     n_pure = sum(p['count'] == p['size'] for p in ag['jsd_k8_purity'].values())
     A(f'A language\'s nearest neighbour by phoneme usage shares its top-level '
       f'family for {ag["nn_same_family"]}/{ag["n"]} languages, its sub-family for '
-      f'{ag["nn_same_subfamily"]}/{ag["n"]}, and its processing group for '
-      f'{ag["nn_same_group"]}/{ag["n"]}. {n_pure} of the '
+      f'{ag["nn_same_subfamily"]}/{ag["n"]}, and its language group for '
+      f'{ag["nn_same_lang_group"]}/{ag["n"]}. {n_pure} of the '
       f'{len(ag["jsd_k8_purity"])} clusters above are a single family; a '
       f'family-based grouping would need them all to be.')
     A('')
@@ -408,24 +408,24 @@ def write_markdown(stats, per_tag, path):
         A(f'| `{code}` | `{v["nearest"]}` | {v["jsd"]:.3f} |')
     A('')
 
-    A('## 5. The resulting groups')
+    A('## 5. The resulting language groups')
     A('')
     A('What sections 1-4 were used to decide, as it now stands in')
-    A('`standard_g2p/lang_codes.py`. Grouping is by preprocessing path -- writing')
-    A('system, word segmentation, tone -- because section 4 ruled out phonology.')
+    A('`standard_g2p/lang_codes.py`. Grouping is by writing system, word')
+    A('segmentation and tone, because section 4 ruled out phonology.')
     A('')
     A('Every BCP 47 code the pipeline can emit, which is what')
-    A('`mappings/group_inventories.json` routes on; regional and script variants')
+    A('`mappings/lang_group_inventories.json` routes on; regional and script variants')
     A('of one language (`en`, `en-GB`) are listed separately.')
     A('')
-    A('| group | codes | usable | languages |')
+    A('| lang_group | codes | usable | languages |')
     A('|---|---:|---:|---|')
-    from lang_codes import PROCESSING_GROUPS, EXCLUDED_ISO
-    for g in PROCESSING_GROUPS:
+    from lang_codes import LANG_GROUPS, EXCLUDED_ISO
+    for g in LANG_GROUPS:
         m = sorted(d['bcp47'] for d in per_tag.values()
-                   if d['reachable'] and ISO_TO_GROUP[d['iso']] == g)
+                   if d['reachable'] and ISO_TO_LANG_GROUP[d['iso']] == g)
         usable = [d['bcp47'] for d in per_tag.values() if d['reachable']
-                  and ISO_TO_GROUP[d['iso']] == g and d['iso'] not in EXCLUDED_ISO]
+                  and ISO_TO_LANG_GROUP[d['iso']] == g and d['iso'] not in EXCLUDED_ISO]
         A(f'| `{g}` | {len(m)} | {len(usable)} | {" ".join(m)} |')
     A('')
     A('Excluded for now, orthogonally to the grouping:')

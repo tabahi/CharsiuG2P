@@ -12,7 +12,7 @@
   "noise",
   "<unk>"
  ],
- "lang_to_group": {
+ "lang_to_lang_group": {
   "ady": "cyrillic",
   "af": "latin",
   "am": "other_alphabetic",
@@ -207,9 +207,9 @@
   "zho": "zh",
   "zsm": "ms"
  },
- "groups": {
+ "lang_groups": {
   "latin": {
-   "group": "latin",
+   "lang_group": "latin",
    "description": "Latin script, space-delimited, no tone. The default path.",
    "langs": [
     "af",
@@ -5179,7 +5179,7 @@
    }
   },
   "cyrillic": {
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "description": "Cyrillic script, space-delimited, no tone.",
    "langs": [
     "ady",
@@ -6864,7 +6864,7 @@
    }
   },
   "other_alphabetic": {
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "description": "Greek/Armenian/Georgian/Hangul/Ethiopic. Space-delimited alphabets and abugidas that need no special handling.",
    "langs": [
     "am",
@@ -8077,7 +8077,7 @@
    }
   },
   "abjad": {
-   "group": "abjad",
+   "lang_group": "abjad",
    "description": "Arabic script and Syriac. Orthography underspecifies vowels, so the grapheme sequence carries less than the phoneme sequence.",
    "langs": [
     "ar",
@@ -9217,7 +9217,7 @@
    }
   },
   "brahmic": {
-   "group": "brahmic",
+   "lang_group": "brahmic",
    "description": "Indic abugidas. Inherent vowel and conjunct consonants, so character count and phoneme count diverge.",
    "langs": [
     "hi",
@@ -10261,7 +10261,7 @@
    }
   },
   "cjk": {
-   "group": "cjk",
+   "lang_group": "cjk",
    "description": "Han script. Needs word segmentation AND carries lexical tone.",
    "langs": [
     "yue",
@@ -10857,7 +10857,7 @@
    }
   },
   "thai_khmer": {
-   "group": "thai_khmer",
+   "lang_group": "thai_khmer",
    "description": "Thai and Khmer script. Needs word segmentation; Thai is tonal.",
    "langs": [
     "km",
@@ -11401,7 +11401,7 @@
    }
   },
   "japanese": {
-   "group": "japanese",
+   "lang_group": "japanese",
    "description": "Mixed kanji/kana. Needs word segmentation; no tone.",
    "langs": [
     "ja"
@@ -11821,7 +11821,7 @@
    }
   },
   "burmese": {
-   "group": "burmese",
+   "lang_group": "burmese",
    "description": "Myanmar script. Needs word segmentation; tone written as diacritics, so it does not reach the tone layer.",
    "langs": [],
    "excluded_langs": [

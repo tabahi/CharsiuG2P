@@ -36,7 +36,7 @@
    "lang": "ady",
    "g2p_tag": "ady",
    "iso": "ady",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 29528,
@@ -127,7 +127,7 @@
    "lang": "af",
    "g2p_tag": "afr",
    "iso": "afr",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 381971,
@@ -259,7 +259,7 @@
    "lang": "am",
    "g2p_tag": "amh",
    "iso": "amh",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 29438,
@@ -395,7 +395,7 @@
    "lang": "ang",
    "g2p_tag": "ang",
    "iso": "ang",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 57635,
@@ -460,7 +460,7 @@
    "lang": "ar",
    "g2p_tag": "ara",
    "iso": "ara",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 8706470,
@@ -590,7 +590,7 @@
    "lang": "arg",
    "g2p_tag": "arg",
    "iso": "arg",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 30155,
@@ -652,7 +652,7 @@
    "lang": "az",
    "g2p_tag": "aze",
    "iso": "aze",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 656571,
@@ -786,7 +786,7 @@
    "lang": "ba",
    "g2p_tag": "bak",
    "iso": "bak",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 198116,
@@ -850,7 +850,7 @@
    "lang": "be",
    "g2p_tag": "bel",
    "iso": "bel",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 692553,
@@ -1021,7 +1021,7 @@
    "lang": "bg",
    "g2p_tag": "bul",
    "iso": "bul",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 301203,
@@ -1170,7 +1170,7 @@
    "lang": "bs",
    "g2p_tag": "bos",
    "iso": "bos",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 296659,
@@ -1305,7 +1305,7 @@
    "lang": "ca",
    "g2p_tag": "cat",
    "iso": "cat",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 448407,
@@ -1425,7 +1425,7 @@
    "lang": "cs",
    "g2p_tag": "cze",
    "iso": "ces",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 189420,
@@ -1566,7 +1566,7 @@
    "lang": "cy",
    "g2p_tag": "wel-nw",
    "iso": "cym",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 52632,
@@ -1706,7 +1706,7 @@
    "lang": "cy-sw",
    "g2p_tag": "wel-sw",
    "iso": "cym",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 61615,
@@ -1773,7 +1773,7 @@
    "lang": "da",
    "g2p_tag": "dan",
    "iso": "dan",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 44105,
@@ -2056,7 +2056,7 @@
    "lang": "de",
    "g2p_tag": "ger",
    "iso": "deu",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 3171607,
@@ -2264,7 +2264,7 @@
    "lang": "egy",
    "g2p_tag": "egy",
    "iso": "egy",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 16264,
@@ -2340,7 +2340,7 @@
    "lang": "el",
    "g2p_tag": "gre",
    "iso": "ell",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 89530,
@@ -2468,7 +2468,7 @@
    "lang": "en",
    "g2p_tag": "eng-us",
    "iso": "eng",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 855275,
@@ -2588,7 +2588,7 @@
    "lang": "en-GB",
    "g2p_tag": "eng-uk",
    "iso": "eng",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 496632,
@@ -2655,7 +2655,7 @@
    "lang": "enm",
    "g2p_tag": "enm",
    "iso": "enm",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 42604,
@@ -2731,7 +2731,7 @@
    "lang": "eo",
    "g2p_tag": "epo",
    "iso": "epo",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 185780,
@@ -2785,7 +2785,7 @@
    "lang": "es",
    "g2p_tag": "spa",
    "iso": "spa",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 6106880,
@@ -2895,7 +2895,7 @@
    "lang": "es-419",
    "g2p_tag": "spa-latin",
    "iso": "spa",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 786016,
@@ -2943,7 +2943,7 @@
    "lang": "es-MX",
    "g2p_tag": "spa-me",
    "iso": "spa",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 6106880,
@@ -2997,7 +2997,7 @@
    "lang": "et",
    "g2p_tag": "est",
    "iso": "est",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 742313,
@@ -3133,7 +3133,7 @@
    "lang": "eu",
    "g2p_tag": "eus",
    "iso": "eus",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 241721,
@@ -3199,7 +3199,7 @@
    "lang": "fa",
    "g2p_tag": "fas",
    "iso": "fas",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 59245,
@@ -3352,7 +3352,7 @@
    "lang": "fi",
    "g2p_tag": "fin",
    "iso": "fin",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 999999,
@@ -3470,7 +3470,7 @@
    "lang": "fr",
    "g2p_tag": "fra",
    "iso": "fra",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 1804599,
@@ -3596,7 +3596,7 @@
    "lang": "fr-CA",
    "g2p_tag": "fra-qu",
    "iso": "fra",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 1930377,
@@ -3676,7 +3676,7 @@
    "lang": "ga",
    "g2p_tag": "gle",
    "iso": "gle",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 33476,
@@ -3909,7 +3909,7 @@
    "lang": "gl",
    "g2p_tag": "glg",
    "iso": "glg",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 30263,
@@ -4084,7 +4084,7 @@
    "lang": "grc",
    "g2p_tag": "grc",
    "iso": "grc",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 676968,
@@ -4176,7 +4176,7 @@
    "lang": "hbs",
    "g2p_tag": "hbs-latn",
    "iso": "hbs",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 186572,
@@ -4315,7 +4315,7 @@
    "lang": "hbs-Cyrl",
    "g2p_tag": "hbs-cyrl",
    "iso": "hbs",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 179336,
@@ -4385,7 +4385,7 @@
    "lang": "hi",
    "g2p_tag": "hin",
    "iso": "hin",
-   "group": "brahmic",
+   "lang_group": "brahmic",
    "excluded": false,
    "dict": {
     "segments": 58882,
@@ -4613,7 +4613,7 @@
    "lang": "hu",
    "g2p_tag": "hun",
    "iso": "hun",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 436103,
@@ -4741,7 +4741,7 @@
    "lang": "hy",
    "g2p_tag": "arm-e",
    "iso": "hye",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 101446,
@@ -4871,7 +4871,7 @@
    "lang": "hy-west",
    "g2p_tag": "arm-w",
    "iso": "hye",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 99624,
@@ -4932,7 +4932,7 @@
    "lang": "ia",
    "g2p_tag": "ina",
    "iso": "ina",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 37727,
@@ -4995,7 +4995,7 @@
    "lang": "id",
    "g2p_tag": "ind",
    "iso": "ind",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 677742,
@@ -5113,7 +5113,7 @@
    "lang": "io",
    "g2p_tag": "ido",
    "iso": "ido",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 47763,
@@ -5174,7 +5174,7 @@
    "lang": "is",
    "g2p_tag": "ice",
    "iso": "isl",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 66961,
@@ -5309,7 +5309,7 @@
    "lang": "it",
    "g2p_tag": "ita",
    "iso": "ita",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 457535,
@@ -5419,7 +5419,7 @@
    "lang": "ja",
    "g2p_tag": "jpn",
    "iso": "jpn",
-   "group": "japanese",
+   "lang_group": "japanese",
    "excluded": false,
    "dict": {
     "segments": 2123096,
@@ -5516,7 +5516,7 @@
    "lang": "ka",
    "g2p_tag": "geo",
    "iso": "kat",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 119913,
@@ -5645,7 +5645,7 @@
    "lang": "kk",
    "g2p_tag": "kaz",
    "iso": "kaz",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 533702,
@@ -5767,7 +5767,7 @@
    "lang": "km",
    "g2p_tag": "khm",
    "iso": "khm",
-   "group": "thai_khmer",
+   "lang_group": "thai_khmer",
    "excluded": false,
    "dict": {
     "segments": 21518,
@@ -5827,7 +5827,7 @@
    "lang": "ko",
    "g2p_tag": "kor",
    "iso": "kor",
-   "group": "other_alphabetic",
+   "lang_group": "other_alphabetic",
    "excluded": false,
    "dict": {
     "segments": 523836,
@@ -6016,7 +6016,7 @@
    "lang": "ku",
    "g2p_tag": "kur",
    "iso": "kur",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 64263,
@@ -6150,7 +6150,7 @@
    "lang": "la",
    "g2p_tag": "lat-clas",
    "iso": "lat",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 267620,
@@ -6230,7 +6230,7 @@
    "lang": "la-eccl",
    "g2p_tag": "lat-eccl",
    "iso": "lat",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 261510,
@@ -6294,7 +6294,7 @@
    "lang": "lb",
    "g2p_tag": "ltz",
    "iso": "ltz",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 359260,
@@ -6450,7 +6450,7 @@
    "lang": "lt",
    "g2p_tag": "lit",
    "iso": "lit",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 141764,
@@ -6702,7 +6702,7 @@
    "lang": "mi",
    "g2p_tag": "mri",
    "iso": "mri",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 37709,
@@ -6808,7 +6808,7 @@
    "lang": "mk",
    "g2p_tag": "mac",
    "iso": "mkd",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 55399,
@@ -6943,7 +6943,7 @@
    "lang": "ms",
    "g2p_tag": "msa",
    "iso": "msa",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 211096,
@@ -7057,7 +7057,7 @@
    "lang": "mt",
    "g2p_tag": "mlt",
    "iso": "mlt",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 167742,
@@ -7181,7 +7181,7 @@
    "lang": "my",
    "g2p_tag": "bur",
    "iso": "mya",
-   "group": "burmese",
+   "lang_group": "burmese",
    "excluded": true,
    "dict": {
     "segments": 28846,
@@ -7278,7 +7278,7 @@
    "lang": "nan",
    "g2p_tag": "nan",
    "iso": "nan",
-   "group": "cjk",
+   "lang_group": "cjk",
    "excluded": true,
    "dict": {
     "segments": 251699,
@@ -7345,7 +7345,7 @@
    "lang": "nb",
    "g2p_tag": "nob",
    "iso": "nob",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 71444,
@@ -7485,7 +7485,7 @@
    "lang": "nl",
    "g2p_tag": "dut",
    "iso": "nld",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 274267,
@@ -7613,7 +7613,7 @@
    "lang": "or",
    "g2p_tag": "ori",
    "iso": "ori",
-   "group": "brahmic",
+   "lang_group": "brahmic",
    "excluded": false,
    "dict": {
     "segments": 40544,
@@ -7768,7 +7768,7 @@
    "lang": "pap",
    "g2p_tag": "pap",
    "iso": "pap",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 56912,
@@ -7825,7 +7825,7 @@
    "lang": "pl",
    "g2p_tag": "pol",
    "iso": "pol",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 517766,
@@ -7982,7 +7982,7 @@
    "lang": "pt",
    "g2p_tag": "por-po",
    "iso": "por",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 64278,
@@ -8121,7 +8121,7 @@
    "lang": "pt-BR",
    "g2p_tag": "por-bz",
    "iso": "por",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 74997,
@@ -8194,7 +8194,7 @@
    "lang": "ro",
    "g2p_tag": "ron",
    "iso": "ron",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 614076,
@@ -8388,7 +8388,7 @@
    "lang": "ru",
    "g2p_tag": "rus",
    "iso": "rus",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 3656896,
@@ -8569,7 +8569,7 @@
    "lang": "sa",
    "g2p_tag": "san",
    "iso": "san",
-   "group": "brahmic",
+   "lang_group": "brahmic",
    "excluded": false,
    "dict": {
     "segments": 41503,
@@ -8660,7 +8660,7 @@
    "lang": "sd",
    "g2p_tag": "snd",
    "iso": "snd",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 59687,
@@ -8828,7 +8828,7 @@
    "lang": "se",
    "g2p_tag": "sme",
    "iso": "sme",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 22003,
@@ -8899,7 +8899,7 @@
    "lang": "sk",
    "g2p_tag": "slk",
    "iso": "slk",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 775466,
@@ -9025,7 +9025,7 @@
    "lang": "sl",
    "g2p_tag": "slv",
    "iso": "slv",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 29167,
@@ -9166,7 +9166,7 @@
    "lang": "sq",
    "g2p_tag": "sqi",
    "iso": "sqi",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 438258,
@@ -9236,7 +9236,7 @@
    "lang": "sr",
    "g2p_tag": "srp",
    "iso": "srp",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 683415,
@@ -9367,7 +9367,7 @@
    "lang": "sv",
    "g2p_tag": "swe",
    "iso": "swe",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 9030861,
@@ -9543,7 +9543,7 @@
    "lang": "sw",
    "g2p_tag": "swa",
    "iso": "swa",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 380695,
@@ -9755,7 +9755,7 @@
    "lang": "syc",
    "g2p_tag": "syc",
    "iso": "syc",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 41593,
@@ -9823,7 +9823,7 @@
    "lang": "ta",
    "g2p_tag": "tam",
    "iso": "tam",
-   "group": "brahmic",
+   "lang_group": "brahmic",
    "excluded": false,
    "dict": {
     "segments": 16321,
@@ -9974,7 +9974,7 @@
    "lang": "th",
    "g2p_tag": "tha",
    "iso": "tha",
-   "group": "thai_khmer",
+   "lang_group": "thai_khmer",
    "excluded": false,
    "dict": {
     "segments": 89295,
@@ -10032,7 +10032,7 @@
    "lang": "tk",
    "g2p_tag": "tuk",
    "iso": "tuk",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 122234,
@@ -10093,7 +10093,7 @@
    "lang": "tl",
    "g2p_tag": "tgl",
    "iso": "tgl",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 55055,
@@ -10220,7 +10220,7 @@
    "lang": "tr",
    "g2p_tag": "tur",
    "iso": "tur",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 676002,
@@ -10348,7 +10348,7 @@
    "lang": "tt",
    "g2p_tag": "tat",
    "iso": "tat",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 528628,
@@ -10409,7 +10409,7 @@
    "lang": "tts",
    "g2p_tag": "tts",
    "iso": "tts",
-   "group": "thai_khmer",
+   "lang_group": "thai_khmer",
    "excluded": true,
    "dict": {
     "segments": 10274,
@@ -10464,7 +10464,7 @@
    "lang": "ug",
    "g2p_tag": "uig",
    "iso": "uig",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 35242,
@@ -10521,7 +10521,7 @@
    "lang": "uk",
    "g2p_tag": "ukr",
    "iso": "ukr",
-   "group": "cyrillic",
+   "lang_group": "cyrillic",
    "excluded": false,
    "dict": {
     "segments": 84991,
@@ -10695,7 +10695,7 @@
    "lang": "ur",
    "g2p_tag": "urd",
    "iso": "urd",
-   "group": "abjad",
+   "lang_group": "abjad",
    "excluded": false,
    "dict": {
     "segments": 191557,
@@ -10858,7 +10858,7 @@
    "lang": "uz",
    "g2p_tag": "uzb",
    "iso": "uzb",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 105711,
@@ -10971,7 +10971,7 @@
    "lang": "vi",
    "g2p_tag": "vie-n",
    "iso": "vie",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 494283,
@@ -11104,7 +11104,7 @@
    "lang": "vi-c",
    "g2p_tag": "vie-c",
    "iso": "vie",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 502576,
@@ -11166,7 +11166,7 @@
    "lang": "vi-s",
    "g2p_tag": "vie-s",
    "iso": "vie",
-   "group": "latin",
+   "lang_group": "latin",
    "excluded": false,
    "dict": {
     "segments": 472923,
@@ -11227,7 +11227,7 @@
    "lang": "yue",
    "g2p_tag": "yue",
    "iso": "yue",
-   "group": "cjk",
+   "lang_group": "cjk",
    "excluded": false,
    "dict": {
     "segments": 377482,
@@ -11281,7 +11281,7 @@
    "lang": "zh",
    "g2p_tag": "zho-s",
    "iso": "zho",
-   "group": "cjk",
+   "lang_group": "cjk",
    "excluded": false,
    "dict": {
     "segments": 253814,
@@ -11345,7 +11345,7 @@
    "lang": "zh-Hant",
    "g2p_tag": "zho-t",
    "iso": "zho",
-   "group": "cjk",
+   "lang_group": "cjk",
    "excluded": false,
    "dict": {
     "segments": 267604,

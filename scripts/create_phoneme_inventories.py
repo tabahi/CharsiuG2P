@@ -1,5 +1,5 @@
 """Count phonemes in the gold inventory's index space, per language and per
-processing group, and derive each group's deterministic token list from them.
+language group, and derive each language group's deterministic token list from them.
 
 Everything is counted in the SAME space the training targets live in: the 270
 tokens of phoneme_inventory_gold, reached through the same `decompose_ipa` ->
@@ -26,7 +26,7 @@ things:
 
     dict    CharsiuG2P's own training dictionaries, one vote per word type, for
             every tag a BCP 47 code reaches. Covers the skipped languages and
-            the ~40 FLEURS lacks, so no group list is blind to them.
+            the ~40 FLEURS lacks, so no language group list is blind to them.
 
 Languages are keyed by BCP 47 code throughout (lang_codes.tag_to_bcp47). The
 CharsiuG2P tag appears only as a `g2p_tag` field, the same split the .gs.json
@@ -35,7 +35,7 @@ files make between `lang` and `g2p_lang`.
 The FLEURS side needs data that lives outside this repo: the paths_list the
 .gs.json files were written from, and the directory its '$/...' paths are
 relative to. Without --paths only the dictionaries are counted. The shipped
-group_inventories.json was built from both sources.
+lang_group_inventories.json was built from both sources.
 
 Usage:
     python scripts/create_phoneme_inventories.py                  # dicts only
@@ -48,8 +48,8 @@ the directory holding the FLEURS loader (`fluers.py`, which defines
 
 Writes to standard_g2p/mappings/:
     lang_counts.json        per-language counts, both sources
-    group_counts.json       the same rolled up per processing group
-    group_inventories.json  per-group token lists -- the product
+    lang_group_counts.json       the same rolled up per language group
+    lang_group_inventories.json  per-language-group token lists -- the product
     phoneme_counts.md       a readable summary, including the unmapped report
 """
 import os
@@ -68,8 +68,8 @@ from gold_g2p import decompose_ipa                                  # noqa: E402
 import phoneme_inventory_gold as PI                                   # noqa: E402
 # The loader checks this fingerprint on read, so both sides must compute it
 # the same way -- hence one definition, owned by the loader.
-from group_inventory import gold_fingerprint                          # noqa: E402
-from lang_codes import (TAG_TO_ISO, ISO_TO_GROUP, PROCESSING_GROUPS,  # noqa: E402
+from lang_group_inventory import gold_fingerprint                          # noqa: E402
+from lang_codes import (TAG_TO_ISO, ISO_TO_LANG_GROUP, LANG_GROUPS,  # noqa: E402
                         EXCLUDED_ISO, tag_to_bcp47, bcp47_to_tag)
 
 CHARSIU_DICTS = os.path.join(ROOT, 'dicts')
@@ -125,7 +125,7 @@ def lang_aliases(canonical):
 def lang_meta(code, tag):
     iso = TAG_TO_ISO[tag]
     return {'lang': code, 'g2p_tag': tag, 'iso': iso,
-            'group': ISO_TO_GROUP[iso], 'excluded': iso in EXCLUDED_ISO}
+            'lang_group': ISO_TO_LANG_GROUP[iso], 'excluded': iso in EXCLUDED_ISO}
 
 
 # ---------------------------------------------------------------------------
@@ -324,21 +324,21 @@ def merge_fleurs(pool, langs, paths_file, metadata_dir):
 
 
 # ---------------------------------------------------------------------------
-# Group rollup
+# Language group rollup
 # ---------------------------------------------------------------------------
 
 def rollup(langs, include_excluded=False):
-    """Sum per-language counts into per-group tables, per source.
+    """Sum per-language counts into per-language-group tables, per source.
 
-    `n_langs` per token is breadth: how many languages of the group emit it.
+    `n_langs` per token is breadth: how many languages of the language group emit it.
     A token frequent in one language only is still kept -- see select() --
     but breadth is reported so that call can be revisited.
     """
-    groups = {}
-    for g in PROCESSING_GROUPS:
-        members = sorted(c for c, m in langs.items() if m['group'] == g)
+    lang_groups = {}
+    for g in LANG_GROUPS:
+        members = sorted(c for c, m in langs.items() if m['lang_group'] == g)
         used = [c for c in members if include_excluded or not langs[c]['excluded']]
-        rec = {'group': g, 'description': PROCESSING_GROUPS[g],
+        rec = {'lang_group': g, 'description': LANG_GROUPS[g],
                'langs': used,
                'excluded_langs': [c for c in members if c not in used]}
         for src in ('fleurs', 'dict'):
@@ -359,27 +359,28 @@ def rollup(langs, include_excluded=False):
             out['n_langs'] = {k: {seg: len(langs_of[(k, seg)]) for seg in out[k]}
                               for k in ('gold', 'backoff', 'noise', 'unmapped')}
             rec[src] = out
-        groups[g] = rec
-    return groups
+        lang_groups[g] = rec
+    return lang_groups
 
 
 # ---------------------------------------------------------------------------
-# Selection: each group's token list
+# Selection: each language group's token list
 #
-# The group model's softmax is a SUBSET of the 270 gold tokens, not a new
-# inventory: the .gs.json files already carry gold indices, and a group only
+# A language group's token list is a SUBSET of the 270 gold tokens, not a new
+# inventory: the .gs.json files already carry gold indices, and a language group only
 # needs to know which of them it predicts. So the product is a list of gold
-# tokens per group, plus a gold -> local index table.
+# tokens per language group, plus a gold -> local index table.
 #
 # A token is kept if some member language needs it, judged per language rather
 # than on pooled counts. Pooled counts would let one big dictionary decide for
 # everyone (the sv dictionary alone is 9M segments, a FLEURS language is ~30k).
 # For each language and each source it has, tokens are taken most-frequent
-# first until COVERAGE of that language's phoneme tokens is reached; the group
-# list is the union. Every member language therefore keeps at least COVERAGE
+# first until COVERAGE of that language's phoneme tokens is reached; the
+# language group's list is the union. Every member language therefore keeps at least COVERAGE
 # of its tokens on either source, and a phoneme important to one small
 # language is not voted out by the others. Breadth is reported, not required
-# -- the old ">= 2 languages" gate cannot work per group (`japanese` has one).
+# -- the old ">= 2 languages" gate cannot work per language group (`japanese`
+# has one).
 #
 # Deterministic: ties break on gold index, and the list is emitted in gold
 # index order, so it depends on the counts and COVERAGE and nothing else.
@@ -410,9 +411,9 @@ def covered(counts, keep):
     return round(hit / total, 6) if total else None
 
 
-def select(langs, groups, coverage=COVERAGE):
+def select(langs, lang_groups, coverage=COVERAGE):
     out = {}
-    for g, rec in groups.items():
+    for g, rec in lang_groups.items():
         by = collections.defaultdict(list)
         for code in rec['langs']:
             for src in ('fleurs', 'dict'):
@@ -426,7 +427,7 @@ def select(langs, groups, coverage=COVERAGE):
         unk = local[PI.UNK]
         keep = set(tokens)
         out[g] = {
-            'group': g,
+            'lang_group': g,
             'description': rec['description'],
             'langs': rec['langs'],
             'excluded_langs': rec['excluded_langs'],
@@ -434,7 +435,7 @@ def select(langs, groups, coverage=COVERAGE):
             'tokens': tokens,
             'gold_index': [PI.TOKEN_INDEX[t] for t in tokens],
             # Indexed by gold index. A gold token outside the list folds to
-            # the group's <unk>; by construction that is under 1 - coverage
+            # the language group's <unk>; by construction that is under 1 - coverage
             # of any member language's tokens.
             'gold_to_local': [local.get(t, unk) for t in PI.TOKENS],
             'coverage': {code: {src: covered(langs[code][src]['gold'], keep)
@@ -476,10 +477,10 @@ def primary(m):
     return ('fleurs', m['fleurs']) if m['fleurs'] else ('dict', m['dict'])
 
 
-def write_report(langs, notes, groups, inv, coverage, path):
+def write_report(langs, notes, lang_groups, inv, coverage, path):
     L = []
     A = L.append
-    A('# Phoneme counts and per-group inventories')
+    A('# Phoneme counts and per-language-group inventories')
     A('')
     A('Generated by `scripts/create_phoneme_inventories.py` -- do not edit by hand.')
     A('')
@@ -503,7 +504,7 @@ def write_report(langs, notes, groups, inv, coverage, path):
     A('')
     if notes.get('missing_by_locale'):
         A('Locales with no `.gs.json` (g2p_task skips languages that need word '
-          'segmentation; their groups rely on `dict` alone):')
+          'segmentation; their lang_groups rely on `dict` alone):')
         A('')
         A('| locale | clips without .gs.json |')
         A('|---|---:|')
@@ -540,7 +541,7 @@ def write_report(langs, notes, groups, inv, coverage, path):
       f'Flagged (**bold**) at backoff >= {pct(FLAG_BACKOFF, 1, 0)} or unmapped >= '
       f'{pct(FLAG_UNMAPPED, 1)}.')
     A('')
-    A('| lang | group | src | segments | direct | backoff | noise | unmapped | top backoff |')
+    A('| lang | lang_group | src | segments | direct | backoff | noise | unmapped | top backoff |')
     A('|---|---|---|---:|---:|---:|---:|---:|---|')
     for code, m in sorted(langs.items()):
         src, s = primary(m)
@@ -551,7 +552,7 @@ def write_report(langs, notes, groups, inv, coverage, path):
         name = f'**{code}**' if flag else code
         top = ', '.join(f'{md_code(k)}>{md_code(PI.BACKOFF[k])} {pct(v, n)}'
                         for k, v in list(s['backoff'].items())[:3])
-        A(f'| {name} | {m["group"]} | {src} | {n:,} | {pct(o["direct"], n)} | '
+        A(f'| {name} | {m["lang_group"]} | {src} | {n:,} | {pct(o["direct"], n)} | '
           f'{pct(o["backoff"], n)} | {pct(o["noise"], n, 3)} | '
           f'{pct(o["unmapped"], n, 3)} | {top} |')
     A('')
@@ -607,15 +608,15 @@ def write_report(langs, notes, groups, inv, coverage, path):
         A('| - | 0 | 0 | |')
     A('')
 
-    A('## 5. Group inventories')
+    A('## 5. Language group inventories')
     A('')
     A(f'Per language and source, the most frequent gold phonemes up to '
-      f'{coverage:.1%} of its tokens; the group list is the union, in gold index '
+      f'{coverage:.1%} of its tokens; the language group list is the union, in gold index '
       f'order, after the {len(PI.SPECIAL_TOKENS)} special tokens. `worst` is the '
       f'lowest coverage of any member language on either source. `dict only` '
       f'counts phonemes no FLEURS output asked for.')
     A('')
-    A('| group | langs | tokens | worst | dict only | excluded |')
+    A('| lang_group | langs | tokens | worst | dict only | excluded |')
     A('|---|---:|---:|---|---:|---|')
     for g, r in inv.items():
         worst = min(((v, f'{c}:{s}') for c, d in r['coverage'].items()
@@ -634,9 +635,9 @@ def write_report(langs, notes, groups, inv, coverage, path):
         A('')
         A(f'{r["description"]} Languages: {" ".join(r["langs"])}.')
         A('')
-        gc = groups[g]
+        gc = lang_groups[g]
         fl_tot = sum(n for t, n in gc['fleurs']['gold'].items() if t not in PI.SPECIAL_TOKENS)
-        A('`fleurs` share is of the group\'s pooled FLEURS output; `langs` is how '
+        A('`fleurs` share is of the language group\'s pooled FLEURS output; `langs` is how '
           'many member languages emit the phoneme there. `selected by` names '
           'every language:source whose coverage needed it.')
         A('')
@@ -676,33 +677,33 @@ def main():
     ap.add_argument('--include-excluded', action='store_true',
                     help='also roll up languages in EXCLUDED_ISO')
     ap.add_argument('--coverage', type=float, default=COVERAGE,
-                    help='per-language token coverage each group list must reach')
+                    help='per-language token coverage each language group list must reach')
     ap.add_argument('--workers', type=int, default=32)
     args = ap.parse_args()
 
     langs, notes = gather(args.dicts, paths_file=args.paths,
                           metadata_dir=args.metadata_dir, workers=args.workers)
-    groups = rollup(langs, include_excluded=args.include_excluded)
-    inv = select(langs, groups, coverage=args.coverage)
+    lang_groups = rollup(langs, include_excluded=args.include_excluded)
+    inv = select(langs, lang_groups, coverage=args.coverage)
 
     gold = {'module': 'phoneme_inventory_gold', 'n_tokens': PI.N_TOKENS,
             'fingerprint': gold_fingerprint()}
     dump({'gold': gold, 'fleurs': notes,
           'langs': dict(sorted(langs.items()))}, 'lang_counts.json')
-    dump(groups, 'group_counts.json')
+    dump(lang_groups, 'lang_group_counts.json')
     dump({'gold': gold,
           'coverage': args.coverage,
           'include_excluded': args.include_excluded,
           'special_tokens': list(PI.SPECIAL_TOKENS),
-          # Every language the pipeline can emit, BCP 47 -> group, including
+          # Every language the pipeline can emit, BCP 47 -> language group, including
           # excluded ones, so a loader can route any .gs.json by its `lang`.
-          'lang_to_group': {c: langs[c]['group'] for c in sorted(langs)},
+          'lang_to_lang_group': {c: langs[c]['lang_group'] for c in sorted(langs)},
           'aliases': lang_aliases(langs),
-          'groups': inv}, 'group_inventories.json')
-    write_report(langs, notes, groups, inv, args.coverage,
+          'lang_groups': inv}, 'lang_group_inventories.json')
+    write_report(langs, notes, lang_groups, inv, args.coverage,
                  os.path.join(OUT_DIR, 'phoneme_counts.md'))
 
-    print(f'wrote lang_counts.json, group_counts.json, group_inventories.json, '
+    print(f'wrote lang_counts.json, lang_group_counts.json, lang_group_inventories.json, '
           f'phoneme_counts.md to {OUT_DIR}', file=sys.stderr)
     for g, r in inv.items():
         print(f'  {g:18s} {len(r["langs"]):2d} langs  {r["n_tokens"]:3d} tokens',

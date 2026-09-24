@@ -1,9 +1,9 @@
-"""Sentence -> standardized phoneme layers -> a group model's training targets.
+"""Sentence -> standardized phoneme layers -> local language-group tokens (the final output).
 
     python examples/01_phonemize_sentence.py
 
-This is the whole path a training loader follows, except that a loader reads
-`gold_ph` back from a .gs.json instead of running the model.
+This is the whole path from text to local tokens. A downstream task reading
+.gs.json files does the last step only: it reads `gold_ph` and calls `to_local`.
 """
 import os
 import sys
@@ -13,7 +13,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import torch
 
 from standard_g2p.gold_g2p import goldG2P
-from standard_g2p import group_inventory as GI
+from standard_g2p import lang_group_inventory as LGI
 from standard_g2p import phoneme_inventory_gold as PI
 
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
@@ -32,14 +32,14 @@ assert all(0 <= n < d['n_lengths'] for n in d['length'])
 assert all(0 <= i < d['n_gold_ph'] for i in d['gold_ph'])
 assert all(0 <= g < d['n_gold_phg'] for g in d['gold_phg'])
 
-# 2. Gold indices -> the indices of the language's group model.
-t = GI.to_local(d['gold_ph'], 'pt-BR')
+# 2. Gold indices -> the local tokens of the language's language group.
+t = LGI.to_local(d['gold_ph'], 'pt-BR')
 print()
 for k, v in t.items():
     print('%-16s %s' % (k, v))
-print('decoded          %s' % GI.decode(t['local_ph'], 'pt-BR'))
+print('decoded          %s' % LGI.decode(t['local_ph'], 'pt-BR'))
 
-# 3. The same, across scripts and groups.
+# 3. The same, across scripts and language groups.
 print()
 for lang, text in [('en-US', 'hello world'),
                    ('ru', 'привет мир'),
@@ -48,20 +48,20 @@ for lang, text in [('en-US', 'hello world'),
                    ('th', 'ภาษา'),        # tonal; sentences are word-segmented, see 06
                    ('zh', '狂妄')]:        # tonal; sentences are word-segmented, see 06
     d = G.phonemize_sentence(text, lang=lang)
-    t = GI.to_local(d['gold_ph'], lang)
-    print('%-6s %-14s group=%-16s local %d-way, gold %d-way'
-          % (lang, text, t['group'], t['n_local_ph'], t['n_gold_ph']))
+    t = LGI.to_local(d['gold_ph'], lang)
+    print('%-6s %-14s lang_group=%-16s local %d-way, gold %d-way'
+          % (lang, text, t['lang_group'], t['n_local_ph'], t['n_gold_ph']))
     print('       phonemes %s' % d['phonemes'])
     print('       tone     %s' % d['tone'])
-    print('       decoded  %s' % GI.decode(t['local_ph'], lang))
+    print('       decoded  %s' % LGI.decode(t['local_ph'], lang))
 
-    # Round trip: a gold phoneme on the group's list decodes to itself,
+    # Round trip: a gold phoneme on the language group's list decodes to itself,
     # anything else to <unk> -- and n_folded counts exactly those.
-    keep = set(GI.tokens(t['group']))
+    keep = set(LGI.tokens(t['lang_group']))
     want = [p if p in keep else PI.UNK for p in PI.decode(d['gold_ph'])]
-    assert GI.decode(t['local_ph'], lang) == want
+    assert LGI.decode(t['local_ph'], lang) == want
     if t['n_folded']:
-        print('       %d phoneme(s) not on the %s list -> <unk>' % (t['n_folded'], t['group']))
+        print('       %d phoneme(s) not on the %s list -> <unk>' % (t['n_folded'], t['lang_group']))
 
 print()
 G.print_stats()

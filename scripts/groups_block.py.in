@@ -1,9 +1,9 @@
 # ---------------------------------------------------------------------------
-# Broad phonetic groups
+# Phoneme groups (gold_phg). Not to be confused with language groups (lang_group).
 #
-# The fine inventory is large and its tail is sparse, so a coarse head trained
-# alongside it stays well-conditioned where the fine head starves, and degrades
-# more gracefully on unseen languages. Groups are DERIVED from the feature
+# The fine inventory is large and its tail is sparse, so a coarse target next
+# to it stays well populated where individual phonemes are rare, and carries
+# over better to unseen languages. Phoneme groups are DERIVED from the feature
 # vectors rather than hand-listed, so they stay consistent if the inventory
 # changes.
 #
@@ -42,7 +42,7 @@ def _f(vec, name):
 
 
 def phoneme_group(phoneme):
-    """Broad phonetic class index for a phoneme, derived from its features."""
+    """Phoneme group index for a phoneme, derived from its features."""
     if phoneme in _inv.SPECIAL_TOKENS:
         return GROUP_INDEX['special']
     v = feature_vector(phoneme)

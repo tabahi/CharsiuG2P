@@ -16,7 +16,7 @@ Suprasegmentals (tone, stress, length) are separate layers - see gold_g2p.py.
     PI.TOKENS[i]          # index -> phoneme string
     PI.TOKEN_INDEX[p]     # phoneme string -> index
     PI.decode(ph)         # whole sequence at once
-    PI.N_TOKENS           # 270, the softmax size
+    PI.N_TOKENS           # 270, the gold inventory size
 """
 
 MIN_LANGUAGES = 2

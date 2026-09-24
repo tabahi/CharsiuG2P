@@ -78,7 +78,7 @@ cannot be looked up character by character.
 
 No. This is the measurement that decided against grouping by genetic family.
 
-86 languages, 265 distinct phonemes of the phoneme_inventory_gold (270 tokens) -- the space the models are trained in, so sub-phonemic detail the inventory backs off (`d̥` -> `d`) does not count as a difference. Stress, tone and length are separate layers.
+86 languages, 265 distinct phonemes of the phoneme_inventory_gold (270 tokens) -- the space the local tokens are drawn from, so sub-phonemic detail the inventory backs off (`d̥` -> `d`) does not count as a difference. Stress, tone and length are separate layers.
 
 **(a) Jaccard over which phonemes each language uses** (above a 0.1% floor). Mean pairwise similarity 0.42; average-linkage cluster sizes:
 
@@ -113,7 +113,7 @@ Membership at k=8:
 - **4** (majority indo-european 2/4): hi ko sa ta
 - **4** (majority sino-tibetan 3/4): nan th yue zh
 
-A language's nearest neighbour by phoneme usage shares its top-level family for 48/86 languages, its sub-family for 34/86, and its processing group for 49/86. 0 of the 8 clusters above are a single family; a family-based grouping would need them all to be.
+A language's nearest neighbour by phoneme usage shares its top-level family for 48/86 languages, its sub-family for 34/86, and its language group for 49/86. 0 of the 8 clusters above are a single family; a family-based grouping would need them all to be.
 
 **Nearest neighbour by phoneme usage**, per language:
 
@@ -206,17 +206,17 @@ A language's nearest neighbour by phoneme usage shares its top-level family for 
 | `yue` | `tts` | 0.209 |
 | `zh` | `yue` | 0.259 |
 
-## 5. The resulting groups
+## 5. The resulting language groups
 
 What sections 1-4 were used to decide, as it now stands in
-`g2p_module/lang_codes.py`. Grouping is by preprocessing path -- writing
-system, word segmentation, tone -- because section 4 ruled out phonology.
+`standard_g2p/lang_codes.py`. Grouping is by writing system, word
+segmentation and tone, because section 4 ruled out phonology.
 
 Every BCP 47 code the pipeline can emit, which is what
-`mappings/group_inventories.json` routes on; regional and script variants
+`mappings/lang_group_inventories.json` routes on; regional and script variants
 of one language (`en`, `en-GB`) are listed separately.
 
-| group | codes | usable | languages |
+| lang_group | codes | usable | languages |
 |---|---:|---:|---|
 | `latin` | 59 | 59 | af ang arg az bs ca cs cy cy-sw da de egy en en-GB enm eo es es-419 es-MX et eu fi fr fr-CA ga gl hu ia id io is it la la-eccl lb lt mi ms mt nb nl pap pl pt pt-BR ro se sk sl sq sv sw tk tl tr uz vi vi-c vi-s |
 | `cyrillic` | 12 | 12 | ady ba be bg hbs hbs-Cyrl kk mk ru sr tt uk |

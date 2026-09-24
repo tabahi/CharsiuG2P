@@ -434,17 +434,18 @@ def normalize_iso(lang):
     is 'zho' in them even though 'cmn' is what the FLEURS loader emits and
     'zh' is the BCP 47 code a caller would normally pass:
 
-        'cmn' in PROCESSING_GROUP_MEMBERS['cjk']              # False - wrong
-        normalize_iso('zh') in PROCESSING_GROUP_MEMBERS['cjk']   # True
+        'cmn' in LANG_GROUP_MEMBERS['cjk']              # False - wrong
+        normalize_iso('zh') in LANG_GROUP_MEMBERS['cjk']   # True
 
-    The processing_group() / family() / is_tonal() helpers all normalise for
+    The lang_group() / family() / is_tonal() helpers all normalise for
     you; only direct set membership needs this.
 
     Bridged codes normalise to the ISO 639-3 code of the tag that covers them,
     so 'cmn' and 'zh' both answer 'zho', and 'hr' answers 'hbs'. Without this
     a dataset that labels Mandarin 'cmn' would be reported as neither tonal
     nor in need of segmentation. A BCP 47 suffix ('pt-BR') is dropped before
-    bridging, since it never changes which family/group/tone answer applies.
+    bridging, since it never changes which family/language group/tone answer
+    applies.
     """
     if not lang:
         return ''
@@ -475,17 +476,20 @@ def needs_word_segmentation(lang):
 
 
 # ---------------------------------------------------------------------------
-# Processing groups
+# Language groups
 #
-# These group languages by the PREPROCESSING PATH they need -- writing system,
-# word segmentation, tone -- not by language family.
+# Languages are sorted into language groups by writing system, word
+# segmentation and tone, not by language family. Each language group has its
+# own token list (lang_group_inventory), and downstream tasks are expected to
+# use those local tokens. "Language group" is never shortened to "group" here:
+# the phoneme groups of phoneme_features (gold_phg) are the other meaning.
 #
 # Grouping by family was measured and rejected. `scripts/measure_lang_groups.py`
 # extracts every language's phoneme inventory from the CharsiuG2P dictionaries
 # and clusters them; the numbers are in mappings/lang_stats.md. In short: phoneme
 # inventories do not recover families, measured in the 270-token gold space
-# the models are trained in. Jaccard over which phonemes a language uses puts
-# 67 of 86 languages in one cluster at k=8, because the shared IPA core
+# the local tokens are drawn from. Jaccard over which phonemes a language
+# uses puts 67 of 86 languages in one cluster at k=8, because the shared IPA core
 # dominates. Jensen-Shannon over how often each phoneme is used splits more
 # evenly but no more meaningfully -- at k=8 its largest cluster is `ar arg el
 # eo es et eu gl grc hbs ia io is it ja ku mi mt pap ro se sk sv sw tts`, none
@@ -493,12 +497,12 @@ def needs_word_segmentation(lang):
 # shares its sub-family for only 34 of 86. The two most coherent clusters are
 # East Asian (tone and script) and mostly-Turkic (7 of 10).
 #
-# Writing system, by contrast, separates cleanly and predicts the things the
-# pipeline actually has to branch on. Membership below is generated from the
+# Writing system, by contrast, separates cleanly and predicts what the text
+# processing has to branch on (segmentation, tone). Membership below is generated from the
 # measured dominant script of each dictionary's keys.
 # ---------------------------------------------------------------------------
 
-PROCESSING_GROUPS = {
+LANG_GROUPS = {
     'latin': 'Latin script, space-delimited, no tone. The default path.',
     'cyrillic': 'Cyrillic script, space-delimited, no tone.',
     'other_alphabetic': 'Greek/Armenian/Georgian/Hangul/Ethiopic. Space-delimited '
@@ -514,7 +518,7 @@ PROCESSING_GROUPS = {
                'diacritics, so it does not reach the tone layer.',
 }
 
-PROCESSING_GROUP_MEMBERS = {
+LANG_GROUP_MEMBERS = {
     'latin': {
         'afr', 'ang', 'arg', 'aze', 'bos', 'cat', 'ces', 'cym',
         'dan', 'deu', 'egy', 'eng', 'enm', 'epo', 'est', 'eus',
@@ -555,14 +559,14 @@ PROCESSING_GROUP_MEMBERS = {
 # for it -- it is the one language here where script is a property of the tag
 # rather than of the language.
 
-ISO_TO_GROUP = {iso: g for g, members in PROCESSING_GROUP_MEMBERS.items()
-                for iso in members}
+ISO_TO_LANG_GROUP = {iso: g for g, members in LANG_GROUP_MEMBERS.items()
+                     for iso in members}
 
 
-# Languages to leave out of a training run for now. This is deliberately
-# ORTHOGONAL to the group: a language keeps its script group, and comes back
-# into use by being removed from here once its blocker is fixed, without the
-# grouping changing. See the README.
+# Languages left out for now: they did not shape their language group's token
+# list. This is deliberately ORTHOGONAL to the language group: a language keeps
+# its language group, and comes back into use by being removed from here once
+# its blocker is fixed, without the language groups changing. See the README.
 EXCLUDED_ISO = {
     'mya': 'tone is written as diacritics, so the tone layer stays empty '
            '(it is word-segmented now, with pyidaungsu)',
@@ -573,15 +577,15 @@ EXCLUDED_ISO = {
 }
 
 
-def processing_group(lang):
-    """CharsiuG2P tag or ISO 639-3 -> processing group name. Raises if unknown."""
+def lang_group(lang):
+    """CharsiuG2P tag or ISO 639-3 -> language group name. Raises if unknown."""
     iso = normalize_iso(lang)
     try:
-        return ISO_TO_GROUP[iso]
+        return ISO_TO_LANG_GROUP[iso]
     except KeyError:
         raise UnsupportedLanguageError(
-            f'{lang!r} (ISO {iso!r}) is not in any processing group; it is not '
-            f'one of the {len(ISO_TO_GROUP)} languages CharsiuG2P covers') from None
+            f'{lang!r} (ISO {iso!r}) is not in any language group; it is not '
+            f'one of the {len(ISO_TO_LANG_GROUP)} languages CharsiuG2P covers') from None
 
 
 def is_excluded(lang):
@@ -589,13 +593,13 @@ def is_excluded(lang):
     return normalize_iso(lang) in EXCLUDED_ISO
 
 
-def group_members(group, include_excluded=False):
-    """The ISO codes in a processing group, excluded ones dropped by default."""
+def lang_group_members(lang_group, include_excluded=False):
+    """The ISO codes in a language group, excluded ones dropped by default."""
     try:
-        members = PROCESSING_GROUP_MEMBERS[group]
+        members = LANG_GROUP_MEMBERS[lang_group]
     except KeyError:
         raise UnsupportedLanguageError(
-            f'{group!r} is not a processing group. Known: {sorted(PROCESSING_GROUPS)}') from None
+            f'{lang_group!r} is not a language group. Known: {sorted(LANG_GROUPS)}') from None
     if include_excluded:
         return sorted(members)
     return sorted(m for m in members if m not in EXCLUDED_ISO)
@@ -604,7 +608,7 @@ def group_members(group, include_excluded=False):
 # ---------------------------------------------------------------------------
 # Language family
 #
-# Genetic classification, kept deliberately separate from the processing groups
+# Genetic classification, kept deliberately separate from the language groups
 # above: it describes what a language IS, not how the pipeline handles it, and
 # the two disagree constantly (Vietnamese is Austroasiatic but processed on the
 # Latin path; Maltese is Semitic but written in Latin script; Afrikaans is
@@ -661,22 +665,22 @@ def family(lang):
             f'{lang!r} (ISO {iso!r}) has no family entry') from None
 
 
-# Every language has to land in exactly one group and one family, or a caller
-# that iterates the groups silently processes fewer languages than it thinks.
-_covered = set(ISO_TO_GROUP)
+# Every language has to land in exactly one language group and one family, or
+# a caller that iterates the language groups silently processes fewer languages than it thinks.
+_covered = set(ISO_TO_LANG_GROUP)
 _expected = set(TAG_TO_ISO.values())
 if _covered != _expected:
     raise UnsupportedLanguageError(
-        'processing groups do not cover the tag set: missing %s, extra %s'
+        'language groups do not cover the tag set: missing %s, extra %s'
         % (sorted(_expected - _covered), sorted(_covered - _expected)))
 if set(FAMILY_ISO) != _expected:
     raise UnsupportedLanguageError(
         'FAMILY_ISO does not cover the tag set: missing %s, extra %s'
         % (sorted(_expected - set(FAMILY_ISO)), sorted(set(FAMILY_ISO) - _expected)))
 _dupes = [i for i in _expected
-          if sum(i in m for m in PROCESSING_GROUP_MEMBERS.values()) != 1]
+          if sum(i in m for m in LANG_GROUP_MEMBERS.values()) != 1]
 if _dupes:
-    raise UnsupportedLanguageError('languages in more than one group: %s' % sorted(_dupes))
+    raise UnsupportedLanguageError('languages in more than one language group: %s' % sorted(_dupes))
 if set(EXCLUDED_ISO) - _expected:
     raise UnsupportedLanguageError(
         'EXCLUDED_ISO names languages that do not exist: %s'
