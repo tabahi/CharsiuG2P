@@ -1,344 +1,317 @@
-# CharsiuG2P
+# Standard G2P
 
-**Update**: We found that the pronounciation dictionary for Uzbek `uzb` is incorrect. Please do not use it in your applicaion. We will try our best to update the best resources we can find. 
+Multilingual text → **standardized, indexed phoneme targets** for training speech models.
 
-### Introduction
-CharsiuG2P is transformer based tool for grapheme-to-phoneme conversion in 100 languages. Given an orthographic word, CharsiuG2P predicts its pronunciation through a neural G2P model.
-
-This repository also contains instructions to replicate our Interspeech 2022 paper *ByT5 model for massively multilingual grapheme-to-phoneme conversion* [[arXiv]](https://arxiv.org/abs/2204.03067) [[pdf]](https://arxiv.org/pdf/2204.03067.pdf).  
-
-### Table of content
-- [Introduction](https://github.com/lingjzhu/CharsiuG2P#introduction)
-- [Usage](https://github.com/lingjzhu/CharsiuG2P#usage)
-- [Results](https://github.com/lingjzhu/CharsiuG2P#results)
-- [Pretrained models](https://github.com/lingjzhu/CharsiuG2P/blob/main/README.md#pretrained-models)
-- [Training and fine-tuning](https://github.com/lingjzhu/CharsiuG2P#training-and-fine-tuning)
-- [Evaluation](https://github.com/lingjzhu/CharsiuG2P#evaluation)
-- [G2P Datasets](https://github.com/lingjzhu/CharsiuG2P#g2p-datasets)
-- [Docker image for *espeak-ng* ](https://github.com/lingjzhu/CharsiuG2P#docker-image-for-espeak-ng)
-- [Disclaimer](https://github.com/lingjzhu/CharsiuG2P/blob/main/README.md#disclaimer)
-- [Contact](https://github.com/lingjzhu/CharsiuG2P/blob/main/README.md#contact)
-
-
-### Usage
-
-The model can be directly loaded from Huggingface Hub. Note that this model assume that input words are already tokenized into individual words. 
-- For languages such as Chinese, Korean, Japanese (CJK languages) and some southeast Asian languages, words are not separated by spaces. An external tokenizers must be used before feeding words into this model.
-- Each word must be proceeded by a language code prefix, which is based on ISO-639 with some slight modification to distinguish local dialects/variants. For example, the prefix code for American English is '\<eng-us\>: ' (**The space following the colon cannot be omitted!**). The full list of language codes can be found in this [document](https://docs.google.com/spreadsheets/d/1y7kisk-UZT9LxpQB0xMIF4CkxJt0iYJlWAnyj6azSBE/edit#gid=557940309). 
-- For the sake of convenience, it is suggested that the .generate function is used to handle outputs. However, this could slows down the inference time significantly. 
- 
-```
-from transformers import T5ForConditionalGeneration, AutoTokenizer
-
-model = T5ForConditionalGeneration.from_pretrained('charsiu/g2p_multilingual_byT5_tiny_16_layers_100')
-tokenizer = AutoTokenizer.from_pretrained('google/byt5-small')
-
-# tokenized English words
-words = ['Char', 'siu', 'is', 'a', 'Cantonese', 'style', 'of', 'barbecued', 'pork']
-words = ['<eng-us>: '+i for i in words]
-
-out = tokenizer(words,padding=True,add_special_tokens=False,return_tensors='pt')
-
-preds = model.generate(**out,num_beams=1,max_length=50) # We do not find beam search helpful. Greedy decoding is enough. 
-phones = tokenizer.batch_decode(preds.tolist(),skip_special_tokens=True)
-print(phones)
-# Output: ['ˈtʃɑɹ', 'ˈsiw', 'ˈɪs', 'ˈɑ', 'ˈkæntəˌniz', 'ˈstaɪɫ', 'ˈɑf', 'ˈbɑɹbɪkˌjud', 'ˈpɔɹk']
-```
+This is a fork of [CharsiuG2P](https://github.com/lingjzhu/CharsiuG2P) (Zhu, Zhang & Jurgens, 2022). The upstream
+ByT5 model converts a word in any of 100 languages into an IPA string. This fork adds `standard_g2p/`, which turns
+those IPA strings into a fixed label space a speech model can be trained on. The label space is the same for every
+language, and every index comes with the size of the space it belongs to.
 
 ```
-# tokenized Thai words
-words = ['<tha>: ภาษา', '<tha>: ไทย']
-out = tokenizer(words,padding=True,add_special_tokens=False,return_tensors='pt')
-preds = model.generate(**out,num_beams=1,max_length=50)
-phones = tokenizer.batch_decode(preds.tolist(),skip_special_tokens=True)
-print(phones)
-# Output: ['pʰaː˧.saː˩˩˦', 'tʰaj˧']
-# Correct pronunciation on wikipedia: [pʰāːsǎːtʰāj]
+text ──► words ──► CharsiuG2P ──► raw IPA ──► normalize ──► segment ──► layers ──► gold inventory ──► group inventory
+          split     (ByT5)        per word    (artifacts)   (phonemes)  tone/stress   270 tokens        per-group softmax
+                                                                         /length
 ```
 
-### Results
-Results for different models are available at [multilingual_results/](https://github.com/lingjzhu/CharsiuG2P/tree/main/multilingual_results).
-The format is language PER WER. 
+---
 
-We accidentally left out Korean in our original model (sorry!). Updated models that include Korean has been uploaded to Huggingface Hub. The following are the updated models that work also on Korean. Results for each of the 100 languages can be found in [multilingual_results/multilingual](https://github.com/lingjzhu/CharsiuG2P/tree/main/multilingual_results/multilingual). 
+## Quick start
 
-| Model  | PER | WER |   
-| ------------- | ------------- | ------------- |  
-|`charsiu/g2p_multilingual_byT5_tiny_8_layers_100` | 0.107 | 0.314 |  
-|`charsiu/g2p_multilingual_byT5_tiny_12_layers_100` | 0.098 | 0.287 |  
-|`charsiu/g2p_multilingual_byT5_tiny_16_layers_100` | 0.096 | 0.281 |  
-| `charsiu/g2p_multilingual_byT5_small_100` | 0.089 | 0.261 | 
+```python
+from standard_g2p.gold_g2p import goldG2P
+from standard_g2p import group_inventory as GI
 
-### Pretrained models
-Pretrained models are hosted at [HuggingFace model hub](https://huggingface.co/charsiu) with the prefix "G2P". Multilingual models were uploaded. We are still trying to figure out how to host 100 monolingual models.
-
-### Training and fine-tuning
-
-Here we provide the code for training and fine-tuning the ByT5 G2P model. 
-
-In addition to ByT5, we also included a Switch ByT5 model class, which is essentially a [switch transformer](https://arxiv.org/pdf/2101.03961.pdf) that takes byte-leve inputs. While a sparse transformer can theoretically increase parameters without increasing computational costs. We did not find it much faster that the vanilla ByT5 model. It could be that switch transformers are not beneficial at our scale (small model and small datasets). While the extensive results for switch ByT5 models are not included in our paper, we still make the code, pretrained models and the results available, in the hope that someone might find them helpful.
-
-**Note**. The code we used to train and finetune models in our paper can be found in [notebooks/](https://github.com/lingjzhu/CharsiuG2P/tree/main/notebooks) and [train.py](https://github.com/lingjzhu/CharsiuG2P/blob/main/src/train.py).
-
-
-Finetune a pretrained ByT5 on all languages.
-```
-python src/train.py --output_dir path_to_output --pretrained_model True --train --train_batch_size 64 --gradient_accumulation 8 --eval_batch_size 128 
+G = goldG2P(device='cuda:0')        # weights are fetched once into tmp/
+d = G.phonemize_sentence('uma parceria', lang='pt-BR')
 ```
 
-Train a 8-layer ByT5 with randomly initalize weights on all languages.
-```
-python src/train.py --output_dir path_to_output --num_encoder_layers 8 --num_decoder_layers 4 --d_ff 1024  --model byt5  
-```
-
-Train a 8-layer mT5 model with 128 hidden dimensions and a feedforward layer of 256 dimensions on all languages.
-```
-python src/train.py --output_dir path_to_output --num_encoder_layers 4 --num_decoder_layers 4  --model byt5 --model_name google/mt5-small --train --train_batch_size 64 --gradient_accumulation 4 --d_model 128 --d_ff 256 --eval_batch_size 128
-```
-Train a 6-layer Switch ByT5 with 64 experts on all languages.
-```
-python src/train.py --output_dir path_to_output --train --switch --num_encoder_layers 4 --n_experts 64 --num_decoder_layers 2
-```
-
-Finetune a ByT5 model on a single language.
-```
-!python src/train.py --output_dir path_to_output --language dsb --pretrained_model True --train --train_batch_size 32  --gradient_accumulation 1 --eval_batch_size 64 --train_data data/low_resource/train/dsb.tsv --dev_data data/low_resource/dev/dsb.tsv --model_name pretrained_model_path --learning_rate 1e-4 --save_steps 100 --logging_steps 50 --eval_steps 100 --epochs 50
+```python
+{'lang': 'pt-BR', 'g2p_lang': 'por-bz',
+ 'n_tones': 22, 'n_stresses': 3, 'n_lengths': 3, 'n_gold_ph': 270, 'n_gold_phg': 15,   # scope
+ 'words':    ['uma', 'parceria'],
+ 'ipa':      ['ũɐ', 'paʁseɾiɐ'],                                     # raw model output, for audit
+ 'phonemes': ['ũ', 'ɐ', 'p', 'a', 'ʁ', 's', 'e', 'ɾ', 'i', 'ɐ'],    # standardized IPA segments
+ 'tone':     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],                         # < n_tones
+ 'stress':   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],                         # < n_stresses
+ 'length':   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],                         # < n_lengths
+ 'word_num': [0, 0, 1, 1, 1, 1, 1, 1, 1, 1],
+ 'gold_ph':  [204, 38, 23, 4, 37, 5, 7, 18, 6, 38],                  # < n_gold_ph
+ 'gold_phg': [1, 2, 4, 3, 8, 7, 2, 11, 1, 2],                        # < n_gold_phg
+ 'gold_unmapped': []}
 ```
 
+To get the indices for the model of that language's group:
 
-
-### Evaluation
-
-You can evaluate our model using the following command lines. 
-
-Evaluate a multilingual ByT5 model on all languages.
-```
-python src/train.py --checkpoint path_to_pretrained_model_checkpoint  --evaluate --model byt5 --output_dir path_to_output
+```python
+GI.to_local(d['gold_ph'], 'pt-BR')
 ```
 
-Evaluate a ByT5 model on a single language.
+```python
+{'lang': 'pt-BR', 'group': 'latin',
+ 'local_ph': [177, 38, 23, 4, 37, 5, 7, 18, 6, 38],   # < n_local_ph
+ 'n_local_ph': 213, 'n_gold_ph': 270,
+ 'unk': 3, 'n_folded': 0, 'gold_fingerprint': '9438371ed6dd'}
 ```
-python src/train.py --checkpoint path_to_pretrained_model_checkpoint --language dsb --evaluate --model byt5 --test_data data/low_resource/test/dsb.tsv --output_dir path_to_output
+
+`GI.decode(t['local_ph'], 'pt-BR')` turns local indices back into phonemes.
+
+### Examples
+
+| script | model? | shows |
+|---|---|---|
+| [examples/01_phonemize_sentence.py](examples/01_phonemize_sentence.py) | yes | sentence → layers → group targets, across 7 languages |
+| [examples/02_ipa_layers.py](examples/02_ipa_layers.py) | no | how raw IPA is normalized, segmented and split into layers |
+| [examples/03_inventories.py](examples/03_inventories.py) | no | head sizes, the gold inventory, the per-group tables |
+| [examples/04_features.py](examples/04_features.py) | no | articulatory features for an auxiliary head |
+| [examples/05_phonemize_srt.py](examples/05_phonemize_srt.py) | yes | transcript JSON in, `.gs.json` out |
+
+Requirements: `torch`, `transformers`, `huggingface_hub` for inference. The tables (`lang_codes`, `group_inventory`,
+`phoneme_inventory_gold`, `phoneme_features`) need only the standard library, so a training data loader can import
+them without pulling in `transformers`.
+
+---
+
+## How the standardization works
+
+The model returns one IPA **string** per word. Four problems stand between that string and a training label. Each
+one corrupts the labels silently if it is left alone.
+
+### 1. Normalization: the training data is not uniformly IPA
+
+CharsiuG2P was trained on dictionaries scraped largely from Wiktionary. About 5% of the tokens are transcription
+artifacts, and the model reproduces them at inference. `normalize_ipa()` repairs them before anything is counted:
+
+| artifact | where | example | becomes |
+|---|---|---|---|
+| SAMPA instead of IPA | `swe` (all of it) | `plA:na%vE:gen` | `plɑːnaˌvɛːɡen` |
+| SAMPA capitals | `uzb`, `ger`, `swa` | `t͡S` | `t͡ʃ` |
+| Chao tone digits | `nan` | `kʰuan²¹⁻⁵³` | tone layer `21` |
+| optional-palatalization parens | `rus` | `⁽ʲ⁾` | `ʲ` |
+| codepoint duplicates | everywhere | `:` `g` `ʧ` | `ː` `ɡ` `t͡ʃ` |
+| Greek look-alikes | `fra-qu`, `grc` | `ε` | `ɛ` |
+| above/below diacritic variants | | `ŋ̊` / `n̥` | one spelling |
+| doubled modifiers | `ara` | `tˤˤ` | `tˤ` |
+
+### 2. Segmentation: an IPA string is not a list of phonemes
+
+One phoneme can span several codepoints: `t͡ʃ` (tie bar), `pʰ` (modifier letter), `ẽ` (combining mark), `aː` (length
+mark). `segment_ipa()` groups codepoints by Unicode category, so each of these stays one segment.
+
+### 3. Layers: tone, stress and length are not phonemes
+
+These belong to the syllable, not the segment. Folding them into the phoneme label multiplies the inventory (`a`,
+`aː`, `a˧`, `aː˥˩` would each be a class) and puts tonal languages in a label space of their own. `decompose_ipa()`
+splits them into parallel arrays of the same length:
+
+```python
+>>> decompose_ipa('pʰaː˧.saː˩˩˦', lang='tha')
+{'segments': ['pʰ', 'a', 's', 'a'],
+ 'length':   [ 0,    2,   0,   2 ],      # 0 short / 1 half-long / 2 long
+ 'tone':     ['',   '˧',  '', '˩˩˦'],    # on the nucleus; -> TONE_VOCAB index
+ 'stress':   [ 0,    0,   0,   0 ]}      # 0 none / 1 primary / 2 secondary
 ```
 
-### G2P Datasets
-A detailed catalogue of pronunciation dictionaries with downloadable links can be found in [this form](https://docs.google.com/spreadsheets/d/1y7kisk-UZT9LxpQB0xMIF4CkxJt0iYJlWAnyj6azSBE/edit?usp=sharing).  
+Tone contours from all scripts are unified into Chao numerals (`˧˥` and `³⁵` both become `35`) and indexed into
+`TONE_VOCAB` (22 values, 0 = no tone). This way Mandarin, Thai and Cantonese share their segment classes with English
+and Arabic. Cantonese alone has 31 segments and 23 tone contours: merged, that would be hundreds of classes; as
+layers it is 31 + 23.
 
-We also make detailed documentation of the sources and the license of these data in *merge_final* page of the above form.  The sources of the pronunciationaries are in [dicts/](https://github.com/lingjzhu/CharsiuG2P/tree/main/dicts). The train/dev/test splits are in [data/](https://github.com/lingjzhu/CharsiuG2P/tree/main/data). **Please cite both our article and the original sources to acknowledge the original authors if you use the data.**
+### 4. The gold inventory: one closed label set for all languages
 
-All data we collected are in [sources/](https://github.com/lingjzhu/CharsiuG2P/tree/main/sources). The source and license information for each file is available in [sources/info](https://github.com/lingjzhu/CharsiuG2P/tree/main/sources/info).
+[standard_g2p/phoneme_inventory_gold.py](standard_g2p/phoneme_inventory_gold.py) is built from the whole CharsiuG2P
+training corpus (7.7M pronunciations, 100 languages). A segment is admitted if it is attested in **at least 2
+languages**. A phoneme seen in only one language has no cross-lingual evidence, so the model would just memorize
+that language's data.
 
+| admission criterion | segments | token coverage |
+|---|---:|---:|
+| everything | 676 | 100% |
+| **≥ 2 languages** | **266** | **99.47%** |
+| ≥ 3 languages | 207 | 98.81% |
+| ≥ 5 languages | 154 | 98.20% |
 
-Almost all of the data here come with licenses that allow redistribution. For the rest of them, the license is unspecified. **If you are one of the creators of these data and do not wish us to host them, please let us know and we will immediately remove them per your request.** 
+Token layout: `<blank>` (0, for CTC), `SIL`, `noise`, `<unk>`, then the 266 phonemes by frequency, **270 tokens** in
+total. A segment outside the inventory is rewritten by `BACKOFF` (391 entries). In order, it tries to: peel off fine
+diacritics → reduce to the bare base → split a tie-bar unit → apply a manual table (implosives `ɓ → b`) → route junk
+to `noise`. With backoff, coverage is 100%. Anything that still has no mapping becomes `<unk>` and is listed in
+`gold_unmapped`.
 
-#### Attribution and Citation
+`gold_ph` is **not** index-aligned with `phonemes`, because a backed-off segment can expand into several units
+(`ʈ͡ʂ → ʈ ʂ`).
 
-Please cite our article:  
+**Broad groups and features.** `gold_phg` gives each gold token one of 15 broad classes (vowel_close, stop_voiced,
+nasal, …), for a coarse head trained alongside the fine one.
+[standard_g2p/phoneme_features.py](standard_g2p/phoneme_features.py) gives every token 20 articulatory features
+(taken from [panphon](https://github.com/dmort27/panphon) and stored in the repo, so panphon is not needed at run
+time). `feature_targets()` returns binary targets plus a mask. The mask covers features that don't apply (`distr` on a
+vowel) and special tokens, so no loss is taken there.
+
+### 5. Language groups: a smaller softmax per model
+
+Models are multilingual *within* a processing group. Groups follow the **preprocessing path**: writing system, word
+segmentation and tone. They do not follow language family. Grouping by family was measured and rejected, because
+phoneme inventories do not recover families (see
+[standard_g2p/mappings/lang_stats.md](standard_g2p/mappings/lang_stats.md) §4).
+
+Each group predicts a **subset** of the 270 gold tokens. For every member language, and for each of two sources (the
+model's actual FLEURS output and the training dictionaries), the most frequent gold phonemes are kept until 99.9% of
+that language's tokens are covered. The group list is the union of these. Every language therefore keeps ≥ 99.9% of
+its tokens, and a phoneme that one small language needs is not voted out by a large one.
+
+| group | tokens | | group | tokens |
+|---|---:|---|---|---:|
+| `latin` | 213 | | `brahmic` | 98 |
+| `cyrillic` | 128 | | `cjk` | 48 |
+| `other_alphabetic` | 107 | | `thai_khmer` | 47 |
+| `abjad` | 91 | | `japanese` | 28 |
+
+The special tokens keep their gold indices in every group (blank = 0 everywhere). A gold token outside a group's
+list becomes that group's `<unk>`, and `to_local()` reports how many did so as `n_folded`. Stored files keep only gold
+indices and are converted at load time. That way the group lists can be regenerated without rewriting a corpus.
+`GI.load()` raises `StaleInventoryError` if the group table was built against a different gold inventory.
+
+### Scope: every index carries its range
+
+| key | indexes | size |
+|---|---|---|
+| `tone` | `gold_g2p.TONE_VOCAB` | `n_tones` = 22 |
+| `stress` | none / primary / secondary | `n_stresses` = 3 |
+| `length` | short / half-long / long | `n_lengths` = 3 |
+| `gold_ph` | `phoneme_inventory_gold.TOKENS` | `n_gold_ph` = 270 |
+| `gold_phg` | `phoneme_features.GROUP_NAMES` | `n_gold_phg` = 15 |
+| `local_ph` (from `to_local`) | `group_inventory.tokens(group)` | `n_local_ph` (per group) |
+
+The same scope keys appear in `phonemize_words` / `phonemize_sentence` output and in the header of every `.gs.json`
+written by `phonemize_srt`.
+
+---
+
+## Language codes
+
+`lang` is always a single **BCP 47** code: ISO 639-1 where the language has one (`en`, `zh`), otherwise ISO 639-3
+(`ckb`, `hbs`). A suffix selects a non-default variant (`pt-BR`, `es-419`, `zh-Hant`, `en-GB`). CharsiuG2P's own tags
+(`eng-us`, `ger`, `por-bz`) are internal and never valid as `lang`.
+
+```python
+from standard_g2p.lang_codes import bcp47_to_tag, tag_to_bcp47, processing_group
+bcp47_to_tag('pt-BR')     # 'por-bz'
+bcp47_to_tag('pt')        # 'por-po'  -- a bare code picks the default variant
+tag_to_bcp47('eng-uk')    # 'en-GB'
+processing_group('cmn')   # 'cjk'
 ```
+
+A bare code resolves to its default variant: `pt` → European Portuguese, where *parceria* is `pɐɾsɨɾiɐ` rather than
+`paʁseɾiɐ`. Nothing errors, so pass the regional code whenever it matters. `bcp47_to_tag` **raises** on an unknown
+language instead of falling back. ByT5 reads bytes, so an invented tag still produces IPA-shaped output for some
+other language, and nothing downstream could tell.
+
+---
+
+## Know before you trust the output
+
+- **G2P gives dictionary pronunciations, not what was said.** Reduction, coarticulation and dialect make real speech
+  differ systematically from these labels.
+- **The model reproduces its training dictionary, including casual variants.** For example, `dicts/por-bz.tsv` lists
+  both `umɐ` and `ũɐ` for *uma*, and the model returns the casual form `ũɐ` with the /m/ dropped. The model also
+  under-predicts rare phonemes, because it drifts toward frequent symbols.
+- **Eight languages need word segmentation upstream**: `zh`, `yue`, `nan`, `ja`, `th`, `tts`, `km`, `my`. This is a
+  *word* model, and in these scripts `split_words` hands it whole clauses. For `th`/`km`/`my`/`ja`, less than 1.5% of
+  dictionary entries are a single character, so segmentation is mandatory (PyICU, pythainlp, fugashi). For Mandarin,
+  per-character input gives the same phonemes as jieba-segmented input. For Cantonese it does not, and Min Nan's tone
+  sandhi cannot be produced from single characters. `g2p_task.task_g2p_phonemize` skips these languages by default.
+- **Excluded languages** (`lang_codes.EXCLUDED_ISO`): `my` (no usable segmenter, and its tone is written as vowel
+  diacritics so it never reaches the tone layer), `nan` (no segmenter, sandhi), and `tts` (its dictionary is a
+  romanization, not IPA). They keep their group but did not shape its token list.
+- **Stress is transcribed in only 36 of the 100 languages.** A missing stress mark means "not annotated", not
+  "unstressed", so mask the stress loss for the other languages.
+- **Pitch accent is not tone.** `hbs`, `slv`, `san` and `grc` use the same acute and grave marks for pitch accent, and
+  `kur` uses them for stress. `tone_diacritics=True` would misread all of these as tone.
+- **Homographs** (English *read*, *lead*) get a single pronunciation, because the model sees no context.
+
+### Upgrading older `.gs.json` files
+
+- Header keys were renamed to match the in-memory output: `n_tokens` → `n_gold_ph`, `n_groups` → `n_gold_phg`,
+  `n_stress` → `n_stresses`.
+- `GI.to_local()` now returns a dict. The indices are under `['local_ph']`.
+- Labels for Brahmic, Thai, Khmer and Burmese scripts written before 2026-09-23 are corrupt and must be regenerated.
+  `split_words` used to treat vowel signs and viramas as word separators.
+
+---
+
+## Repository layout
+
+```
+standard_g2p/                   the module
+  gold_g2p.py                   goldG2P model wrapper, IPA normalization/segmentation, layers, file I/O
+  lang_codes.py                 BCP 47 <-> CharsiuG2P tag, tone/segmentation flags, groups (no deps)
+  phoneme_inventory_gold.py     the 270-token gold inventory + BACKOFF          (generated)
+  phoneme_features.py           20 articulatory features + 15 broad groups      (generated)
+  group_inventory.py            gold indices -> a group model's indices (no deps)
+  mappings/
+    group_inventories.json      per-group token lists, loaded at run time       (generated)
+    phoneme_counts.md           mapping health, backoff/unmapped report, group lists
+    lang_stats.md               the measurements behind lang_codes.py's groupings
+    *.json                      the raw counts behind the two reports
+scripts/                        generators for everything marked (generated)
+examples/                       runnable examples
+g2p_task.py                     batch-phonemize a paths_list of transcripts to .gs.json
+
+dicts/  data/  sources/  notebooks/  multilingual_results/      inherited from CharsiuG2P
+charsiug2p_original_src/        CharsiuG2P's original training/evaluation code
+```
+
+### Regenerating the tables
+
+Everything marked *(generated)* comes from a script. Hand edits are lost at the next regeneration.
+
+```bash
+python scripts/layers.py                   # 1. enumerate every segment in data/train/  -> tmp/inventory_build/
+python scripts/build_inventory.py          # 2. -> standard_g2p/phoneme_inventory_gold.py
+python scripts/build_features.py           # 3. -> standard_g2p/phoneme_features.py (needs panphon)
+python scripts/measure_lang_groups.py      # -> mappings/lang_stats.{json,md} (needs scipy)
+python scripts/create_phoneme_inventories.py [--paths <fleurs paths_list> --metadata-dir <dir>]
+                                           # -> mappings/group_inventories.json + counts + phoneme_counts.md
+```
+
+Rebuilding the gold inventory changes its fingerprint. Rerun `create_phoneme_inventories.py` afterwards, or
+`group_inventory` will refuse the stale table. The shipped group table was built from both sources. Without `--paths`
+the script counts only `dicts/`, which gives slightly different lists.
+
+---
+
+## Attribution
+
+This repository is a fork of **[CharsiuG2P](https://github.com/lingjzhu/CharsiuG2P)** by Jian Zhu, Cong Zhang and
+David Jurgens. The G2P model (`charsiu/g2p_multilingual_byT5_small_100`), the pronunciation dictionaries (`dicts/`),
+the train/dev/test splits (`data/`), the source collection (`sources/`), and the original training code
+(`charsiug2p_original_src/`, `notebooks/`) are theirs, distributed under the MIT license (see [LICENSE](LICENSE)).
+`standard_g2p/`, `scripts/` and `examples/` are the additions of this fork.
+
+If you use this work, please cite the original paper:
+
+```bibtex
 @article{zhu2022charsiu-g2p,
   title={ByT5 model for massively multilingual grapheme-to-phoneme conversion},
   author={Zhu, Jian and Zhang, Cong and Jurgens, David},
-  url = {https://arxiv.org/abs/2204.03067},
-  doi = {10.48550/ARXIV.2204.03067},
+  url={https://arxiv.org/abs/2204.03067},
+  doi={10.48550/ARXIV.2204.03067},
   year={2022}
- }
-```
-or
-
-```
-J. Zhu, C. Zhang, and D. Jurgens, “Byt5 model for massively
-multilingual grapheme-to-phoneme conversion,” 2022. [Online]. Available:
-https://arxiv.org/abs/2204.03067  
-```
-
-**The resources we collected include:**  
-
-WikiPron (multiple languages):  
-
-```
-@inproceedings{lee-etal-2020-massively,
-    title = "Massively Multilingual Pronunciation Modeling with {W}iki{P}ron",
-    author = "Lee, Jackson L.  and
-      Ashby, Lucas F.E.  and
-      Garza, M. Elizabeth  and
-      Lee-Sikka, Yeonju  and
-      Miller, Sean  and
-      Wong, Alan  and
-      McCarthy, Arya D.  and
-      Gorman, Kyle",
-    booktitle = "Proceedings of LREC",
-    year = "2020",
-    publisher = "European Language Resources Association",
-    pages = "4223--4228",
 }
 ```
 
-eSpeak NG (multiple languages). Word lists for some languages are acquired via [Leipzig Corpora Collection](https://wortschatz.uni-leipzig.de/en/download).   
+The dictionaries were collected by the CharsiuG2P authors from the sources below. **Please also cite the original
+sources of any data you use.** Source and license details for each file are in [sources/info](sources/info).
 
-```
-@misc{espeakng,
-  title = {{eSpeak NG}},
-  year = {2022},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/espeak-ng/espeak-ng}},
-}
+- WikiPron: Lee et al., *Massively Multilingual Pronunciation Modeling with WikiPron*, LREC 2020
+- [eSpeak NG](https://github.com/espeak-ng/espeak-ng), with word lists from the
+  [Leipzig Corpora Collection](https://wortschatz.uni-leipzig.de/en/download) (Goldhahn et al., LREC 2012)
+- [ipa-dict](https://github.com/open-dict-data/ipa-dict)
+- Kurdish: Veisi et al., 2020 (AsoSoft); Ahmadi, 2019
+- [Britfone](https://github.com/JoseLlarena/Britfone) (British English)
+- [thai-g2p](https://github.com/wannaphong/thai-g2p) (Thai)
+- [Santiago Spanish Lexicon](https://www.openslr.org/34/)
+- [Sprakbanken Swedish pronunciation dictionary](https://www.openslr.org/29/)
 
-@inproceedings{goldhahn2012building,
-  title={Building large monolingual dictionaries at the leipzig corpora collection: From 100 to 200 languages},
-  author={Goldhahn, Dirk and Eckart, Thomas and Quasthoff, Uwe},
-  booktitle={Proceedings of the Eighth International Conference on Language Resources and Evaluation (LREC'12)},
-  pages={759--765},
-  year={2012}
-}
-```
+Articulatory features are derived from [panphon](https://github.com/dmort27/panphon) (Mortensen et al., COLING 2016).
 
-ipa-dict (multiple languages):  
-
-```
-@misc{ipa-dict,
-  title = {{ipa-dict}},
-  year = {2020},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/open-dict-data/ipa-dic}},
-}
-```
-
-Kurdish (kur):  
-
-```
-@article{veisi2020toward,
-  title={Toward Kurdish language processing: Experiments in collecting and processing the AsoSoft text corpus},
-  author={Veisi, Hadi and MohammadAmini, Mohammad and Hosseini, Hawre},
-  journal={Digital Scholarship in the Humanities},
-  volume={35},
-  number={1},
-  pages={176-193},
-  year={2020},
-  publisher={Oxford University Press}
-}
-
-@article{ahmadi2019rule,
-  title={A Rule-Based Kurdish Text Transliteration System},
-  author={Ahmadi, Sina},
-  journal={ACM Transactions on Asian and Low-Resource Language Information Processing (TALLIP)},
-  volume={18},
-  number={2},
-  pages={18},
-  year={2019},
-  publisher={ACM}
-}
-```
-
-Britfone (eng-uk):  
-
-```
-@misc{britfone,
-  title = {{Britfone}},
-  author = {Llarena, Jose},
-  year = {2017},
-  journal = {GitHub repository},
-  howpublished =  {\url{https://github.com/JoseLlarena/Britfone}},
-}
-```
-
-Thai (tha):  
-
-```
-@misc{thai-g2p,
-  title = {{thai-g2p}},
-  author = {Phatthiyaphaibun, Wannaphong},
-  year = {2020},
-  journal = {GitHub repository},
-  howpublished = {\url{https://github.com/sigmorphon/2020/tree/master/task1/}},
-}
-```
-
-Spanish (spa-latin):  
-
-```
-@misc{sandiago-spanish,
-  title = {{Santiago Spanish Lexicon
-}},
-  author = {Morgan, John},
-  year = {2017},
-  journal = {GitHub repository},
-  howpublished = {\url{https://www.openslr.org/34/}},
-}
-```
-
-Swedish (swe):  
-
-```
-@misc{Sprakbanken_Swe,
-  title = {{Sprakbanken Swedish pronunciation dictionary}},
-  author = {Phatthiyaphaibun, Wannaphong},
-  year = {2020},
-  journal = {GitHub repository},
-  howpublished = {\url{https://www.openslr.org/29/}},
-}
-```
-
-
-
-
-
- - A collection of publicly available G2P data are listed below.
-   - [British English (RP/Standard Southern British ) pronunciation dictionary](https://github.com/JoseLlarena/Britfone)
-   - [British English pronunciations](https://www.openslr.org/14/)
-   - [eSpeak NG](https://github.com/espeak-ng/espeak-ng)
-   - [G2P for (almost) any languages](https://drive.google.com/drive/u/0/folders/0B7R_gATfZJ2aWkpSWHpXUklWUmM?resourcekey=0-aj4VU-D4RztBPCFLKNNThQ)
-   - [Kurdish G2P](https://github.com/AsoSoft/Kurdish-G2P-dataset)
-   - [ipa-dict - Monolingual wordlists with pronunciation information in IPA](https://github.com/open-dict-data/ipa-dict#languages)
-   - [Mandarin G2p](https://github.com/kakaobrain/g2pM)
-   - [mg2p](https://github.com/bpopeters/mg2p)
-   - [Santiago Spanish Lexicon](https://www.openslr.org/34/)
-   - [Sigmorphon Multilingual G2P](https://github.com/sigmorphon/2020/tree/master/task1)
-   - [Swedish pronunciation dictionary](https://www.openslr.org/29/)
-   - [Thai G2P](https://github.com/wannaphong/thai-g2p/blob/master/wiktionary-11-2-2020.tsv)
-   - [wiki-pronunciation-dict](https://github.com/DanielSWolf/wiki-pronunciation-dict)
-   - [wikipron](https://github.com/CUNY-CL/wikipron)
-
-
-
-### Docker image for *espeak-ng*  
-For some phonetically regular languages, a rule-based G2P system works quite well. This can be done with *espeak-ng*. However, since the compilation of *espeak-ng* is non-trivial, we have provided a docker image of *espeak-ng* for quick use.  
-The Docker image for *espeak-ng* is [available on Docker hub](https://hub.docker.com/r/lukeum/espeak-ng).
-You can use *espeak-ng* to perform G2P using the following code. 
-```
-docker pull lukeum/espeak-ng
-```
-Please refer to espeak-ng's [user guide](https://github.com/espeak-ng/espeak-ng/blob/master/src/espeak-ng.1.ronn) for a tutorial.
-
-You can also convert it into a singularity container.
-
-
-
-### Disclaimer
-
-This tool is a beta version and is still under active development. It may have bugs and quirks, alongside the difficulties and provisos which are described throughout the documentation. 
-This tool is distributed under MIT license. Please see [license](https://github.com/lingjzhu/charsiu/blob/main/LICENSE) for details. 
-
-By using this tool, you acknowledge:
-
-* That you understand that this tool does not produce perfect camera-ready data, and that all results should be hand-checked for sanity's sake, or at the very least, noise should be taken into account.
-
-* That you understand that this tool is a work in progress which may contain bugs.  Future versions will be released, and bug fixes (and additions) will not necessarily be advertised.
-
-* That this tool may break with future updates of the various dependencies, and that the authors are not required to repair the package when that happens.
-
-* That you understand that the authors are not required or necessarily available to fix bugs which are encountered (although you're welcome to submit bug reports to Jian Zhu (lingjzhu@umich.edu), if needed), nor to modify the tool to your needs.
-
-* That you will acknowledge the authors of the tool if you use, modify, fork, or re-use the code in your future work.  
-
-* That rather than re-distributing this tool to other researchers, you will instead advise them to download the latest version from the website.
-
-... and, most importantly:
-
-* That neither the authors, our collaborators, nor the the University of Michigan or any related universities on the whole, are responsible for the results obtained from the proper or improper usage of the tool, and that the tool is provided as-is, as a service to our fellow linguists.
-
-All that said, thanks for using our tool, and we hope it works wonderfully for you!
-
-### Contact
-Please contact Jian Zhu ([lingjzhu@umich.edu](lingjzhu@umich.edu)) for technical support.  
-Contact Cong Zhang ([cong.zhang@ru.nl](cong.zhang@ru.nl)) if you would like to receive more instructions on how to use the package.
-
+The upstream authors note that the Uzbek (`uzb`) dictionary is known to be incorrect.

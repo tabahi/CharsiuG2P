@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# Broad phonetic groups
+#
+# The fine inventory is large and its tail is sparse, so a coarse head trained
+# alongside it stays well-conditioned where the fine head starves, and degrades
+# more gracefully on unseen languages. Groups are DERIVED from the feature
+# vectors rather than hand-listed, so they stay consistent if the inventory
+# changes.
+#
+# There is deliberately no `vowel_central` group: panphon gives schwa the same
+# [back +1] as the back vowels and ɐ the same [back -1] as the front ones, so a
+# central class cannot be recovered from these features and would sit empty.
+# ---------------------------------------------------------------------------
+
+GROUP_NAMES = [
+    'special',          # 0  blank / SIL / noise / unk
+    'vowel_close',      # 1  i y u ɯ ʊ ɪ ɨ ʉ
+    'vowel_mid',        # 2  e ø o ɤ ɛ œ ɔ ə ɐ
+    'vowel_open',       # 3  a æ ɑ ɒ
+    'stop_voiceless',   # 4  p t k q c ʈ ʔ
+    'stop_voiced',      # 5  b d ɡ ɟ ɖ
+    'affricate',        # 6  t͡ʃ d͡ʒ t͡s t͡ɕ
+    'fricative_vl',     # 7  f s ʃ x θ ç
+    'fricative_vd',     # 8  v z ʒ ɣ ð ʁ
+    'nasal',            # 9  m n ŋ ɲ ɳ
+    'lateral',          # 10 l ɫ ʎ ɭ
+    'rhotic',           # 11 r ɾ ɹ ʀ ɽ
+    'glide',            # 12 j w ɥ ʋ
+    'glottal',          # 13 h ɦ ʜ ʢ
+    'other',            # 14 unclassified
+]
+GROUP_INDEX = {n: i for i, n in enumerate(GROUP_NAMES)}
+N_GROUPS = len(GROUP_NAMES)
+
+# h and ʀ carry identical vectors in this feature set, so the glottals need an
+# explicit list; nothing else in the inventory can be told apart by features.
+GLOTTAL = set('hɦʜʢ')
+
+
+def _f(vec, name):
+    return vec[FEATURE_NAMES.index(name)]
+
+
+def phoneme_group(phoneme):
+    """Broad phonetic class index for a phoneme, derived from its features."""
+    if phoneme in _inv.SPECIAL_TOKENS:
+        return GROUP_INDEX['special']
+    v = feature_vector(phoneme)
+    if v == _ZERO:
+        return GROUP_INDEX['other']
+
+    base = ''.join(c for c in phoneme if c in GLOTTAL)
+    if base and len(phoneme) <= 2:
+        return GROUP_INDEX['glottal']
+
+    if _f(v, 'syl') == 1:
+        if _f(v, 'hi') == 1:
+            return GROUP_INDEX['vowel_close']
+        if _f(v, 'lo') == 1:
+            return GROUP_INDEX['vowel_open']
+        return GROUP_INDEX['vowel_mid']
+
+    voiced = _f(v, 'voi') == 1
+    if _f(v, 'nas') == 1:
+        return GROUP_INDEX['nasal']
+    if _f(v, 'delrel') == 1:
+        return GROUP_INDEX['affricate']
+    if _f(v, 'lat') == 1:
+        return GROUP_INDEX['lateral']
+    if _f(v, 'cont') == -1:
+        return GROUP_INDEX['stop_voiced'] if voiced else GROUP_INDEX['stop_voiceless']
+    if _f(v, 'son') == 1:
+        # sonorant continuant: [+cons] or coronal -> rhotic, otherwise a glide
+        if _f(v, 'cons') == 1 or _f(v, 'cor') == 1:
+            return GROUP_INDEX['rhotic']
+        return GROUP_INDEX['glide']
+    return GROUP_INDEX['fricative_vd'] if voiced else GROUP_INDEX['fricative_vl']
+
+
+GROUPS = {p: phoneme_group(p) for p in _inv.TOKENS}
+
+
+def group_sequence(phonemes):
+    """Group index per phoneme, aligned with the input."""
+    return [GROUPS.get(p, phoneme_group(p)) for p in phonemes]

@@ -2,7 +2,13 @@
 __pycache__/
 *.py[cod]
 *$py.class
+tmp/
+**/.vscode/
+**/.claude/
 
+*.zip
+*.txt
+notes.txt
 # C extensions
 *.so
 
