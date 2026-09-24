@@ -399,17 +399,6 @@ the train/dev/test splits (`data/`), the source collection (`sources/`), and the
 (`charsiug2p_original_src/`, `notebooks/`) are theirs, distributed under the MIT license (see [LICENSE](LICENSE)).
 `standard_g2p/`, `scripts/` and `examples/` are the additions of this fork.
 
-If you use this work, please cite the original paper:
-
-```bibtex
-@article{zhu2022charsiu-g2p,
-  title={ByT5 model for massively multilingual grapheme-to-phoneme conversion},
-  author={Zhu, Jian and Zhang, Cong and Jurgens, David},
-  url={https://arxiv.org/abs/2204.03067},
-  doi={10.48550/ARXIV.2204.03067},
-  year={2022}
-}
-```
 
 The dictionaries were collected by the CharsiuG2P authors from the sources below. **Please also cite the original
 sources of any data you use.** Source and license details for each file are in [sources/info](sources/info).
@@ -426,4 +415,3 @@ sources of any data you use.** Source and license details for each file are in [
 
 Articulatory features are derived from [panphon](https://github.com/dmort27/panphon) (Mortensen et al., COLING 2016).
 
-The upstream authors note that the Uzbek (`uzb`) dictionary is known to be incorrect.
